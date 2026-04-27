@@ -16,6 +16,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,14 +25,8 @@ import org.springframework.stereotype.Component;
 public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     @Autowired
     private GameClient gameClient;
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Long userId = ctx.channel().attr(SessionKeys.USER_ID).get();
-        if (userId != null) {
-            SessionManager.bind(userId, ctx.channel());
-        }
-    }
+    @Value("${gateway.id:gw-0}")
+    private String gatewayId;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame frame) {
@@ -59,7 +54,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
     public void channelInactive(ChannelHandlerContext ctx) {
         UserSession userSession = SessionManager.getByChannel(ctx.channel());
         if(userSession != null){
-            log.info("channelInactive:{}", userSession.getUserId());
+            log.info("channelInactive userId:{}", userSession.getUserId());
         }
         SessionManager.remove(ctx.channel());
     }
@@ -70,7 +65,6 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
             ctx.channel().close();
             return;
         }
-
         ctx.fireUserEventTriggered(evt);
     }
 
@@ -84,6 +78,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
 
     private void forwardToGame(UserSession userSession, ClientMsg msg) {
         GameRequest req = new GameRequest();
+        req.setGatewayId(gatewayId);
         req.setUserId(userSession.getUserId());
         req.setCmd(msg.getCmd());
         req.setSeq(msg.getSeq());

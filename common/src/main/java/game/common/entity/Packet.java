@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class Packet {
-    public Long userId;
-    public JSONObject data;
+    private Long userId;
+    private String gatewayId;
+    private JSONObject data;
 }

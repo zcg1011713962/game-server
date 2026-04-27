@@ -3,7 +3,7 @@ server:
 
 gateway:
   port: 19001
-
+  id: gw-1
 logging:
   level:
     root: INFO

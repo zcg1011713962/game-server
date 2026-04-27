@@ -2,6 +2,7 @@ package game.gateway.netty.server.handler;
 
 import game.common.util.JwtUtil;
 import game.gateway.session.SessionKeys;
+import game.gateway.session.SessionManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -30,6 +31,7 @@ public class WsAuthHandler extends SimpleChannelInboundHandler<FullHttpRequest> 
         Long userId;
         try {
             userId = JwtUtil.getUserId(token);
+            log.info("get userId:{} By Token:{}", userId, token);
         } catch (Exception e) {
             ctx.close();
             return;
@@ -38,8 +40,7 @@ public class WsAuthHandler extends SimpleChannelInboundHandler<FullHttpRequest> 
             ctx.close();
             return;
         }
-        // 先把 userId 放到Channel
-        ctx.channel().attr(SessionKeys.USER_ID).set(userId);
+        SessionManager.bind(userId, ctx.channel());
         req.setUri(path);
         ctx.fireChannelRead(req.retain());
     }

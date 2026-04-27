@@ -1,7 +1,10 @@
 package game.paijiu.netty.handler;
 
+import game.common.entity.Packet;
 import game.common.entity.req.GameRequest;
+import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
+import game.paijiu.netty.GatewayChannelManager;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -14,8 +17,24 @@ import org.springframework.stereotype.Component;
 public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String json) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, String json) throws Exception {
         GameRequest req = JsonUtil.parse(json, GameRequest.class);
-        log.info(req.toString());
+        if (req.getCmd().value().equals(Cmd.GATEWAY_REGISTER.value())) {
+            GatewayChannelManager.bind(req.getGatewayId(), ctx.channel());
+            log.info("网关注册:{}", req.getGatewayId());
+            return;
+        }
+        if(req.getGatewayId() != null && GatewayChannelManager.get(req.getGatewayId()) != null){
+            DispatcherHandler.getHandler(req.getCmd().value()).exec(Packet.builder().gatewayId(req.getGatewayId()).userId(req.getUserId()).data(req.getData()).build());
+        }else{
+            log.error("非法的消息:{}", json);
+        }
+    }
+
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        log.info("网关断开");
+        GatewayChannelManager.remove(ctx.channel());
     }
 }

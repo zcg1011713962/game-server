@@ -33,6 +33,6 @@ public class PaiJiuServer {
                 .bind(port)
                 .sync();
 
-        log.info("牌九服务启动：" + port);
+        log.info("牌九服务启动：{}", port);
     }
 }

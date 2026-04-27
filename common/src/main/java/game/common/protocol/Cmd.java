@@ -2,6 +2,8 @@ package game.common.protocol;
 
 public enum Cmd {
 
+    GATEWAY_REGISTER("GATEWAY_REGISTER"),
+
     // ================= 登录 =================
     LOGIN("LOGIN"),
     LOGIN_RESULT("LOGIN_RESULT"),

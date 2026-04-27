@@ -1,4 +1,4 @@
-package game.gateway.netty.server.handler;
+package game.paijiu.netty.handler;
 
 import game.common.util.DelayTaskUtil;
 

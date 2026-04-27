@@ -5,7 +5,7 @@ spring:
   application:
     name: hall-service
   datasource:
-    url: jdbc:mysql://127.0.0.1:3406/game?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://47.120.62.233:3406/game?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: yx168168
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,7 +18,7 @@ spring:
       connection-timeout: 3000
   data:
     redis:
-      host: 127.0.0.1
+      host: 47.120.62.233
       port: 6479
       password:    # 没有就留空
       database: 0

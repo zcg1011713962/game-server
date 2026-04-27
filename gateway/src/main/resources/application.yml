@@ -1,0 +1,15 @@
+server:
+  port: 18081
+
+gateway:
+  port: 19001
+
+logging:
+  level:
+    root: INFO
+    game.gateway: DEBUG
+  file:
+    name: logs/gateway.log   # 日志文件路径
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"

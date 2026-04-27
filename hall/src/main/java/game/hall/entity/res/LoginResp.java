@@ -1,0 +1,10 @@
+package game.hall.entity.res;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class LoginResp {
+    private Long userId;
+    private String token;
+}

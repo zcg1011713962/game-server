@@ -8,11 +8,16 @@
             <id property="id" column="id" />
             <result property="username" column="username" />
             <result property="pwd" column="pwd" />
+            <result property="nickname" column="nickname" />
+            <result property="avatar" column="avatar" />
             <result property="gold" column="gold" />
+            <result property="status" column="status" />
             <result property="createTime" column="create_time" />
+            <result property="updateTime" column="update_time" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,username,pwd,gold,create_time
+        id,username,pwd,nickname,avatar,gold,
+        status,create_time,update_time
     </sql>
 </mapper>

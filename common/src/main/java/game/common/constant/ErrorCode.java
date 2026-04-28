@@ -8,6 +8,7 @@ public enum ErrorCode {
     PARAM_ERROR(1001, "参数错误"),
     UNKNOWN_CMD(1002, "未知命令"),
     SYSTEM_ERROR(1003, "系统异常"),
+    LOGIN_ERROR(1004, "登录账户密码错误"),
 
     // ===================== 登录 =====================
     TOKEN_INVALID(2001, "token无效"),

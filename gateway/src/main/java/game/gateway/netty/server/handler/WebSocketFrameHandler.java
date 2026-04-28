@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 @io.netty.channel.ChannelHandler.Sharable
@@ -44,7 +46,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
             }
             // 回复PING包
             if(msg.getCmd().value().equals(Cmd.PING.value())){
-                ServerMsg serverMsg = ServerMsg.ok(Cmd.PONG.value(), msg.getSeq(), msg.getData());
+                ServerMsg serverMsg = ServerMsg.ok(Cmd.PONG.value(), msg.getSeq(), msg.getData(), 0, "ok");
                 ctx.channel().writeAndFlush(serverMsg);
                 return;
             }
@@ -79,17 +81,22 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
         String cmd = msg == null ? "ERROR" : msg.getCmd() + "_RESULT";
         long seq = msg == null ? 0 : msg.getSeq();
 
-        ServerMsg res = ServerMsg.error(cmd, seq, code, message);
+        ServerMsg res = ServerMsg.info(cmd, seq, code, message);
         ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(res)));
     }
 
     private void forwardToGame(UserSession userSession, ClientMsg msg) {
+        log.info("forwardToGame cmd:{} userId:{}", msg.getCmd(), userSession.getUserId());
         GameRequest req = new GameRequest();
+        req.setTraceId(UUID.randomUUID().toString());
         req.setGatewayId(gatewayId);
         req.setUserId(userSession.getUserId());
         req.setCmd(msg.getCmd());
         req.setSeq(msg.getSeq());
         req.setData(msg.getData());
+        if (msg.getData() != null && msg.getData().getLong("roomId") != null) {
+            req.setRoomId(msg.getData().getLong("roomId"));
+        }
         gameClient.send(req);
     }
 }

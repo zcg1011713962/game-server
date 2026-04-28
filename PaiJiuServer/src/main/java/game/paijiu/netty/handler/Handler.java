@@ -1,7 +1,6 @@
 package game.paijiu.netty.handler;
 
 
-import game.common.entity.Packet;
 import game.common.entity.req.GameRequest;
 
 public abstract class Handler {

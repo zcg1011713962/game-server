@@ -1,7 +1,8 @@
 package game.paijiu.netty.handler;
 
-import game.common.entity.Packet;
+import game.common.constant.ErrorCode;
 import game.common.entity.req.GameRequest;
+import game.common.entity.res.GameResponse;
 import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
@@ -27,6 +28,7 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
         if(req.getGatewayId() != null && GatewayChannelManager.get(req.getGatewayId()) != null){
             DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
         }else{
+            ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.UNKNOWN_CMD)));
             log.error("非法的消息:{}", json);
         }
     }

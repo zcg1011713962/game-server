@@ -8,9 +8,9 @@ import java.util.List;
 
 @Builder
 @Data
-public class EnterRoomResp {
+public class GameStartPush {
+
     private Long roomId;
-    private Long userId;
 
     private Integer roomState;
 

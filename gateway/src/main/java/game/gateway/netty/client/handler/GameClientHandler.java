@@ -1,6 +1,7 @@
 package game.gateway.netty.client.handler;
 
 import game.common.entity.res.GameResponse;
+import game.common.protocol.Cmd;
 import game.common.protocol.ServerMsg;
 import game.common.util.JsonUtil;
 import game.gateway.netty.client.GameClient;
@@ -25,15 +26,21 @@ public class GameClientHandler extends SimpleChannelInboundHandler<String> {
         GameResponse gameResponse = JsonUtil.parse(msg, GameResponse.class);
         if (gameResponse == null) return;
         log.info("GameServer Response:{}", gameResponse);
+        if (gameResponse.getCmd() == Cmd.ENTER_ROOM_RESULT && gameResponse.getCode() == 0 && gameResponse.getUserId() != null && gameResponse.getRoomId() != null) {
+            log.info("{}进房成功，绑定房间:{}", gameResponse.getUserId(), gameResponse.getRoomId());
+            SessionManager.bindRoom(gameResponse.getUserId(), gameResponse.getRoomId());
+        }
+
+        ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData(), gameResponse.getCode(), gameResponse.getMsg());
         // 单人消息
         if(gameResponse.getPushType() == 1){
             if(gameResponse.getUserId() != null){
-                ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData());
                 SessionManager.send(gameResponse.getUserId(), serverMsg);
             }
         }else if(gameResponse.getPushType() == 2){
-
+            SessionManager.broadcastRoom(gameResponse.getRoomId(), serverMsg);
         }
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package game.paijiu.netty.handler;
 
 
 import game.common.entity.Packet;
+import game.common.entity.req.GameRequest;
 
 public abstract class Handler {
     /**
@@ -14,5 +15,5 @@ public abstract class Handler {
     /**
      * 执行方法
      */
-    public void exec(Packet packet){}
+    public void exec(GameRequest gameRequest){}
 }

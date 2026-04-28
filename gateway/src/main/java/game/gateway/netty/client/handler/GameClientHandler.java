@@ -1,5 +1,6 @@
 package game.gateway.netty.client.handler;
 
+import game.common.entity.res.GameResponse;
 import game.common.protocol.ServerMsg;
 import game.common.util.JsonUtil;
 import game.gateway.netty.client.GameClient;
@@ -21,18 +22,18 @@ public class GameClientHandler extends SimpleChannelInboundHandler<String> {
     }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-
-        ServerMsg res = JsonUtil.parse(msg, ServerMsg.class);
-        if (res == null) return;
+        GameResponse gameResponse = JsonUtil.parse(msg, GameResponse.class);
+        if (gameResponse == null) return;
+        log.info("GameServer Response:{}", gameResponse);
         // 单人消息
-        if (res.getSeq() > 0 && res.getData() != null) {
-            Long userId = (Long) ((java.util.Map<?, ?>) res.getData()).get("userId");
-            if (userId != null) {
-                SessionManager.send(userId, res);
+        if(gameResponse.getPushType() == 1){
+            if(gameResponse.getUserId() != null){
+                ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData());
+                SessionManager.send(gameResponse.getUserId(), serverMsg);
             }
+        }else if(gameResponse.getPushType() == 2){
+
         }
-        // 多服务广播（你可以改为 roomId）
-        // TODO: 根据 roomId 广播
     }
 
     @Override

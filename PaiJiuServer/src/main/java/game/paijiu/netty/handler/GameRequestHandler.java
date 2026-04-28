@@ -25,7 +25,7 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
             return;
         }
         if(req.getGatewayId() != null && GatewayChannelManager.get(req.getGatewayId()) != null){
-            DispatcherHandler.getHandler(req.getCmd().value()).exec(Packet.builder().gatewayId(req.getGatewayId()).userId(req.getUserId()).data(req.getData()).build());
+            DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
         }else{
             log.error("非法的消息:{}", json);
         }

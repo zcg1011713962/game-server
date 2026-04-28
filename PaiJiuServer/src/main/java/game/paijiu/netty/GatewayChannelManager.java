@@ -1,12 +1,14 @@
 package game.paijiu.netty;
 
+import game.common.entity.res.GameResponse;
 import game.common.util.JsonUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Slf4j
 public class GatewayChannelManager {
     private static final Map<String, Channel> GATEWAY_MAP = new ConcurrentHashMap<>();
     private static final Map<ChannelId, String> CHANNEL_GATEWAY_MAP = new ConcurrentHashMap<>();
@@ -31,10 +33,11 @@ public class GatewayChannelManager {
         }
     }
 
-    public static void send(String gatewayId, Object msg) {
+    public static void send(String gatewayId, GameResponse gameResponse) {
         Channel channel = GATEWAY_MAP.get(gatewayId);
         if (channel != null && channel.isActive()) {
-            channel.writeAndFlush(JsonUtil.toJson(msg));
+            log.info("send to gatewayId:{} {}", gatewayId, gameResponse);
+            channel.writeAndFlush(JsonUtil.toJson(gameResponse));
         }
     }
 }

@@ -1,128 +1,996 @@
-2026-04-27 12:31:28.022 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 37400 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
-2026-04-27 12:31:28.023 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
-2026-04-27 12:31:28.024 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
-2026-04-27 12:31:28.371 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.654 seconds (process running for 1.043)
-2026-04-27 12:31:28.496 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
-2026-04-27 14:22:40.465 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 21544 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
-2026-04-27 14:22:40.466 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
-2026-04-27 14:22:40.467 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
-2026-04-27 14:22:40.860 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.674 seconds (process running for 2.149)
-2026-04-27 14:22:40.973 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
-2026-04-27 15:50:50.143 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 28132 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
-2026-04-27 15:50:50.144 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
-2026-04-27 15:50:50.145 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
-2026-04-27 15:50:50.621 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.84 seconds (process running for 1.405)
-2026-04-27 15:50:50.764 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
-2026-04-27 17:57:50.735 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 9688 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
-2026-04-27 17:57:50.736 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
-2026-04-27 17:57:50.736 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
-2026-04-27 17:57:51.221 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:57:51.292 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.851 seconds (process running for 1.308)
-2026-04-27 17:57:51.320 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
-2026-04-27 17:57:54.223 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:57:57.232 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:00.239 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:03.248 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:06.261 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:09.267 [nioEventLoopGroup-2-7] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:12.283 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:15.296 [nioEventLoopGroup-2-9] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:18.312 [nioEventLoopGroup-2-10] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:21.320 [nioEventLoopGroup-2-11] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:24.328 [nioEventLoopGroup-2-12] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:27.343 [nioEventLoopGroup-2-13] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:30.358 [nioEventLoopGroup-2-14] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:33.371 [nioEventLoopGroup-2-15] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:36.386 [nioEventLoopGroup-2-16] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:39.404 [nioEventLoopGroup-2-17] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:42.415 [nioEventLoopGroup-2-18] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:45.435 [nioEventLoopGroup-2-19] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:48.440 [nioEventLoopGroup-2-20] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:51.449 [nioEventLoopGroup-2-21] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:54.463 [nioEventLoopGroup-2-22] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:58:57.471 [nioEventLoopGroup-2-23] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:00.480 [nioEventLoopGroup-2-24] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:03.493 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:06.508 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:09.520 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:12.531 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:15.541 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:18.557 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:21.570 [nioEventLoopGroup-2-7] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:24.590 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:27.605 [nioEventLoopGroup-2-9] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:30.607 [nioEventLoopGroup-2-10] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:33.615 [nioEventLoopGroup-2-11] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:36.630 [nioEventLoopGroup-2-12] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:39.644 [nioEventLoopGroup-2-13] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:42.653 [nioEventLoopGroup-2-14] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:45.663 [nioEventLoopGroup-2-15] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:48.680 [nioEventLoopGroup-2-16] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:51.689 [nioEventLoopGroup-2-17] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:54.696 [nioEventLoopGroup-2-18] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 17:59:57.708 [nioEventLoopGroup-2-19] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:00.716 [nioEventLoopGroup-2-20] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:03.719 [nioEventLoopGroup-2-21] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:06.733 [nioEventLoopGroup-2-22] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:09.746 [nioEventLoopGroup-2-23] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:12.761 [nioEventLoopGroup-2-24] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:15.764 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:18.771 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:21.780 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:24.797 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:27.811 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:30.826 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:33.831 [nioEventLoopGroup-2-7] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:36.850 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:39.855 [nioEventLoopGroup-2-9] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:42.864 [nioEventLoopGroup-2-10] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:45.877 [nioEventLoopGroup-2-11] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:48.894 [nioEventLoopGroup-2-12] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:51.903 [nioEventLoopGroup-2-13] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:54.909 [nioEventLoopGroup-2-14] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:00:57.926 [nioEventLoopGroup-2-15] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:00.934 [nioEventLoopGroup-2-16] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:03.937 [nioEventLoopGroup-2-17] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:06.943 [nioEventLoopGroup-2-18] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:09.955 [nioEventLoopGroup-2-19] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:12.971 [nioEventLoopGroup-2-20] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:15.980 [nioEventLoopGroup-2-21] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:18.993 [nioEventLoopGroup-2-22] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:22.001 [nioEventLoopGroup-2-23] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:25.016 [nioEventLoopGroup-2-24] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:28.027 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:31.033 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:34.037 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:37.050 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:40.058 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:43.075 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:46.088 [nioEventLoopGroup-2-7] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:49.099 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:52.107 [nioEventLoopGroup-2-9] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:55.124 [nioEventLoopGroup-2-10] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:01:58.141 [nioEventLoopGroup-2-11] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:01.145 [nioEventLoopGroup-2-12] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:04.159 [nioEventLoopGroup-2-13] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:07.173 [nioEventLoopGroup-2-14] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:10.186 [nioEventLoopGroup-2-15] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:13.196 [nioEventLoopGroup-2-16] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:16.211 [nioEventLoopGroup-2-17] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:19.214 [nioEventLoopGroup-2-18] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:22.223 [nioEventLoopGroup-2-19] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:25.242 [nioEventLoopGroup-2-20] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:28.252 [nioEventLoopGroup-2-21] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:31.268 [nioEventLoopGroup-2-22] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:34.283 [nioEventLoopGroup-2-23] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:37.295 [nioEventLoopGroup-2-24] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:40.304 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:43.318 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:46.327 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:49.343 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - GameServer连接失败，3秒后重连...
-2026-04-27 18:02:52.361 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
-2026-04-27 18:34:07.421 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 44160 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
-2026-04-27 18:34:07.422 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
-2026-04-27 18:34:07.423 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
-2026-04-27 18:34:07.849 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
-2026-04-27 18:34:07.921 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.79 seconds (process running for 1.26)
-2026-04-27 18:34:07.947 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
-2026-04-27 18:34:34.147 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - ws auth token is empty
+2026-04-28 08:30:26.210 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 39412 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
+2026-04-28 08:30:26.215 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-04-28 08:30:26.216 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-28 08:30:26.765 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.844 seconds (process running for 1.462)
+2026-04-28 08:30:26.790 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
+2026-04-28 08:30:28.136 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3Mjg2NTM1LCJleHAiOjE3Nzc4OTEzMzV9.YxC68QiFw-EBaH27UGz5og_IE7M4PuiFe6RWT47kOi8
+2026-04-28 08:30:29.705 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:32.714 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:35.723 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:38.729 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:41.732 [nioEventLoopGroup-2-10] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:44.006 [nioEventLoopGroup-4-1] ERROR g.g.netty.server.handler.WebSocketFrameHandler - 系统异常
+java.lang.RuntimeException: GameServer未连接
+	at game.gateway.netty.client.GameClient.send(GameClient.java:84)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.forwardToGame(WebSocketFrameHandler.java:86)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:44)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:22)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.ChannelInboundHandlerAdapter.channelRead(ChannelInboundHandlerAdapter.java:93)
+	at io.netty.handler.codec.http.websocketx.Utf8FrameValidator.channelRead(Utf8FrameValidator.java:89)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.timeout.IdleStateHandler.channelRead(IdleStateHandler.java:289)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:102)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 08:30:44.747 [nioEventLoopGroup-2-12] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:47.759 [nioEventLoopGroup-2-14] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:50.766 [nioEventLoopGroup-2-16] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 08:30:50.770 [nioEventLoopGroup-2-17] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 08:32:07.775 [nioEventLoopGroup-4-1] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 08:32:11.907 [nioEventLoopGroup-4-2] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzAzOTg0LCJleHAiOjE3Nzc5MDg3ODR9.xryK6TW4pAlJlEYqCPNoEoCaU8BItUUBiE3wBJWEk9c
+2026-04-28 08:32:23.093 [nioEventLoopGroup-4-2] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 08:32:23.720 [nioEventLoopGroup-4-3] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzAzOTg0LCJleHAiOjE3Nzc5MDg3ODR9.xryK6TW4pAlJlEYqCPNoEoCaU8BItUUBiE3wBJWEk9c
+2026-04-28 08:36:23.917 [nioEventLoopGroup-4-3] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 09:54:57.351 [nioEventLoopGroup-4-8] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 09:55:37.014 [nioEventLoopGroup-4-8] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 09:55:37.625 [nioEventLoopGroup-4-9] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 10:00:35.901 [nioEventLoopGroup-4-9] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 10:17:06.068 [nioEventLoopGroup-4-10] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 10:35:35.906 [nioEventLoopGroup-4-10] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:09:26.340 [nioEventLoopGroup-2-17] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 11:09:26.346 [nioEventLoopGroup-2-17] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 11:09:29.356 [nioEventLoopGroup-2-18] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 11:09:32.374 [nioEventLoopGroup-2-20] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 11:09:32.379 [nioEventLoopGroup-2-21] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 11:10:23.784 [nioEventLoopGroup-4-12] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:11:52.424 [nioEventLoopGroup-4-12] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:11:54.530 [nioEventLoopGroup-4-13] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:13:06.926 [nioEventLoopGroup-4-13] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:13:12.577 [nioEventLoopGroup-4-14] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:13:18.332 [nioEventLoopGroup-4-14] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:13:22.419 [nioEventLoopGroup-4-15] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:13:46.104 [nioEventLoopGroup-4-15] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:13:46.660 [nioEventLoopGroup-4-16] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:18:35.906 [nioEventLoopGroup-4-16] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:20:47.485 [nioEventLoopGroup-4-17] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:21:03.020 [nioEventLoopGroup-4-17] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:21:03.022 [nioEventLoopGroup-2-21] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 11:21:05.017 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 48856 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
+2026-04-28 11:21:05.018 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-04-28 11:21:05.019 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-28 11:21:05.443 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 11:21:05.514 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.8 seconds (process running for 1.483)
+2026-04-28 11:21:05.539 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
+2026-04-28 11:21:26.185 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:21:39.408 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 11:21:39.413 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 11:21:41.910 [nioEventLoopGroup-4-1] ERROR g.g.netty.server.handler.WebSocketFrameHandler - 系统异常
+java.lang.RuntimeException: GameServer未连接
+	at game.gateway.netty.client.GameClient.send(GameClient.java:84)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.forwardToGame(WebSocketFrameHandler.java:86)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:44)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:22)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.ChannelInboundHandlerAdapter.channelRead(ChannelInboundHandlerAdapter.java:93)
+	at io.netty.handler.codec.http.websocketx.Utf8FrameValidator.channelRead(Utf8FrameValidator.java:89)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.timeout.IdleStateHandler.channelRead(IdleStateHandler.java:289)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:102)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 11:21:42.423 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 11:21:42.427 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 11:21:47.011 [nioEventLoopGroup-4-1] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:21:47.391 [nioEventLoopGroup-4-2] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:24:32.909 [nioEventLoopGroup-4-2] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 11:37:44.079 [nioEventLoopGroup-4-3] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 11:40:29.906 [nioEventLoopGroup-4-3] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 14:48:38.826 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 14:48:43.428 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 40144 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
+2026-04-28 14:48:43.430 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-04-28 14:48:43.431 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-28 14:48:43.939 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 14:48:44.037 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.913 seconds (process running for 1.642)
+2026-04-28 14:48:44.064 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
+2026-04-28 14:49:07.514 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 14:49:07.562 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:49:07.565 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:49:22.534 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:49:22.535 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:49:37.529 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:49:37.529 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:49:52.526 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:49:52.527 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:50:07.527 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:50:07.528 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:50:22.529 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:50:22.530 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:50:37.536 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:50:37.538 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:50:52.908 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:50:52.908 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:51:07.904 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:51:07.904 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:51:22.911 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:51:22.911 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:51:37.910 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:51:37.911 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:52:10.612 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:52:10.613 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:52:22.910 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:52:22.910 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:52:37.898 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:52:37.899 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:52:52.900 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:52:52.901 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:53:07.900 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:53:07.900 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:53:35.894 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:53:35.894 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:54:35.895 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer listen:ServerMsg(cmd=PONG, seq=0, code=0, msg=ok, data=null)
+2026-04-28 14:54:35.895 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.lang.NullPointerException: Cannot invoke "java.util.Map.get(Object)" because the return value of "game.common.protocol.ServerMsg.getData()" is null
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:29)
+	at game.gateway.netty.client.handler.GameClientHandler.channelRead0(GameClientHandler.java:15)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 14:55:35.910 [nioEventLoopGroup-4-1] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:11:20.439 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:11:23.787 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 16916 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
+2026-04-28 15:11:23.788 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-04-28 15:11:23.789 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-28 15:11:24.211 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:11:24.294 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.801 seconds (process running for 1.299)
+2026-04-28 15:11:24.326 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
+2026-04-28 15:11:26.893 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:11:26.901 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:11:29.905 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:11:29.906 [nioEventLoopGroup-2-3] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:11:35.431 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:11:35.482 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=2a27d0e2-582f-4d34-b4fa-7cb1b7eeb52d, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:11:50.451 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=a8900666-8089-45bc-b265-b5da343d043b, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:12:05.451 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=851e64d2-8144-412c-9bf8-07ed11d4b263, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:12:20.449 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=02e4627b-a934-4165-8e8e-180aa5cfa6c2, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:12:35.452 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=4bec27fb-683c-4101-b2dc-b4a007826d25, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:12:50.448 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=8659b2e5-3930-4ac8-81c4-b15d36501b4d, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=0)
+2026-04-28 15:13:02.721 [nioEventLoopGroup-2-3] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:13:02.721 [nioEventLoopGroup-2-3] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:13:05.448 [nioEventLoopGroup-4-1] ERROR g.g.netty.server.handler.WebSocketFrameHandler - 系统异常
+java.lang.RuntimeException: GameServer未连接
+	at game.gateway.netty.client.GameClient.send(GameClient.java:84)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.forwardToGame(WebSocketFrameHandler.java:86)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:44)
+	at game.gateway.netty.server.handler.WebSocketFrameHandler.channelRead0(WebSocketFrameHandler.java:22)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.ChannelInboundHandlerAdapter.channelRead(ChannelInboundHandlerAdapter.java:93)
+	at io.netty.handler.codec.http.websocketx.Utf8FrameValidator.channelRead(Utf8FrameValidator.java:89)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.timeout.IdleStateHandler.channelRead(IdleStateHandler.java:289)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:102)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:13:05.729 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:13:05.730 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:13:10.030 [nioEventLoopGroup-4-1] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:13:10.634 [nioEventLoopGroup-4-2] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:13:10.693 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=26d569b9-b9bc-465c-a9fa-68aab27173c7, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:13:25.665 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=b55f6737-4e2e-495f-b266-00585e85cceb, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:13:40.663 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c657771c-95e6-4c8f-996e-f7ac335b27fc, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:13:55.898 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=a45f2955-6f0c-46c8-ad05-ec782e460078, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:14:10.666 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=cfb730fe-4419-437b-8a42-fda8bae00827, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:14:25.901 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=efd1ca37-24ef-48b1-bb50-2727f7fd6b4b, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:14:40.900 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=144ecd55-a992-44c8-b9b0-11d72871e4e3, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:14:55.912 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=ed90b923-940f-444a-b50b-5ff83607d8c6, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:15:10.912 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c9a79fad-46ff-4fdd-bfd7-4976da76bcfa, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:15:35.910 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=aa4550ff-700c-4320-8ea6-605b47c907b2, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:16:10.043 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=f9f8725b-e6bb-4c59-b068-db1f0f1270db, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:16:25.911 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=a7bd5dfd-caf6-485a-9ab0-de8c714a1777, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:16:40.899 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=d77c3d0a-a165-45c1-93ad-d8a975b92b10, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:16:55.907 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=d9d219ed-38c5-4631-a748-6467c01dee81, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:17:10.902 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c6b2a2ee-ee91-4f16-b84e-6ef379c22332, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:17:35.907 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=4d8db93e-ca09-4756-bd70-58c3cb27a01c, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:18:35.909 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=920c7f09-b752-427a-b950-0d6158de9ff3, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:18:51.150 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=9909b46a-ca0a-4c42-adf5-e2679ed95133, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:18:55.908 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=ca988f8f-ccf0-49ae-940f-200d5da22380, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:19:10.896 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=ec6d6900-50d0-4fb1-9321-02b38796c83a, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:19:25.910 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=ccf46823-ecf6-423a-a89b-534280097aca, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:19:40.909 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=5cbdc72b-4ffb-4d22-a702-adec51291b20, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:20:35.898 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=07db4263-1b05-4539-9ef1-898d7a7561e1, gatewayId=gw-1, userId=123456, roomId=null, cmd=PONG, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:21:35.910 [nioEventLoopGroup-4-2] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:27:08.969 [nioEventLoopGroup-2-5] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:27:08.970 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:27:11.975 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:27:11.979 [nioEventLoopGroup-2-7] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:27:15.760 [nioEventLoopGroup-2-7] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:27:18.462 [main] INFO  game.gateway.GatewayApplication - Starting GatewayApplication using Java 17.0.13 with PID 10976 (D:\coding\game-server\gateway\target\classes started by zcg10 in D:\coding\game-server)
+2026-04-28 15:27:18.464 [main] DEBUG game.gateway.GatewayApplication - Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-04-28 15:27:18.464 [main] INFO  game.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-28 15:27:18.886 [nioEventLoopGroup-2-1] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:27:18.966 [main] INFO  game.gateway.GatewayApplication - Started GatewayApplication in 0.796 seconds (process running for 1.249)
+2026-04-28 15:27:18.995 [main] INFO  game.gateway.netty.server.NettyServer - Netty Gateway started, port = 19001
+2026-04-28 15:27:38.401 [nioEventLoopGroup-4-1] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:27:38.456 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=d8f6471c-d180-4cd9-90b7-c53cc893a108, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:29:53.196 [nioEventLoopGroup-4-1] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:29:53.756 [nioEventLoopGroup-4-2] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:29:53.780 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=1769233f-7ba8-42ca-8d0f-e5e16e1a77cd, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data=null, pushType=1)
+2026-04-28 15:35:35.910 [nioEventLoopGroup-4-2] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:39:10.626 [nioEventLoopGroup-2-1] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:39:10.640 [nioEventLoopGroup-2-1] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:39:13.653 [nioEventLoopGroup-2-2] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:39:16.656 [nioEventLoopGroup-2-4] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:39:16.661 [nioEventLoopGroup-2-5] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:39:39.425 [nioEventLoopGroup-4-3] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:39:39.487 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=5d9cdd41-01af-4ec6-9ea8-9f5172b85ffd, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"userId":123456}, pushType=1)
+2026-04-28 15:44:34.934 [nioEventLoopGroup-2-5] WARN  io.netty.channel.DefaultChannelPipeline - An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-04-28 15:44:34.936 [nioEventLoopGroup-2-5] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer断开连接,准备重连
+2026-04-28 15:44:35.902 [nioEventLoopGroup-4-3] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:44:37.940 [nioEventLoopGroup-2-6] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:44:40.943 [nioEventLoopGroup-2-8] INFO  game.gateway.netty.client.GameClient - 正在重连 GameServer...
+2026-04-28 15:44:40.946 [nioEventLoopGroup-2-9] INFO  game.gateway.netty.client.GameClient - 已连接 GameServer
+2026-04-28 15:46:28.395 [nioEventLoopGroup-4-4] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:46:28.456 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=null, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM, seq=1, code=3001, msg=房间不存在, data=null, pushType=1)
+2026-04-28 15:49:17.703 [nioEventLoopGroup-4-4] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:49:18.312 [nioEventLoopGroup-4-5] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:49:18.348 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c196463f-4c06-43e8-ae3d-512f4211d478, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:55:05.266 [nioEventLoopGroup-4-5] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:55:06.081 [nioEventLoopGroup-4-6] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:55:06.106 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=57f187e7-5a91-4037-9a7b-28786313b824, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:55:09.194 [nioEventLoopGroup-4-6] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:55:09.746 [nioEventLoopGroup-4-7] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:55:09.773 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c3c16a68-bc53-47f2-b98c-a549dce93ce6, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:56:25.769 [nioEventLoopGroup-4-7] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:56:28.046 [nioEventLoopGroup-4-8] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:56:28.066 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=f9c65eb9-ad8d-4df0-a0f2-052f3c048b79, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:56:30.745 [nioEventLoopGroup-4-8] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:56:31.324 [nioEventLoopGroup-4-9] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:56:31.347 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=acf5fd8d-8c2a-43d2-be5c-40e1bbe2c1fb, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:56:41.555 [nioEventLoopGroup-4-9] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:56:42.160 [nioEventLoopGroup-4-10] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:56:42.177 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=7b0c35c6-b3f7-45e7-9b79-eab8583241d5, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 15:58:20.508 [nioEventLoopGroup-4-10] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 15:58:21.211 [nioEventLoopGroup-4-11] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 15:58:21.248 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=31229085-3d07-4495-8479-0726b5f212b2, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:00:17.490 [nioEventLoopGroup-4-11] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:00:20.029 [nioEventLoopGroup-4-12] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:00:20.048 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=4856796c-d027-41b3-857b-213973c45cf6, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:00:23.842 [nioEventLoopGroup-4-12] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:00:24.431 [nioEventLoopGroup-4-13] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:00:24.446 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c85b27c5-6982-4659-8a01-90f3e20cf54d, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:00:26.964 [nioEventLoopGroup-4-13] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:00:27.522 [nioEventLoopGroup-4-14] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:00:27.542 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=bb65bf47-73b9-4e53-b237-a2376c35b135, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:07:35.907 [nioEventLoopGroup-4-14] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:11:31.472 [nioEventLoopGroup-4-15] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:11:31.500 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=c1001710-23a5-451c-af5e-6db953cdd2ae, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:15:35.901 [nioEventLoopGroup-4-15] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:21:06.436 [nioEventLoopGroup-4-16] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:21:06.459 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=af86ebf0-ea0f-4a6c-adce-46ad91c87be9, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:21:06.658 [nioEventLoopGroup-4-16] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:21:07.238 [nioEventLoopGroup-4-17] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:21:07.264 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=d75d86d1-6a4c-453f-a8c9-fe4549365801, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:21:10.939 [nioEventLoopGroup-4-17] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:21:11.472 [nioEventLoopGroup-4-18] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:21:11.496 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=de9d753a-c39f-4fef-8664-d74bb4004bc8, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:21:39.904 [nioEventLoopGroup-4-18] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:21:40.527 [nioEventLoopGroup-4-19] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:21:40.552 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=1208bd49-c6a0-4228-b01c-bf4fff39067d, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:21:42.482 [nioEventLoopGroup-4-19] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456
+2026-04-28 16:21:43.062 [nioEventLoopGroup-4-20] INFO  game.gateway.netty.server.handler.WsAuthHandler - get userId:123456 By Token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMzQ1NiwiaWF0IjoxNzc3MzQwOTc5LCJleHAiOjE3Nzc5NDU3Nzl9.lsY7vuSi-mp-TYYWLcfF_i2RPY0TkdBQilKqWb2EyW8
+2026-04-28 16:21:43.088 [nioEventLoopGroup-2-9] INFO  g.gateway.netty.client.handler.GameClientHandler - GameServer Response:GameResponse(traceId=2b9ea99a-a085-4014-81db-509aebad0845, gatewayId=gw-1, userId=123456, roomId=null, cmd=ENTER_ROOM_RESULT, seq=0, code=0, msg=null, data={"roomId":888888,"userId":123456}, pushType=1)
+2026-04-28 16:22:16.122 [nioEventLoopGroup-4-20] INFO  g.g.netty.server.handler.WebSocketFrameHandler - channelInactive userId:123456

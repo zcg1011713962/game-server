@@ -3,6 +3,7 @@ package game.gateway.netty.server.handler;
 import game.common.constant.ErrorCode;
 import game.common.exception.BizException;
 import game.common.protocol.ClientMsg;
+import game.common.protocol.Cmd;
 import game.common.protocol.ServerMsg;
 import game.common.util.JsonUtil;
 import game.common.entity.req.GameRequest;
@@ -40,6 +41,12 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
             UserSession userSession = SessionManager.getByChannel(ctx.channel());
             if(userSession == null){
                 throw new BizException(ErrorCode.NOT_LOGIN);
+            }
+            // 回复PING包
+            if(msg.getCmd().value().equals(Cmd.PING.value())){
+                ServerMsg serverMsg = ServerMsg.ok(Cmd.PONG.value(), msg.getSeq(), msg.getData());
+                ctx.channel().writeAndFlush(serverMsg);
+                return;
             }
             forwardToGame(userSession, msg);
         } catch (BizException e) {

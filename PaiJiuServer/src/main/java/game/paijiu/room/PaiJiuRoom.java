@@ -167,7 +167,7 @@ public class PaiJiuRoom {
         }
 
         boolean flag = seated.stream().allMatch(p -> p.getState() == PlayerState.READY);
-        if(seated.size() > 1){
+        if(seated.size() > 3){
             return flag;
         }
         return false;

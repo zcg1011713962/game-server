@@ -108,8 +108,6 @@ public class BetHandler extends DispatcherHandler {
                 }
             }
 
-            // 选庄家
-            room.selectBanker();
             GameResponse dealPush = GameResponse.push(room.getRoomId(), Cmd.DEAL_CARD, DealCardPush.builder()
                             .roomId(room.getRoomId())
                             .roomState(room.getState().code())

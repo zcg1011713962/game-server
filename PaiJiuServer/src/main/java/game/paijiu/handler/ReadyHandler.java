@@ -76,6 +76,7 @@ public class ReadyHandler extends DispatcherHandler {
         if (room.isAllReady()) {
             log.info("所有玩家准备好，开始游戏");
             room.startGame();
+            room.selectBanker();
 
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
@@ -85,7 +86,7 @@ public class ReadyHandler extends DispatcherHandler {
                     .userId(req.getUserId())
                     .roomId(room.getRoomId())
                     .code(ErrorCode.SUCCESS.code())
-                    .data(GameStartPush.builder().roomId(room.getRoomId()).roomState(room.getState().code()).players(room.getPlayerDTOList()).build())
+                    .data(GameStartPush.builder().bankerSeat(room.getBankerSeat()).roomId(room.getRoomId()).roomState(room.getState().code()).players(room.getPlayerDTOList()).build())
                     .build());
         }
     }

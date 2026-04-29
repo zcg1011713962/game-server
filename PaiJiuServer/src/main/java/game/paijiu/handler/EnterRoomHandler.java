@@ -1,5 +1,6 @@
 package game.paijiu.handler;
 
+import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.ErrorCode;
 import game.common.entity.PlayerDTO;
 import game.common.entity.req.EnterRoomReq;
@@ -41,10 +42,14 @@ public class EnterRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-
         PaiJiuRoom room = roomManager.getOrCreate(req.getRoomId());
 
-        PlayerDTO playerDTO = JsonUtil.objToBean(redisUtil.get("player:" + req.getUserId()), PlayerDTO.class);
+        JSONObject jsonObject  = redisUtil.get("player:" + req.getUserId());
+        if(jsonObject == null){
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
+            return;
+        }
+        PlayerDTO playerDTO = JsonUtil.objToBean(jsonObject, PlayerDTO.class);
 
         PaiJiuPlayer player = room.enter(playerDTO);
         req.setRoomId(room.getRoomId());
@@ -60,6 +65,7 @@ public class EnterRoomHandler extends DispatcherHandler {
                 .data(EnterRoomResp.builder()
                         .roomId(enterRoomReq.getRoomId())
                         .userId(req.getUserId())
+                        .seatId(playerDTO.getSeatId())
                         .roomState(room.getState().code())
                         .players(room.getPlayerDTOList())
                         .build()).build());

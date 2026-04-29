@@ -1,19 +1,20 @@
 package game.common.entity.res;
 
-import game.common.entity.PlayerDTO;
+import game.common.entity.SettlePlayerDTO;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
-@Builder
 @Data
-public class EnterRoomResp {
+@Builder
+public class SettlePush {
+
     private Long roomId;
-    private Long userId;
-    private Integer seatId;
 
     private Integer roomState;
 
-    private List<PlayerDTO> players;
+    private Integer bankerSeat;
+
+    private List<SettlePlayerDTO> players;
 }

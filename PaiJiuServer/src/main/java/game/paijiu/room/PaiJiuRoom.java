@@ -3,7 +3,11 @@ package game.paijiu.room;
 
 import game.common.constant.PlayerState;
 import game.common.constant.RoomState;
+import game.common.entity.CardInfo;
 import game.common.entity.PlayerDTO;
+import game.common.entity.SettlePlayerDTO;
+import game.common.entity.res.SettlePush;
+import game.paijiu.util.CardUtils;
 import lombok.Data;
 
 import java.util.*;
@@ -16,8 +20,10 @@ public class PaiJiuRoom {
     private Long roomId;
 
     private int maxSeat = 8;
-
+    // 房主
     private Long ownerUserId;
+    // 庄家
+    private Integer bankerSeat;
 
     private RoomState state = RoomState.WAIT;
 
@@ -35,6 +41,10 @@ public class PaiJiuRoom {
      * userId -> 总下注
      */
     private Map<Long, Integer> betMap = new ConcurrentHashMap<>();
+    /**
+     * userId -> 手牌
+     */
+    private Map<Long, List<CardInfo>> cardMap = new ConcurrentHashMap<>();
 
     public PaiJiuRoom(Long roomId, int maxSeat) {
         this.roomId = roomId;
@@ -196,6 +206,90 @@ public class PaiJiuRoom {
         return betMap.merge(userId, chip, Integer::sum);
     }
 
+    public synchronized boolean canDeal() {
+        long playingCount = getPlayingCount();
+        long betCount = betMap.keySet().stream()
+                .filter(players::containsKey)
+                .count();
+
+        return playingCount > 0 && betCount >= playingCount;
+    }
+
+
+    public synchronized SettlePush settle() {
+
+        if (state != RoomState.DEAL) {
+            throw new RuntimeException("当前不是结算阶段");
+        }
+
+        Long bankerUserId = seats.get(bankerSeat);
+        if (bankerUserId == null) {
+            throw new RuntimeException("庄家不存在");
+        }
+
+        List<CardInfo> bankerCards = cardMap.get(bankerUserId);
+        if (bankerCards == null) {
+            throw new RuntimeException("庄家牌不存在");
+        }
+
+        List<SettlePlayerDTO> result = new ArrayList<>();
+
+        for (PaiJiuPlayer player : players.values()) {
+
+            if (player.getState() != PlayerState.PLAYING) {
+                continue;
+            }
+
+            Long userId = player.getUserId();
+            List<CardInfo> cards = cardMap.get(userId);
+
+            int betAmount = betMap.getOrDefault(userId, 0);
+            long beforeGold = player.getGold() == null ? 0L : player.getGold();
+
+            int win;
+            int winAmount = 0;
+
+            if (Objects.equals(userId, bankerUserId)) {
+                win = 3;
+            } else {
+                int compare = CardUtils.compare(cards, bankerCards);
+
+                if (compare > 0) {
+                    win = 2;
+                    winAmount = betAmount;
+                } else if (compare == 0) {
+                    win = 1;
+                    winAmount = 0;
+                } else {
+                    win = 0;
+                    winAmount = -betAmount;
+                }
+                player.setGold(beforeGold + winAmount);
+            }
+
+            long afterGold = player.getGold() == null ? beforeGold : player.getGold();
+            result.add(SettlePlayerDTO.builder()
+                    .userId(userId)
+                    .seatId(player.getSeatId())
+                    .win(win)
+                    .betAmount(betAmount)
+                    .winAmount(winAmount)
+                    .beforeGold(beforeGold)
+                    .afterGold(afterGold)
+                    .cards(cards)
+                    .build());
+        }
+
+        state = RoomState.SETTLE;
+
+        return SettlePush.builder()
+                .roomId(roomId)
+                .roomState(state.code())
+                .bankerSeat(bankerSeat)
+                .players(result)
+                .build();
+    }
+
     public Integer getSeatId(Long userId) {
         PaiJiuPlayer player = players.get(userId);
         return player == null ? null : player.getSeatId();
@@ -216,4 +310,24 @@ public class PaiJiuRoom {
         }
         return null;
     }
+
+    public long getPlayingCount() {
+        return players.values().stream()
+                .filter(p -> p.getState() == PlayerState.PLAYING)
+                .count();
+    }
+
+    public void selectBanker() {
+        List<PaiJiuPlayer> list = players.values().stream()
+                .filter(p -> p.getSeatId() >= 0)
+                .toList();
+
+        if (list.isEmpty()) return;
+
+        int index = new Random().nextInt(list.size());
+        this.bankerSeat = list.get(index).getSeatId();
+    }
+
+
+
 }

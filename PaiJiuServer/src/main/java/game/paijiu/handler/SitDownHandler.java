@@ -1,5 +1,6 @@
 package game.paijiu.handler;
 
+import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.ErrorCode;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.SitDownReq;
@@ -12,6 +13,7 @@ import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
+import game.paijiu.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,8 @@ import java.util.UUID;
 public class SitDownHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
+    @Autowired
+    RedisUtil redisUtil;
 
     public SitDownHandler() {
         super(Cmd.SIT_DOWN.value());
@@ -45,6 +49,10 @@ public class SitDownHandler extends DispatcherHandler {
         }
 
         PaiJiuPlayer player = room.sitDown(req.getUserId(), data.getSeatId());
+
+        JSONObject jsonObject = redisUtil.get("player:" + req.getUserId());
+        jsonObject.put("seatId", data.getSeatId());
+        redisUtil.set("player:" + req.getUserId(), jsonObject);
 
         SitDownResp resp = SitDownResp.builder()
                 .roomId(room.getRoomId())

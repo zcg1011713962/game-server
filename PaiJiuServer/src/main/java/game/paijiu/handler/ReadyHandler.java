@@ -73,9 +73,10 @@ public class ReadyHandler extends DispatcherHandler {
                 .data(readyPush).build());
 
 
-        if (room.isAllReady()) {
+        if (room.getAllReady()) {
             log.info("所有玩家准备好，开始游戏");
             room.startGame();
+            // 选庄
             room.selectBanker();
 
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
@@ -89,5 +90,7 @@ public class ReadyHandler extends DispatcherHandler {
                     .data(GameStartPush.builder().bankerSeat(room.getBankerSeat()).roomId(room.getRoomId()).roomState(room.getState().code()).players(room.getPlayerDTOList()).build())
                     .build());
         }
+        // 房间快照
+        roomManager.save(room);
     }
 }

@@ -38,6 +38,8 @@ public class SettleHandler extends DispatcherHandler {
         }
         // 结算
         SettlePush settlePush = room.settle();
+        // 房间快照
+        roomManager.save(room);
 
         GatewayChannelManager.send(
                 req.getGatewayId(),

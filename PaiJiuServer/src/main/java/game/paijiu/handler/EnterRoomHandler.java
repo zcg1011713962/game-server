@@ -2,7 +2,8 @@ package game.paijiu.handler;
 
 import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.ErrorCode;
-import game.common.entity.PlayerDTO;
+import game.common.constant.RedisKeyConstants;
+import game.common.entity.User;
 import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.EnterRoomResp;
@@ -43,17 +44,18 @@ public class EnterRoomHandler extends DispatcherHandler {
             return;
         }
         PaiJiuRoom room = roomManager.getOrCreate(req.getRoomId());
-
-        JSONObject jsonObject  = redisUtil.get("player:" + req.getUserId());
+        JSONObject jsonObject = redisUtil.get(RedisKeyConstants.player(req.getUserId()));
         if(jsonObject == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;
         }
-        PlayerDTO playerDTO = JsonUtil.objToBean(jsonObject, PlayerDTO.class);
+        User user = JsonUtil.objToBean(jsonObject, User.class);
+        // 进房
+        PaiJiuPlayer paiJiuPlayer = room.enter(user);
+        // 房间快照
+        roomManager.save(room);
 
-        PaiJiuPlayer player = room.enter(playerDTO);
-        req.setRoomId(room.getRoomId());
-        // 进房成功绑定房间
+        // 进房成功
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
@@ -63,15 +65,15 @@ public class EnterRoomHandler extends DispatcherHandler {
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
                 .data(EnterRoomResp.builder()
-                        .roomId(enterRoomReq.getRoomId())
+                        .roomId(room.getRoomId())
                         .userId(req.getUserId())
-                        .seatId(playerDTO.getSeatId())
+                        .roundId(room.getRoundId())
                         .roomState(room.getState().code())
                         .players(room.getPlayerDTOList())
                         .build()).build());
 
         // 广播
-        PlayerEnterPush playerEnterPush = PlayerEnterPush.builder().player(player.toDTO()).roomId(room.getRoomId()).build();
+        PlayerEnterPush playerEnterPush = PlayerEnterPush.builder().player(paiJiuPlayer.toDTO()).roomId(room.getRoomId()).build();
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
@@ -81,7 +83,5 @@ public class EnterRoomHandler extends DispatcherHandler {
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
                 .data(playerEnterPush).build());
-
-
     }
 }

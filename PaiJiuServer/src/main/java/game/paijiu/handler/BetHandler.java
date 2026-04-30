@@ -51,8 +51,6 @@ public class BetHandler extends DispatcherHandler {
             return;
         }
 
-        req.setRoomId(room.getRoomId());
-
         int totalBet = room.bet(req.getUserId(), data.getChip());
         Integer seatId = room.getSeatId(req.getUserId());
 
@@ -107,6 +105,8 @@ public class BetHandler extends DispatcherHandler {
                     list.add(dto);
                 }
             }
+            // 房间快照
+            roomManager.save(room);
 
             GameResponse dealPush = GameResponse.push(room.getRoomId(), Cmd.DEAL_CARD, DealCardPush.builder()
                             .roomId(room.getRoomId())

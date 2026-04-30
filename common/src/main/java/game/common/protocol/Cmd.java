@@ -35,7 +35,10 @@ public enum Cmd {
     SETTLE("SETTLE"),
 
     ROOM_INFO("ROOM_INFO"),
-    ROOM_INFO_RESULT("ROOM_INFO_RESULT");
+    ROOM_INFO_RESULT("ROOM_INFO_RESULT"),
+
+    NEXT_ROUND("NEXT_ROUND"),
+    NEXT_ROUND_RESULT("NEXT_ROUND_RESULT");
 
     private final String cmd;
 

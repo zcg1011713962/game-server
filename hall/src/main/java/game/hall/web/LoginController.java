@@ -3,7 +3,8 @@ package game.hall.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import game.common.constant.ErrorCode;
-import game.common.entity.PlayerDTO;
+import game.common.constant.RedisKeyConstants;
+import game.common.entity.User;
 import game.common.protocol.Cmd;
 import game.common.protocol.ServerMsg;
 import game.common.util.JwtUtil;
@@ -12,6 +13,7 @@ import game.hall.entity.req.LoginReq;
 import game.hall.entity.res.LoginResp;
 import game.hall.service.DbUserService;
 import game.hall.util.RedisUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,20 +48,12 @@ public class LoginController {
                 || !req.getPwd().equals(dbUser.getPwd())) {
             return ServerMsg.error(Cmd.LOGIN_RESULT.value(), 0, ErrorCode.LOGIN_ERROR);
         }
-
         String token = JwtUtil.generateToken(dbUser.getId());
 
+        User user = new User();
+        BeanUtils.copyProperties(dbUser, user);
         // 登录成功后缓存玩家信息
-        PlayerDTO playerDTO = new PlayerDTO();
-        playerDTO.setUserId(dbUser.getId());
-        playerDTO.setNickname(dbUser.getNickname());
-        playerDTO.setAvatar(dbUser.getAvatar());
-        playerDTO.setGold(dbUser.getGold());
-        playerDTO.setOnline(true);
-        playerDTO.setSeatId(-1);
-        playerDTO.setState(0);
-
-        redisUtil.set("player:" + dbUser.getId(), playerDTO, 7 * 24 * 60 * 60);
+        redisUtil.set(RedisKeyConstants.player(dbUser.getId()), user, 7 * 24 * 60 * 60);
 
         return ServerMsg.ok(
                 Cmd.LOGIN_RESULT.value(),

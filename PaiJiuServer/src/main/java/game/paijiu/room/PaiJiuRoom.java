@@ -4,6 +4,7 @@ package game.paijiu.room;
 import game.common.constant.PlayerState;
 import game.common.constant.RoomState;
 import game.common.entity.CardInfo;
+import game.common.entity.User;
 import game.common.entity.PlayerDTO;
 import game.common.entity.SettlePlayerDTO;
 import game.common.entity.res.SettlePush;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Data
 public class PaiJiuRoom {
+    // 当前局号
+    private long roundId = 1;
 
     private Long roomId;
 
@@ -46,32 +49,33 @@ public class PaiJiuRoom {
      */
     private Map<Long, List<CardInfo>> cardMap = new ConcurrentHashMap<>();
 
+
+
     public PaiJiuRoom(Long roomId, int maxSeat) {
         this.roomId = roomId;
         this.maxSeat = maxSeat;
     }
 
-    public synchronized PaiJiuPlayer enter(PlayerDTO info) {
-        PaiJiuPlayer old = players.get(info.getUserId());
+    public synchronized PaiJiuPlayer enter(User info) {
+        PaiJiuPlayer old = players.get(info.getId());
         if (old != null) {
             old.setOnline(true);
             return old;
         }
 
         if (players.isEmpty()) {
-            ownerUserId = info.getUserId();
+            ownerUserId = info.getId();
         }
 
         PaiJiuPlayer player = new PaiJiuPlayer();
-        player.setUserId(info.getUserId());
-        player.setSeatId(-1);
+        player.setUserId(info.getId());
         player.setState(PlayerState.NONE);
         player.setOnline(true);
         player.setNickname(info.getNickname());
         player.setGold(info.getGold());
         player.setAvatar(info.getAvatar());
 
-        players.put(info.getUserId(), player);
+        players.put(info.getId(), player);
         return player;
     }
 
@@ -152,7 +156,7 @@ public class PaiJiuRoom {
         return player;
     }
 
-    public synchronized boolean isAllReady() {
+    public synchronized boolean getAllReady() {
         if (players.isEmpty()) {
             return false;
         }
@@ -167,7 +171,7 @@ public class PaiJiuRoom {
         }
 
         boolean flag = seated.stream().allMatch(p -> p.getState() == PlayerState.READY);
-        if(seated.size() > 3){
+        if(seated.size() > 1){
             return flag;
         }
         return false;
@@ -326,6 +330,23 @@ public class PaiJiuRoom {
 
         int index = new Random().nextInt(list.size());
         this.bankerSeat = list.get(index).getSeatId();
+    }
+
+    public synchronized long nextRound() {
+        // 1. 局号 +1
+        roundId++;
+        // 2. 清空上一局数据
+        betMap.clear();
+        cardMap.clear();
+        // 3. 玩家状态重置
+        for (PaiJiuPlayer p : players.values()) {
+            if (p.getSeatId() >= 0) {
+                p.setState(PlayerState.SIT); // 或 READY
+            }
+        }
+        // 4. 状态切回等待
+        state = RoomState.WAIT;
+        return roundId;
     }
 
 

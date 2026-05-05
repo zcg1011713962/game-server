@@ -3,19 +3,22 @@ package game.paijiu.room;
 
 import game.common.constant.PlayerState;
 import game.common.constant.RoomState;
-import game.common.entity.CardInfo;
-import game.common.entity.User;
-import game.common.entity.PlayerDTO;
-import game.common.entity.SettlePlayerDTO;
+import game.common.entity.*;
 import game.common.entity.res.SettlePush;
 import game.paijiu.util.CardUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PaiJiuRoom {
     // 当前局号
     private long roundId = 1;
@@ -26,7 +29,7 @@ public class PaiJiuRoom {
     // 房主
     private Long ownerUserId;
     // 庄家
-    private Integer bankerSeat;
+    private Integer bankerSeat = -1;
 
     private RoomState state = RoomState.WAIT;
 
@@ -49,7 +52,23 @@ public class PaiJiuRoom {
      */
     private Map<Long, List<CardInfo>> cardMap = new ConcurrentHashMap<>();
 
+    // 结算结果
+    private SettlePush settlePush;
 
+    public RoomDTO toRoomDTO(){
+        return RoomDTO.builder()
+                .roundId(roundId)
+                .roomId(roomId)
+                .maxSeat(maxSeat)
+                .ownerUserId(ownerUserId)
+                .bankerSeat(bankerSeat)
+                .state(state)
+                .players(players)
+                .seats(seats)
+                .betMap(betMap)
+                .settlePush(settlePush)
+                .cardMap(cardMap).build();
+    }
 
     public PaiJiuRoom(Long roomId, int maxSeat) {
         this.roomId = roomId;
@@ -85,8 +104,8 @@ public class PaiJiuRoom {
             throw new RuntimeException("玩家不在房间");
         }
 
-        if (player.getSeatId() != null && player.getSeatId() >= 0) {
-            throw new RuntimeException("玩家已入座");
+        if(player.getState().code() > PlayerState.SIT.code()){
+            throw new RuntimeException("用户状态不允许坐下" + player.getState());
         }
 
         Integer finalSeatId = seatId;
@@ -107,11 +126,15 @@ public class PaiJiuRoom {
             throw new RuntimeException("座位已被占用");
         }
 
+        if (this.state.code() > RoomState.READY.code()) {
+            throw new RuntimeException("房间状态不允许坐下");
+        }
+
+        seats.entrySet().removeIf(entry -> entry.getValue().equals(userId));
         player.setSeatId(finalSeatId);
         player.setState(PlayerState.SIT);
 
         seats.put(finalSeatId, userId);
-
         return player;
     }
 
@@ -286,12 +309,13 @@ public class PaiJiuRoom {
 
         state = RoomState.SETTLE;
 
-        return SettlePush.builder()
+        settlePush = SettlePush.builder()
                 .roomId(roomId)
                 .roomState(state.code())
                 .bankerSeat(bankerSeat)
                 .players(result)
                 .build();
+        return settlePush;
     }
 
     public Integer getSeatId(Long userId) {
@@ -332,20 +356,22 @@ public class PaiJiuRoom {
         this.bankerSeat = list.get(index).getSeatId();
     }
 
-    public synchronized long nextRound() {
-        // 1. 局号 +1
-        roundId++;
-        // 2. 清空上一局数据
-        betMap.clear();
-        cardMap.clear();
-        // 3. 玩家状态重置
-        for (PaiJiuPlayer p : players.values()) {
-            if (p.getSeatId() >= 0) {
-                p.setState(PlayerState.SIT); // 或 READY
+    public synchronized long nextRound(Long rId) {
+        if(rId == roundId){
+            // 1. 局号 +1
+            roundId++;
+            // 2. 清空上一局数据
+            betMap.clear();
+            cardMap.clear();
+            // 3. 玩家状态重置
+            for (PaiJiuPlayer p : players.values()) {
+                if (p.getSeatId() >= 0) {
+                    p.setState(PlayerState.SIT); // 或 READY
+                }
             }
+            // 4. 状态切回等待
+            state = RoomState.WAIT;
         }
-        // 4. 状态切回等待
-        state = RoomState.WAIT;
         return roundId;
     }
 

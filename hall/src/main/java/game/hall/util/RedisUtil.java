@@ -15,4 +15,9 @@ public class RedisUtil<T> {
     public void set(String key, Object value, long seconds) {
         redisTemplate.opsForValue().set(key, value, seconds, TimeUnit.SECONDS);
     }
+
+    public void convertAndSend(String channel, Object msg){
+        redisTemplate.convertAndSend(channel, msg);
+    }
+
 }

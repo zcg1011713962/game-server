@@ -1,7 +1,6 @@
-package game.paijiu.room;
+package game.common.entity;
 
 import game.common.constant.PlayerState;
-import game.common.entity.PlayerDTO;
 import lombok.Data;
 
 @Data

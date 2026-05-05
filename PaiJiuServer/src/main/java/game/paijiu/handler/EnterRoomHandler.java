@@ -1,6 +1,5 @@
 package game.paijiu.handler;
 
-import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.ErrorCode;
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.User;
@@ -10,10 +9,11 @@ import game.common.entity.res.EnterRoomResp;
 import game.common.entity.res.GameResponse;
 import game.common.entity.res.PlayerEnterPush;
 import game.common.protocol.Cmd;
+import game.common.util.CommonUtil;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.paijiu.room.PaiJiuPlayer;
+import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.util.RedisUtil;
@@ -44,12 +44,11 @@ public class EnterRoomHandler extends DispatcherHandler {
             return;
         }
         PaiJiuRoom room = roomManager.getOrCreate(req.getRoomId());
-        JSONObject jsonObject = redisUtil.get(RedisKeyConstants.player(req.getUserId()));
-        if(jsonObject == null){
+        User user = redisUtil.get(RedisKeyConstants.player(req.getUserId()), User.class);
+        if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;
         }
-        User user = JsonUtil.objToBean(jsonObject, User.class);
         // 进房
         PaiJiuPlayer paiJiuPlayer = room.enter(user);
         // 房间快照
@@ -70,6 +69,10 @@ public class EnterRoomHandler extends DispatcherHandler {
                         .roundId(room.getRoundId())
                         .roomState(room.getState().code())
                         .players(room.getPlayerDTOList())
+                        .seats(CommonUtil.toStringKeyMap(room.getSeats()))
+                        .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
+                        .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
+                        .settlePush(room.getSettlePush())
                         .build()).build());
 
         // 广播

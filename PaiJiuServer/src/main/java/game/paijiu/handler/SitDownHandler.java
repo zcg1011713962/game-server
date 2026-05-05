@@ -1,8 +1,6 @@
 package game.paijiu.handler;
 
-import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.ErrorCode;
-import game.common.constant.RedisKeyConstants;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.SitDownReq;
 import game.common.entity.res.GameResponse;
@@ -11,7 +9,7 @@ import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.paijiu.room.PaiJiuPlayer;
+import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.util.RedisUtil;
@@ -50,11 +48,6 @@ public class SitDownHandler extends DispatcherHandler {
         }
 
         PaiJiuPlayer player = room.sitDown(req.getUserId(), data.getSeatId());
-
-        // 更新玩家座位
-        JSONObject jsonObject = redisUtil.get(RedisKeyConstants.player(req.getUserId()));
-        jsonObject.put("seatId", data.getSeatId());
-        redisUtil.set(RedisKeyConstants.player(req.getUserId()), jsonObject);
         // 房间快照
         roomManager.save(room);
 

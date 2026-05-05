@@ -37,7 +37,9 @@ public class NextRoundHandler extends DispatcherHandler {
             log.error("ready room is null");
             return;
         }
-        long roundId = room.nextRound();
+        long roundId = room.nextRound(nextRoundReq.getRoundId());
+        roomManager.save(room);
+
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
@@ -46,7 +48,12 @@ public class NextRoundHandler extends DispatcherHandler {
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(NextRoundPush.builder().roundId(roundId).roomId(room.getRoomId()).build())
+                .data(NextRoundPush.builder()
+                        .roundId(roundId)
+                        .roomState(room.getState().code())
+                        .roomId(room.getRoomId())
+                        .players(room.getPlayerDTOList())
+                        .build())
                 .build());
     }
 }

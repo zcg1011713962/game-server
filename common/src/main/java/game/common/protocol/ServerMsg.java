@@ -35,6 +35,12 @@ public class ServerMsg {
     private Object data;
 
 
+    public static ServerMsg ok() {
+        ServerMsg res = new ServerMsg();
+        res.setCode(0);
+        return res;
+    }
+
     public static ServerMsg ok(String cmd, long seq, Object data, int code, String msg) {
         ServerMsg res = info(cmd, seq, code, msg);
         res.setData(data);

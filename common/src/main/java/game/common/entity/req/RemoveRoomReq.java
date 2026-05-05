@@ -3,7 +3,7 @@ package game.common.entity.req;
 import lombok.Data;
 
 @Data
-public class NextRoundReq {
+public class RemoveRoomReq {
     private Long roomId;
-    private Long roundId;
+
 }

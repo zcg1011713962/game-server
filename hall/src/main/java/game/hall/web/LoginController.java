@@ -1,6 +1,7 @@
 package game.hall.web;
 
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import game.common.constant.ErrorCode;
 import game.common.constant.RedisKeyConstants;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("/api")
@@ -66,4 +69,40 @@ public class LoginController {
                 "ok"
         );
     }
+
+
+    @PostMapping("/login/guest")
+    public ServerMsg guestLogin() {
+        String userName;
+        String nickName;
+        long id;
+        while (true) {
+            id = ThreadLocalRandom.current().nextLong(50000, 100000);
+            userName = "guest" + id;
+            nickName = "player" + id;
+            QueryWrapper<DbUser> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("username", userName);
+
+            DbUser dbUser1 = dbUserService.getBaseMapper().selectOne(queryWrapper);
+            dbUserService.getOne(queryWrapper);
+            if(dbUser1 == null || dbUser1.getId() == null){
+                break;
+            }
+        }
+        long avatarId = ThreadLocalRandom.current().nextLong(0, 5);
+        DbUser dbUser = new DbUser();
+        dbUser.setUsername(userName);
+        dbUser.setPwd("12345678");
+        dbUser.setAvatar(String.valueOf(avatarId));
+        dbUser.setGold(0L);
+        dbUser.setNickname(nickName);
+        dbUser.setId(id);
+        int ret = dbUserService.getBaseMapper().insert(dbUser);
+        if (ret > 0) {
+            return ServerMsg.ok(dbUser);
+        }
+        return ServerMsg.error(null, 0, ErrorCode.CREATE_USER_ERROR);
+    }
+
+
 }

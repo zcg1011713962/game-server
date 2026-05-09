@@ -41,6 +41,13 @@ public class ServerMsg {
         return res;
     }
 
+    public static ServerMsg ok(Object data) {
+        ServerMsg res = new ServerMsg();
+        res.setCode(0);
+        res.setData(data);
+        return res;
+    }
+
     public static ServerMsg ok(String cmd, long seq, Object data, int code, String msg) {
         ServerMsg res = info(cmd, seq, code, msg);
         res.setData(data);
@@ -55,6 +62,7 @@ public class ServerMsg {
         res.setMsg(msg);
         return res;
     }
+
 
     public static ServerMsg error(String cmd, long seq, ErrorCode errorCode) {
         ServerMsg res = new ServerMsg();

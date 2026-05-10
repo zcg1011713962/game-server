@@ -6,5 +6,8 @@ import lombok.Data;
 @Builder
 public class LoginResp {
     private Long userId;
+    private String nickname;
+    private String avatar;
+    private Long gold;
     private String token;
 }

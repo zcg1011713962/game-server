@@ -4,6 +4,7 @@ package game.paijiu.room;
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.RoomDTO;
 import game.paijiu.util.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 public class PaiJiuRoomManager {
     @Autowired
@@ -46,6 +48,7 @@ public class PaiJiuRoomManager {
     }
 
     public void remove(Long roomId) {
+        log.info("解散房间:{}", roomId);
         roomMap.remove(roomId);
         redisUtil.del(RedisKeyConstants.roomSnapshot(roomId));
     }

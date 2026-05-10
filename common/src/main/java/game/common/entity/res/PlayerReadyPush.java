@@ -12,4 +12,6 @@ public class PlayerReadyPush {
     private Integer seatId;
 
     private Integer state;
+
+    private Integer roomStatus;
 }

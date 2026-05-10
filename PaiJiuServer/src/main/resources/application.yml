@@ -11,4 +11,4 @@ spring:
           max-idle: 8
           min-idle: 2
           max-wait: 3000ms
-      timeout: 3000ms
+      timeout: 10s

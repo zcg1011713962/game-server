@@ -179,6 +179,31 @@ public class PaiJiuRoom {
         return player;
     }
 
+    public synchronized PaiJiuPlayer cancelReady(Long userId) {
+        PaiJiuPlayer player = players.get(userId);
+        if (player == null) {
+            throw new RuntimeException("玩家不在房间");
+        }
+
+        if (player.getSeatId() == null || player.getSeatId() < 0) {
+            throw new RuntimeException("玩家未入座");
+        }
+
+        if (state != RoomState.READY) {
+            throw new RuntimeException("当前状态不能取消准备");
+        }
+
+        player.setState(PlayerState.SIT);
+        boolean readyFlag = false;
+        for(PaiJiuPlayer p : players.values()){
+            if(p.getState() == PlayerState.READY){
+                readyFlag = true;
+            }
+        }
+        state = readyFlag ? RoomState.READY : RoomState.WAIT;
+        return player;
+    }
+
     public synchronized boolean getAllReady() {
         if (players.isEmpty()) {
             return false;

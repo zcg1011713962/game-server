@@ -2,6 +2,7 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PlayerState;
+import game.common.constant.PushType;
 import game.common.constant.RoomState;
 import game.common.entity.PlayerCardDTO;
 import game.common.entity.req.BetReq;
@@ -67,7 +68,7 @@ public class BetHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(1)
+                .pushType(PushType.SINGLE.code())
                 .cmd(Cmd.BET_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
@@ -78,7 +79,7 @@ public class BetHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(2)
+                .pushType(PushType.ROOM.code())
                 .cmd(Cmd.PLAYER_BET)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())

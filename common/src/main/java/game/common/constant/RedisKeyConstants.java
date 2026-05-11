@@ -47,6 +47,9 @@ public class RedisKeyConstants {
     public static final String TOKEN = "token:%s";
 
 
+    public static final String PAIJIU_ROOM_ID_INCR = "paijiu:room:id:incr";
+
+
 
 
     // ================= 工具方法 =================

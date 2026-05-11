@@ -1,6 +1,7 @@
 package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.PushType;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.NextRoundReq;
 import game.common.entity.res.GameResponse;
@@ -43,7 +44,7 @@ public class NextRoundHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(2)
+                .pushType(PushType.ROOM.code())
                 .cmd(Cmd.NEXT_ROUND_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())

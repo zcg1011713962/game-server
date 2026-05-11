@@ -9,6 +9,9 @@ public enum Cmd {
     PING("PING"),
     PONG("PONG"),
 
+    CREATE_ROOM("CREATE_ROOM"),
+    FREE_MATCH("FREE_MATCH"),
+
     ENTER_ROOM("ENTER_ROOM"),
     ENTER_ROOM_RESULT("ENTER_ROOM_RESULT"),
 

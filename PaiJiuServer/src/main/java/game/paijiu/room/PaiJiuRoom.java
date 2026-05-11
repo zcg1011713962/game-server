@@ -3,6 +3,7 @@ package game.paijiu.room;
 
 import game.common.constant.PlayerState;
 import game.common.constant.RoomState;
+import game.common.constant.RoomType;
 import game.common.entity.*;
 import game.common.entity.res.SettlePush;
 import game.paijiu.util.CardUtils;
@@ -30,8 +31,11 @@ public class PaiJiuRoom {
     private Long ownerUserId;
     // 庄家
     private Integer bankerSeat = -1;
-
+    // 房间状态
     private RoomState state = RoomState.WAIT;
+    // 房间类型
+    private RoomType roomType = RoomType.FREE_MATCH;
+
 
     /**
      * userId -> 玩家
@@ -70,9 +74,10 @@ public class PaiJiuRoom {
                 .cardMap(cardMap).build();
     }
 
-    public PaiJiuRoom(Long roomId, int maxSeat) {
+    public PaiJiuRoom(Long roomId, RoomType roomType, int maxSeat) {
         this.roomId = roomId;
         this.maxSeat = maxSeat;
+        this.roomType = roomType;
     }
 
     public synchronized PaiJiuPlayer enter(User info) {
@@ -138,10 +143,10 @@ public class PaiJiuRoom {
         return player;
     }
 
-    public synchronized void leave(Long userId) {
+    public synchronized PaiJiuPlayer leave(Long userId) {
         PaiJiuPlayer player = players.remove(userId);
         if (player == null) {
-            return;
+            return null;
         }
 
         if (player.getSeatId() != null && player.getSeatId() >= 0) {
@@ -157,6 +162,7 @@ public class PaiJiuRoom {
         if (players.isEmpty()) {
             state = RoomState.WAIT;
         }
+        return player;
     }
 
     public synchronized PaiJiuPlayer ready(Long userId) {
@@ -355,7 +361,7 @@ public class PaiJiuRoom {
                 .collect(Collectors.toList());
     }
 
-    private Integer findEmptySeat() {
+    public Integer findEmptySeat() {
         for (int i = 0; i < maxSeat; i++) {
             if (!seats.containsKey(i)) {
                 return i;

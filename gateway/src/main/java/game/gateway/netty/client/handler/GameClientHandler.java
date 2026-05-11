@@ -1,5 +1,6 @@
 package game.gateway.netty.client.handler;
 
+import game.common.constant.PushType;
 import game.common.entity.res.GameResponse;
 import game.common.protocol.Cmd;
 import game.common.protocol.ServerMsg;
@@ -33,11 +34,11 @@ public class GameClientHandler extends SimpleChannelInboundHandler<String> {
 
         ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData(), gameResponse.getCode(), gameResponse.getMsg());
         // 单人消息
-        if(gameResponse.getPushType() == 1){
+        if(gameResponse.getPushType() == PushType.SINGLE.code()){
             if(gameResponse.getUserId() != null){
                 SessionManager.send(gameResponse.getUserId(), serverMsg);
             }
-        }else if(gameResponse.getPushType() == 2){
+        }else if(gameResponse.getPushType() == PushType.ROOM.code()){
             SessionManager.broadcastRoom(gameResponse.getRoomId(), serverMsg);
         }
 

@@ -1,6 +1,7 @@
 package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.PushType;
 import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.EnterRoomResp;
@@ -43,7 +44,7 @@ public class RoomInfoHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(1)
+                .pushType(PushType.SINGLE.code())
                 .cmd(Cmd.ROOM_INFO_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())

@@ -3,18 +3,20 @@ package game.paijiu.handler;
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
 import game.common.constant.RedisKeyConstants;
+import game.common.entity.PaiJiuPlayer;
 import game.common.entity.User;
 import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
+import game.common.entity.req.LeaveRoomReq;
 import game.common.entity.res.EnterRoomResp;
 import game.common.entity.res.GameResponse;
 import game.common.entity.res.PlayerEnterPush;
+import game.common.entity.res.PlayerLeavePush;
 import game.common.protocol.Cmd;
 import game.common.util.CommonUtil;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.util.RedisUtil;
@@ -26,21 +28,22 @@ import java.util.UUID;
 
 @Slf4j
 @Component
-public class EnterRoomHandler extends DispatcherHandler {
-    public EnterRoomHandler() {
-        super(Cmd.ENTER_ROOM.value());
-    }
+public class LeaveRoomHandler extends DispatcherHandler {
 
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
     RedisUtil redisUtil;
 
+    public LeaveRoomHandler() {
+        super(Cmd.LEAVE_ROOM.value());
+    }
+
     @Override
     public void exec(GameRequest req) {
-        log.info("EnterRoomHandler:{}", req);
-        EnterRoomReq enterRoomReq = JsonUtil.parse(req.getData().toString(), EnterRoomReq.class);
-        if(enterRoomReq.getRoomId() == null){
+        log.info("LeaveRoomHandler:{}", req);
+        LeaveRoomReq leaveRoomReq = JsonUtil.parse(req.getData().toString(), LeaveRoomReq.class);
+        if(leaveRoomReq.getRoomId() == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
@@ -54,44 +57,41 @@ public class EnterRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;
         }
-        // 进房
-        PaiJiuPlayer paiJiuPlayer = room.enter(user);
-        // 记录玩家进房
-        roomManager.saveUserRoom(user.getId(), room.getRoomId());
+        // 离开房间
+        PaiJiuPlayer paiJiuPlayer = room.leave(user.getId());
+
+        roomManager.removeUserRoom(user.getId(), room.getRoomId());
         // 房间快照
         roomManager.save(room);
 
-        // 进房成功
+        if(paiJiuPlayer == null){
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_IN_ROOM));
+            return;
+        }
+
+        // 离开房间
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
                 .pushType(PushType.SINGLE.code())
-                .cmd(Cmd.ENTER_ROOM_RESULT)
+                .cmd(Cmd.LEAVE_ROOM)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(EnterRoomResp.builder()
-                        .roomId(room.getRoomId())
-                        .userId(req.getUserId())
-                        .roundId(room.getRoundId())
-                        .roomState(room.getState().code())
-                        .players(room.getPlayerDTOList())
-                        .seats(CommonUtil.toStringKeyMap(room.getSeats()))
-                        .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
-                        .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
-                        .settlePush(room.getSettlePush())
-                        .build()).build());
+                .data(null).build());
 
         // 广播
-        PlayerEnterPush playerEnterPush = PlayerEnterPush.builder().player(paiJiuPlayer.toDTO()).roomId(room.getRoomId()).build();
+        PlayerLeavePush playerLeavePush = PlayerLeavePush.builder().player(paiJiuPlayer.toDTO()).roomId(room.getRoomId()).build();
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
                 .pushType(PushType.ROOM.code())
-                .cmd(Cmd.PLAYER_ENTER)
+                .cmd(Cmd.PLAYER_LEAVE)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(playerEnterPush).build());
+                .data(playerLeavePush).build());
     }
+
+
 }

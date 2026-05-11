@@ -1,6 +1,7 @@
 package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.PushType;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.SitDownReq;
 import game.common.entity.res.GameResponse;
@@ -62,7 +63,7 @@ public class SitDownHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(req.getTraceId())
                 .gatewayId(req.getGatewayId())
-                .pushType(1)
+                .pushType(PushType.SINGLE.code())
                 .cmd(Cmd.SIT_DOWN_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
@@ -76,7 +77,7 @@ public class SitDownHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(2)
+                .pushType(PushType.ROOM.code())
                 .cmd(Cmd.PLAYER_SIT_DOWN)
                 .roomId(room.getRoomId())
                 .seq(0)

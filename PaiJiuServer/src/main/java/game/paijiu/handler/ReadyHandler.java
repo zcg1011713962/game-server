@@ -1,6 +1,7 @@
 package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.PushType;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.ReadyReq;
 import game.common.entity.res.GameResponse;
@@ -54,7 +55,7 @@ public class ReadyHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(1)
+                .pushType(PushType.SINGLE.code())
                 .cmd(Cmd.READY_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
@@ -65,7 +66,7 @@ public class ReadyHandler extends DispatcherHandler {
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
-                .pushType(2)
+                .pushType(PushType.ROOM.code())
                 .cmd(Cmd.PLAYER_READY)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
@@ -82,7 +83,7 @@ public class ReadyHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
                     .gatewayId(req.getGatewayId())
-                    .pushType(2)
+                    .pushType(PushType.ROOM.code())
                     .cmd(Cmd.GAME_START)
                     .userId(req.getUserId())
                     .roomId(room.getRoomId())

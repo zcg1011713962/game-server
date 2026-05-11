@@ -1,6 +1,7 @@
 package game.common.entity.res;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.PushType;
 import game.common.entity.req.GameRequest;
 import game.common.protocol.Cmd;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class GameResponse {
         res.setCode(0);
         res.setMsg("ok");
         res.setData(data);
-        res.setPushType(1);
+        res.setPushType(PushType.SINGLE.code());
         return res;
     }
 
@@ -54,7 +55,7 @@ public class GameResponse {
         res.setSeq(req.getSeq());
         res.setCode(error.code());
         res.setMsg(error.msg());
-        res.setPushType(1);
+        res.setPushType(PushType.SINGLE.code());
         return res;
     }
 
@@ -68,7 +69,7 @@ public class GameResponse {
         res.setSeq(req.getSeq());
         res.setCode(code);
         res.setMsg(msg);
-        res.setPushType(1);
+        res.setPushType(PushType.SINGLE.code());
         return res;
     }
 
@@ -80,7 +81,7 @@ public class GameResponse {
         res.setCode(0);
         res.setMsg("ok");
         res.setData(data);
-        res.setPushType(2);
+        res.setPushType(PushType.ROOM.code());
         return res;
     }
 

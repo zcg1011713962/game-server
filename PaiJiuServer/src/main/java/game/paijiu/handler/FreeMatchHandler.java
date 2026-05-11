@@ -3,6 +3,8 @@ package game.paijiu.handler;
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
 import game.common.constant.RedisKeyConstants;
+import game.common.constant.RoomType;
+import game.common.entity.PaiJiuPlayer;
 import game.common.entity.User;
 import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
@@ -14,7 +16,6 @@ import game.common.util.CommonUtil;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.util.RedisUtil;
@@ -24,29 +25,28 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+/**
+ * 自由匹配
+ */
 @Slf4j
 @Component
-public class EnterRoomHandler extends DispatcherHandler {
-    public EnterRoomHandler() {
-        super(Cmd.ENTER_ROOM.value());
-    }
-
+public class FreeMatchHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
     RedisUtil redisUtil;
 
+
+    public FreeMatchHandler() {
+        super(Cmd.FREE_MATCH.value());
+    }
+
     @Override
     public void exec(GameRequest req) {
-        log.info("EnterRoomHandler:{}", req);
-        EnterRoomReq enterRoomReq = JsonUtil.parse(req.getData().toString(), EnterRoomReq.class);
-        if(enterRoomReq.getRoomId() == null){
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
-            return;
-        }
-        PaiJiuRoom room = roomManager.getRoom(req.getRoomId());
-        if(room == null){
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
+        log.info("FreeMatchHandler:{}", req);
+        Long oldRoomId= roomManager.getRoomIdByUserId(req.getUserId());
+        if (oldRoomId != null) {
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.EXIST_IN_OTHER_ROOM));
             return;
         }
         User user = redisUtil.get(RedisKeyConstants.player(req.getUserId()), User.class);
@@ -54,13 +54,14 @@ public class EnterRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;
         }
-        // 进房
-        PaiJiuPlayer paiJiuPlayer = room.enter(user);
-        // 记录玩家进房
-        roomManager.saveUserRoom(user.getId(), room.getRoomId());
-        // 房间快照
-        roomManager.save(room);
+        PaiJiuRoom room = roomManager.findWaitRoom();
 
+        if(room == null){ // 没有空房间
+            room = roomManager.createRoom(RoomType.FREE_MATCH);
+        }
+        PaiJiuPlayer paiJiuPlayer = room.enter(user);
+        roomManager.saveUserRoom(user.getId(), room.getRoomId());
+        roomManager.save(room);
         // 进房成功
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
@@ -94,4 +95,6 @@ public class EnterRoomHandler extends DispatcherHandler {
                 .code(ErrorCode.SUCCESS.code())
                 .data(playerEnterPush).build());
     }
+
+
 }

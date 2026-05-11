@@ -19,6 +19,7 @@ public enum ErrorCode {
     ROOM_NOT_EXIST(3001, "房间不存在"),
     ROOM_FULL(3002, "房间已满"),
     NOT_IN_ROOM(3003, "不在房间中"),
+    EXIST_IN_OTHER_ROOM(3004, "已经在其他房间"),
 
     // ===================== 座位 =====================
     SEAT_OCCUPIED(4001, "座位已被占用"),

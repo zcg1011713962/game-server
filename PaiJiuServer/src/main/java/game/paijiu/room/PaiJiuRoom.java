@@ -36,6 +36,8 @@ public class PaiJiuRoom {
     // 房间类型
     private RoomType roomType = RoomType.FREE_MATCH;
 
+    private long baseScore = 0;
+
 
     /**
      * userId -> 玩家
@@ -66,6 +68,7 @@ public class PaiJiuRoom {
                 .maxSeat(maxSeat)
                 .ownerUserId(ownerUserId)
                 .bankerSeat(bankerSeat)
+                .baseScore(baseScore)
                 .state(state)
                 .players(players)
                 .seats(seats)
@@ -74,10 +77,11 @@ public class PaiJiuRoom {
                 .cardMap(cardMap).build();
     }
 
-    public PaiJiuRoom(Long roomId, RoomType roomType, int maxSeat) {
+    public PaiJiuRoom(Long roomId, RoomType roomType, int maxSeat, long baseScore) {
         this.roomId = roomId;
         this.maxSeat = maxSeat;
         this.roomType = roomType;
+        this.baseScore = baseScore;
     }
 
     public synchronized PaiJiuPlayer enter(User info) {
@@ -374,6 +378,10 @@ public class PaiJiuRoom {
         return players.values().stream()
                 .filter(p -> p.getState() == PlayerState.PLAYING)
                 .count();
+    }
+
+    public long getPlayerCount() {
+        return players.size();
     }
 
     public void selectBanker() {

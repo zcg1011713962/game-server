@@ -26,6 +26,8 @@ public class RoomDTO {
     // 庄家
     private Integer bankerSeat;
 
+    private long baseScore = 0;
+
     private RoomState state = RoomState.WAIT;
 
     /**

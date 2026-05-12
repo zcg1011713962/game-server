@@ -33,7 +33,7 @@ public class PaiJiuRoomManager {
      */
     public PaiJiuRoom createRoom(RoomType roomType) {
         Long roomId = nextRoomId();
-        PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8);
+        PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10);
         roomMap.put(roomId, room);
         save(room);
         log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);
@@ -107,14 +107,40 @@ public class PaiJiuRoomManager {
     }
 
     public PaiJiuRoom get(Long roomId) {
-        return roomMap.get(roomId);
+        if (roomId == null) {
+            return null;
+        }
+
+        PaiJiuRoom room = roomMap.get(roomId);
+        if (room != null) {
+            return room;
+        }
+
+        synchronized (this) {
+            room = roomMap.get(roomId);
+            if (room != null) {
+                return room;
+            }
+
+            RoomDTO roomDTO = redisUtil.get(RedisKeyConstants.roomSnapshot(roomId));
+            if (roomDTO == null) {
+                return null;
+            }
+
+            PaiJiuRoom paiJiuRoom = new PaiJiuRoom();
+            BeanUtils.copyProperties(roomDTO, paiJiuRoom);
+
+            roomMap.put(roomId, paiJiuRoom);
+
+            return paiJiuRoom;
+        }
     }
 
     public Long getRoomIdByUserId(Long userId) {
         if (playerRoomMap.containsKey(userId)) {
             return playerRoomMap.get(userId);
         }
-        Long roomId = redisUtil.get(RedisKeyConstants.userRoom(userId));
+        Long roomId = redisUtil.get(RedisKeyConstants.userRoom(userId), Long.class);
         if (roomId != null) {
             playerRoomMap.put(userId, roomId);
             return roomId;

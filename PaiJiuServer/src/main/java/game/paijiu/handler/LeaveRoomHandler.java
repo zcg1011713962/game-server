@@ -59,10 +59,14 @@ public class LeaveRoomHandler extends DispatcherHandler {
         }
         // 离开房间
         PaiJiuPlayer paiJiuPlayer = room.leave(user.getId());
-
         roomManager.removeUserRoom(user.getId(), room.getRoomId());
         // 房间快照
         roomManager.save(room);
+        if(room.getPlayerCount() == 0){
+            // 解散房间
+            roomManager.remove(room.getRoomId());
+        }
+
 
         if(paiJiuPlayer == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_IN_ROOM));
@@ -74,7 +78,7 @@ public class LeaveRoomHandler extends DispatcherHandler {
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
                 .pushType(PushType.SINGLE.code())
-                .cmd(Cmd.LEAVE_ROOM)
+                .cmd(Cmd.LEAVE_ROOM_RESULT)
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())

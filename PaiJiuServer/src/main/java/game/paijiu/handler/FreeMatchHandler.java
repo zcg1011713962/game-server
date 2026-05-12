@@ -44,20 +44,21 @@ public class FreeMatchHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         log.info("FreeMatchHandler:{}", req);
-        Long oldRoomId= roomManager.getRoomIdByUserId(req.getUserId());
-        if (oldRoomId != null) {
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.EXIST_IN_OTHER_ROOM));
-            return;
-        }
         User user = redisUtil.get(RedisKeyConstants.player(req.getUserId()), User.class);
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;
         }
-        PaiJiuRoom room = roomManager.findWaitRoom();
+        Long oldRoomId= roomManager.getRoomIdByUserId(req.getUserId());
 
-        if(room == null){ // 没有空房间
-            room = roomManager.createRoom(RoomType.FREE_MATCH);
+        PaiJiuRoom room = null;
+        if (oldRoomId != null) {
+            room = roomManager.get(oldRoomId);
+        }else{
+            room = roomManager.findWaitRoom();
+            if(room == null){ // 没有空房间
+                room = roomManager.createRoom(RoomType.FREE_MATCH);
+            }
         }
         PaiJiuPlayer paiJiuPlayer = room.enter(user);
         roomManager.saveUserRoom(user.getId(), room.getRoomId());
@@ -77,6 +78,7 @@ public class FreeMatchHandler extends DispatcherHandler {
                         .roundId(room.getRoundId())
                         .roomState(room.getState().code())
                         .players(room.getPlayerDTOList())
+                        .baseScore(room.getBaseScore())
                         .seats(CommonUtil.toStringKeyMap(room.getSeats()))
                         .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
                         .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))

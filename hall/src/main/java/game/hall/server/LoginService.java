@@ -3,6 +3,7 @@ package game.hall.server;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.User;
+import game.common.service.UserService;
 import game.common.util.JwtUtil;
 import game.hall.domain.DbUser;
 import game.hall.entity.req.GuestLoginReq;
@@ -22,6 +23,8 @@ public class LoginService {
     private DbUserService dbUserService;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    UserService userService;
 
     public LoginResp loginByGuest(GuestLoginReq guestLoginReq){
         if(StringUtils.isEmpty(guestLoginReq.getToken())){
@@ -69,7 +72,7 @@ public class LoginService {
             }
         }else {
             Long userId = redisUtil.get(RedisKeyConstants.token(guestLoginReq.getToken()), Long.class);
-            User user = redisUtil.get(RedisKeyConstants.player(userId));
+            User user = userService.getUserById(userId);
             return LoginResp.builder()
                     .userId(user.getId())
                     .nickname(user.getNickname())

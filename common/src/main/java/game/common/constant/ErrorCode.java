@@ -11,6 +11,7 @@ public enum ErrorCode {
     LOGIN_ERROR(1004, "登录账户密码错误"),
     CREATE_USER_ERROR(1006, "创建用户失败"),
 
+
     // ===================== 登录 =====================
     TOKEN_INVALID(2001, "token无效"),
     NOT_LOGIN(2002, "未登录"),

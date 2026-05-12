@@ -2,7 +2,6 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
-import game.common.constant.RedisKeyConstants;
 import game.common.constant.RoomType;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.User;
@@ -16,7 +15,7 @@ import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
-import game.paijiu.util.RedisUtil;
+import game.paijiu.service.GameUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ public class CreateRoomHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
-    RedisUtil redisUtil;
+    GameUserService userService;
 
     public CreateRoomHandler() {
         super(Cmd.CREATE_ROOM.value());
@@ -43,7 +42,7 @@ public class CreateRoomHandler extends DispatcherHandler {
             return;
         }
         PaiJiuRoom room = roomManager.createRoom(RoomType.LOCK_MATCH);
-        User user = redisUtil.get(RedisKeyConstants.player(req.getUserId()), User.class);
+        User user = userService.getUserById(req.getUserId());
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;

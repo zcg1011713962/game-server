@@ -2,24 +2,19 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
-import game.common.constant.RedisKeyConstants;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.User;
-import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.LeaveRoomReq;
-import game.common.entity.res.EnterRoomResp;
 import game.common.entity.res.GameResponse;
-import game.common.entity.res.PlayerEnterPush;
 import game.common.entity.res.PlayerLeavePush;
 import game.common.protocol.Cmd;
-import game.common.util.CommonUtil;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
-import game.paijiu.util.RedisUtil;
+import game.paijiu.service.GameUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +28,7 @@ public class LeaveRoomHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
-    RedisUtil redisUtil;
+    GameUserService userService;
 
     public LeaveRoomHandler() {
         super(Cmd.LEAVE_ROOM.value());
@@ -52,7 +47,7 @@ public class LeaveRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-        User user = redisUtil.get(RedisKeyConstants.player(req.getUserId()), User.class);
+        User user = userService.getUserById(req.getUserId());
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));
             return;

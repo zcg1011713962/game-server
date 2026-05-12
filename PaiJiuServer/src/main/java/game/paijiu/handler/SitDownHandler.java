@@ -2,6 +2,8 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
+import game.common.entity.PaiJiuPlayer;
+import game.common.entity.User;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.SitDownReq;
 import game.common.entity.res.GameResponse;
@@ -10,10 +12,9 @@ import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
-import game.paijiu.util.RedisUtil;
+import game.paijiu.service.GameUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class SitDownHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
-    RedisUtil redisUtil;
+    GameUserService userService;
 
     public SitDownHandler() {
         super(Cmd.SIT_DOWN.value());
@@ -35,12 +36,15 @@ public class SitDownHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         SitDownReq data = JsonUtil.objToBean(req.getData(), SitDownReq.class);
-        
+
         if (data == null || data.getRoomId() == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.PARAM_ERROR));
             return;
         }
-
+        User user = userService.getUserById(req.getUserId());
+        if(user.getGold() <= 0) {
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.GOLD_NOT_ENOUGH));
+        }
         PaiJiuRoom room = roomManager.get(data.getRoomId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(),

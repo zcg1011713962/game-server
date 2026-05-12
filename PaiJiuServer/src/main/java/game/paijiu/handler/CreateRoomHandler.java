@@ -73,6 +73,7 @@ public class CreateRoomHandler extends DispatcherHandler {
                         .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
                         .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
                         .settlePush(room.getSettlePush())
+                        .bankerSeat(room.getBankerSeat())
                         .build()).build());
 
         // 房间广播

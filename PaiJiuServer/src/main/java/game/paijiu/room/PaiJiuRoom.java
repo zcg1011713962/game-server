@@ -4,6 +4,7 @@ package game.paijiu.room;
 import game.common.constant.PlayerState;
 import game.common.constant.RoomState;
 import game.common.constant.RoomType;
+import game.common.constant.WinState;
 import game.common.entity.*;
 import game.common.entity.res.SettlePush;
 import game.paijiu.util.CardUtils;
@@ -274,7 +275,7 @@ public class PaiJiuRoom {
                 .filter(players::containsKey)
                 .count();
 
-        return playingCount > 0 && betCount >= playingCount;
+        return playingCount > 0 && betCount >= playingCount - 1;
     }
 
 
@@ -295,13 +296,16 @@ public class PaiJiuRoom {
         }
 
         List<SettlePlayerDTO> result = new ArrayList<>();
-
+        int playerWin = 0;
+        int bankerBet = 0;
+        // 结算闲家
         for (PaiJiuPlayer player : players.values()) {
-
+            if(player.getUserId().equals(bankerUserId)){
+                continue;
+            }
             if (player.getState() != PlayerState.PLAYING) {
                 continue;
             }
-
             Long userId = player.getUserId();
             List<CardInfo> cards = cardMap.get(userId);
 
@@ -310,25 +314,20 @@ public class PaiJiuRoom {
 
             int win;
             int winAmount = 0;
-
-            if (Objects.equals(userId, bankerUserId)) {
-                win = 3;
+            int compare = CardUtils.compare(cards, bankerCards);
+            if (compare > 0) {
+                win = WinState.WIN.code();
+                winAmount = betAmount;
+            } else if (compare == 0) {
+                win = WinState.DRAW.code();
             } else {
-                int compare = CardUtils.compare(cards, bankerCards);
-
-                if (compare > 0) {
-                    win = 2;
-                    winAmount = betAmount;
-                } else if (compare == 0) {
-                    win = 1;
-                    winAmount = 0;
-                } else {
-                    win = 0;
-                    winAmount = -betAmount;
-                }
-                player.setGold(beforeGold + winAmount);
+                win = WinState.LOSE.code();
+                winAmount = -betAmount;
             }
+            playerWin += winAmount;
+            bankerBet += betAmount;
 
+            player.setGold(beforeGold + winAmount);
             long afterGold = player.getGold() == null ? beforeGold : player.getGold();
             result.add(SettlePlayerDTO.builder()
                     .userId(userId)
@@ -341,9 +340,24 @@ public class PaiJiuRoom {
                     .cards(cards)
                     .build());
         }
+        // 结算庄家
+        int bankerWin = -playerWin;
+        PaiJiuPlayer bankerPlayer = players.get(bankerUserId);
+        long beforeGold = bankerPlayer.getGold();
+        bankerPlayer.setGold(beforeGold + bankerWin);
+        long afterGold = bankerPlayer.getGold() == null ? beforeGold : bankerPlayer.getGold();
+        result.add(SettlePlayerDTO.builder()
+                .userId(bankerPlayer.getUserId())
+                .seatId(bankerPlayer.getSeatId())
+                .win(bankerWin)
+                .betAmount(bankerBet)
+                .winAmount(bankerWin)
+                .beforeGold(beforeGold)
+                .afterGold(afterGold)
+                .cards(bankerCards)
+                .build());
 
         state = RoomState.SETTLE;
-
         settlePush = SettlePush.builder()
                 .roomId(roomId)
                 .roomState(state.code())
@@ -402,6 +416,8 @@ public class PaiJiuRoom {
             // 2. 清空上一局数据
             betMap.clear();
             cardMap.clear();
+            settlePush = null;
+            bankerSeat = -1;
             // 3. 玩家状态重置
             for (PaiJiuPlayer p : players.values()) {
                 if (p.getSeatId() >= 0) {

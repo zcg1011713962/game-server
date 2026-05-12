@@ -31,7 +31,7 @@ public class LoginController {
 
     @PostMapping("/login/guest")
     public ServerMsg guestLogin(@RequestBody GuestLoginReq guestLoginReq) {
-        return ServerMsg.ok(loginService.loginByGuest(guestLoginReq));
+        return loginService.loginByGuest(guestLoginReq);
     }
 
 

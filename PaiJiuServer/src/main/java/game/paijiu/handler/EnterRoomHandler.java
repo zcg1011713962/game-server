@@ -79,6 +79,7 @@ public class EnterRoomHandler extends DispatcherHandler {
                         .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
                         .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
                         .settlePush(room.getSettlePush())
+                        .bankerSeat(room.getBankerSeat())
                         .build()).build());
 
         // 广播

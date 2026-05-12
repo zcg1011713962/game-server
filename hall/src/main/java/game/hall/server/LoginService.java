@@ -1,8 +1,10 @@
 package game.hall.server;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import game.common.constant.ErrorCode;
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.User;
+import game.common.protocol.ServerMsg;
 import game.common.service.UserService;
 import game.common.util.JwtUtil;
 import game.hall.domain.DbUser;
@@ -26,7 +28,7 @@ public class LoginService {
     @Autowired
     UserService userService;
 
-    public LoginResp loginByGuest(GuestLoginReq guestLoginReq){
+    public ServerMsg loginByGuest(GuestLoginReq guestLoginReq){
         if(StringUtils.isEmpty(guestLoginReq.getToken())){
             String userName;
             String nickName;
@@ -50,7 +52,7 @@ public class LoginService {
             dbUser.setUsername(userName);
             dbUser.setPwd("12345678");
             dbUser.setAvatar(String.valueOf(avatarId));
-            dbUser.setGold(0L);
+            dbUser.setGold(1000L);
             dbUser.setNickname(nickName);
             dbUser.setId(id);
             int ret = dbUserService.getBaseMapper().insert(dbUser);
@@ -62,26 +64,30 @@ public class LoginService {
                 redisUtil.set(RedisKeyConstants.token(token), dbUser.getId(), 7 * 24 * 60 * 60);
                 // 登录成功后缓存玩家信息
                 redisUtil.set(RedisKeyConstants.player(dbUser.getId()), user, 7 * 24 * 60 * 60);
-                return LoginResp.builder()
+                return ServerMsg.ok(LoginResp.builder()
                         .userId(id)
                         .nickname(nickName)
                         .avatar(String.valueOf(avatarId))
-                        .gold(0L)
+                        .gold(dbUser.getGold())
                         .token(token)
-                        .build();
+                        .build());
+            }else {
+                return ServerMsg.error(null, 0, ErrorCode.CREATE_USER_ERROR);
             }
         }else {
             Long userId = redisUtil.get(RedisKeyConstants.token(guestLoginReq.getToken()), Long.class);
+            if(userId == null){
+                return ServerMsg.error(null, 0, ErrorCode.TOKEN_INVALID);
+            }
             User user = userService.getUserById(userId);
-            return LoginResp.builder()
+            return ServerMsg.ok(LoginResp.builder()
                     .userId(user.getId())
                     .nickname(user.getNickname())
                     .avatar(String.valueOf(user.getAvatar()))
-                    .gold(0L)
+                    .gold(user.getGold())
                     .token(guestLoginReq.getToken())
-                    .build();
+                    .build());
         }
-        return LoginResp.builder().build();
     }
 
 }

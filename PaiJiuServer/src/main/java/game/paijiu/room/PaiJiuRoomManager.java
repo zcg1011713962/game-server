@@ -89,8 +89,9 @@ public class PaiJiuRoomManager {
 
     public void remove(Long roomId) {
         log.info("解散房间:{}", roomId);
-        roomMap.remove(roomId);
+        PaiJiuRoom room = roomMap.remove(roomId);
         redisUtil.del(RedisKeyConstants.roomSnapshot(roomId));
+        room.getPlayers().keySet().forEach(userId -> removeUserRoom(userId, roomId));
     }
 
     /**

@@ -21,4 +21,5 @@ public class EnterRoomResp {
     private Map<String, Integer> betMap;
     private Map<String, List<CardInfo>> cardMap;
     private SettlePush settlePush;
+    private Integer bankerSeat;
 }

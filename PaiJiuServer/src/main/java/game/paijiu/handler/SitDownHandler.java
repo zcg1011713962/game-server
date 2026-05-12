@@ -44,6 +44,7 @@ public class SitDownHandler extends DispatcherHandler {
         User user = userService.getUserById(req.getUserId());
         if(user.getGold() <= 0) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.GOLD_NOT_ENOUGH));
+            return;
         }
         PaiJiuRoom room = roomManager.get(data.getRoomId());
         if (room == null) {

@@ -9,5 +9,5 @@ public class BetReq {
 
     private Integer betArea;
 
-    private Integer chip;
+    private Long chip;
 }

@@ -62,7 +62,7 @@ public class BetHandler extends DispatcherHandler {
             return;
         }
 
-        int totalBet = room.bet(req.getUserId(), data.getChip());
+        long totalBet = room.bet(req.getUserId(), data.getChip());
         Integer seatId = room.getSeatId(req.getUserId());
 
         PlayerBetPush pushData = new PlayerBetPush();

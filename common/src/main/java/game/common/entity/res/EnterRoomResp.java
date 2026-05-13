@@ -18,7 +18,7 @@ public class EnterRoomResp {
     private Long baseScore;
     private List<PlayerDTO> players;
     private Map<String, Long> seats;
-    private Map<String, Integer> betMap;
+    private Map<String, Long> betMap;
     private Map<String, List<CardInfo>> cardMap;
     private SettlePush settlePush;
     private Integer bankerSeat;

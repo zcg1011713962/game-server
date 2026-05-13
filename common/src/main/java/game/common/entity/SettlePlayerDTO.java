@@ -18,17 +18,21 @@ public class SettlePlayerDTO {
     private Integer seatId;
 
     /**
-     * 0=输 1=平 2=赢 3=庄家
+     * 0=输 1=平 2=赢
      */
     private Integer win;
 
-    private Integer betAmount;
+    private Long betAmount;
 
-    private Integer winAmount;
+    private Long winAmount;
 
     private Long beforeGold;
 
     private Long afterGold;
 
     private List<CardInfo> cards;
+
+    private String cardTypeName;
+
+    private String settleDesc;
 }

@@ -89,7 +89,7 @@ public class CardUtils {
         int point = calcPoint(cards);
 
         return switch (type) {
-            case ZHI_ZUN, DOUBLE_TIAN, DOUBLE_DI, DOUBLE_REN, DOUBLE_E, TIAN_WANG, DI_WANG -> new HandResult(
+            case ZHI_ZUN, DOUBLE_TIAN, DOUBLE_DI, DOUBLE_REN, DOUBLE_E -> new HandResult(
                     cards,
                     type.getRank(),
                     point,
@@ -149,38 +149,28 @@ public class CardUtils {
         String n2 = c2.getName();
 
         // 至尊
-        if (isNames(cards, "天", "九")) {
+        if (isNames(cards, "丁三", "大头六")) {
             return PaiJiuType.ZHI_ZUN;
         }
 
         // 双天
-        if (n1.equals("天") && n2.equals("天")) {
+        if (n1.equals("天牌") && n2.equals("天牌")) {
             return PaiJiuType.DOUBLE_TIAN;
         }
 
         // 双地
-        if (n1.equals("地") && n2.equals("地")) {
+        if (n1.equals("地牌") && n2.equals("地牌")) {
             return PaiJiuType.DOUBLE_DI;
         }
 
         // 双人
-        if (n1.equals("人") && n2.equals("人")) {
+        if (n1.equals("人牌") && n2.equals("人牌")) {
             return PaiJiuType.DOUBLE_REN;
         }
 
         // 双鹅
-        if (n1.equals("鹅") && n2.equals("鹅")) {
+        if (n1.equals("和牌") && n2.equals("和牌")) {
             return PaiJiuType.DOUBLE_E;
-        }
-
-        // 天王
-        if (isNames(cards, "天", "王")) {
-            return PaiJiuType.TIAN_WANG;
-        }
-
-        // 地王
-        if (isNames(cards, "地", "王")) {
-            return PaiJiuType.DI_WANG;
         }
 
         // 普通对子

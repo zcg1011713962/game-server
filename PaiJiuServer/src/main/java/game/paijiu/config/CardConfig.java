@@ -38,8 +38,8 @@ public class CardConfig {
         add(28, "七点", 7);
         add(29, "五点", 5);
         add(30, "五点", 5);
-        add(31, "六点", 6);
-        add(32, "三点", 3);
+        add(31, "大头六", 6);
+        add(32, "丁三", 3);
     }
 
     private static void add(int id, String name, int value) {

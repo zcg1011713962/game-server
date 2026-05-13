@@ -13,7 +13,7 @@ public class PlayerBetPush {
 
     private Integer betArea;
 
-    private Integer chip;
+    private Long chip;
 
-    private Integer totalBet;
+    private Long totalBet;
 }

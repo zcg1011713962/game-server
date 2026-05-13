@@ -43,7 +43,7 @@ public class RoomDTO {
     /**
      * userId -> 总下注
      */
-    private Map<Long, Integer> betMap = new ConcurrentHashMap<>();
+    private Map<Long, Long> betMap = new ConcurrentHashMap<>();
     /**
      * userId -> 手牌
      */

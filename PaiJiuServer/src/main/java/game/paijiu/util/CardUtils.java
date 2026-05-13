@@ -1,5 +1,6 @@
 package game.paijiu.util;
 
+import game.common.constant.PaiJiuType;
 import game.paijiu.config.CardConfig;
 import game.common.entity.CardInfo;
 import game.common.entity.HandResult;
@@ -80,25 +81,33 @@ public class CardUtils {
      * 计算牌型
      */
     public static HandResult calcHand(List<CardInfo> cards) {
+
         checkHand(cards);
+
+        PaiJiuType type = getPaiJiuType(cards);
 
         int point = calcPoint(cards);
 
-        if (isPair(cards)) {
-            return new HandResult(
+        return switch (type) {
+            case ZHI_ZUN, DOUBLE_TIAN, DOUBLE_DI, DOUBLE_REN, DOUBLE_E, TIAN_WANG, DI_WANG -> new HandResult(
                     cards,
-                    100 + getMaxCardRank(cards),
+                    type.getRank(),
+                    point,
+                    type.getName()
+            );
+            case PAIR -> new HandResult(
+                    cards,
+                    700 + getMaxCardRank(cards),
                     point,
                     "对子-" + cards.get(0).getName()
             );
-        }
-
-        return new HandResult(
-                cards,
-                point,
-                point,
-                point + "点"
-        );
+            default -> new HandResult(
+                    cards,
+                    point,
+                    point,
+                    point + "点"
+            );
+        };
     }
 
     /**
@@ -126,5 +135,69 @@ public class CardUtils {
         if (cards == null || cards.size() != 2) {
             throw new RuntimeException("一手牌必须是2张");
         }
+    }
+
+
+    public static PaiJiuType getPaiJiuType(List<CardInfo> cards) {
+
+        checkHand(cards);
+
+        CardInfo c1 = cards.get(0);
+        CardInfo c2 = cards.get(1);
+
+        String n1 = c1.getName();
+        String n2 = c2.getName();
+
+        // 至尊
+        if (isNames(cards, "天", "九")) {
+            return PaiJiuType.ZHI_ZUN;
+        }
+
+        // 双天
+        if (n1.equals("天") && n2.equals("天")) {
+            return PaiJiuType.DOUBLE_TIAN;
+        }
+
+        // 双地
+        if (n1.equals("地") && n2.equals("地")) {
+            return PaiJiuType.DOUBLE_DI;
+        }
+
+        // 双人
+        if (n1.equals("人") && n2.equals("人")) {
+            return PaiJiuType.DOUBLE_REN;
+        }
+
+        // 双鹅
+        if (n1.equals("鹅") && n2.equals("鹅")) {
+            return PaiJiuType.DOUBLE_E;
+        }
+
+        // 天王
+        if (isNames(cards, "天", "王")) {
+            return PaiJiuType.TIAN_WANG;
+        }
+
+        // 地王
+        if (isNames(cards, "地", "王")) {
+            return PaiJiuType.DI_WANG;
+        }
+
+        // 普通对子
+        if (isPair(cards)) {
+            return PaiJiuType.PAIR;
+        }
+
+        return PaiJiuType.POINT;
+    }
+
+
+    private static boolean isNames(List<CardInfo> cards, String a, String b) {
+
+        String n1 = cards.get(0).getName();
+        String n2 = cards.get(1).getName();
+
+        return (n1.equals(a) && n2.equals(b))
+                || (n1.equals(b) && n2.equals(a));
     }
 }

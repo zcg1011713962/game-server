@@ -10,5 +10,5 @@ spring:
           max-active: 16     # 最大连接
           max-idle: 8
           min-idle: 2
-          max-wait: 3000ms
+          max-wait: -1ms
       timeout: 10s

@@ -21,6 +21,7 @@ import game.paijiu.netty.handler.DispatcherHandler;
 import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
+import game.paijiu.service.GamePushService;
 import game.paijiu.service.GameUserService;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
@@ -39,6 +40,8 @@ public class BetHandler extends DispatcherHandler {
     PaiJiuRoomManager roomManager;
     @Autowired
     GameUserService userService;
+    @Autowired
+    GamePushService gamePushService;
 
     public BetHandler() {
         super(Cmd.BET.value());
@@ -63,15 +66,18 @@ public class BetHandler extends DispatcherHandler {
         }
 
         long totalBet = room.bet(req.getUserId(), data.getChip());
+
         Integer seatId = room.getSeatId(req.getUserId());
 
-        PlayerBetPush pushData = new PlayerBetPush();
-        pushData.setRoomId(room.getRoomId());
-        pushData.setUserId(req.getUserId());
-        pushData.setSeatId(seatId);
-        pushData.setBetArea(data.getBetArea());
-        pushData.setChip(data.getChip());
-        pushData.setTotalBet(totalBet);
+        PlayerBetPush pushData = PlayerBetPush.builder()
+                .roomId(room.getRoomId())
+                .userId(req.getUserId())
+                .seatId(seatId)
+                .betArea(data.getBetArea())
+                .chip(data.getChip())
+                .totalBet(totalBet)
+                .players(room.getPlayerDTOList())
+                .build();
 
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
@@ -82,6 +88,8 @@ public class BetHandler extends DispatcherHandler {
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
                 .data(pushData).build());
+        // 金币变化
+        //gamePushService.pushGoldChange(req, room.getRoomId(), req.getUserId(), , -data.getChip(), "bet");
 
         // 广播
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()

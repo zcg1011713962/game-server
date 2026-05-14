@@ -1,8 +1,13 @@
 package game.common.entity.res;
 
+import game.common.entity.PlayerDTO;
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
+@Builder
 public class PlayerBetPush {
 
     private Long roomId;
@@ -16,4 +21,7 @@ public class PlayerBetPush {
     private Long chip;
 
     private Long totalBet;
+
+    private List<PlayerDTO> players;
+
 }

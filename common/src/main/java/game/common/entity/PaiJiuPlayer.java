@@ -15,6 +15,18 @@ public class PaiJiuPlayer {
 
     private boolean online = true;
 
+    public synchronized void addGold(long amount){
+        this.gold += amount;
+    }
+
+    public synchronized void reduceGold(long amount){
+        this.gold -= amount;
+    }
+
+    public synchronized void setGold(Long gold) {
+        this.gold = gold;
+    }
+
     public PlayerDTO toDTO() {
         PlayerDTO dto = new PlayerDTO();
         dto.setUserId(userId);

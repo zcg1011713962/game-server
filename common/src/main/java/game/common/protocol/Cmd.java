@@ -39,6 +39,9 @@ public enum Cmd {
     BET_RESULT("BET_RESULT"),
     PLAYER_BET("PLAYER_BET"),
 
+    GOLD_CHANGE("GOLD_CHANGE"),
+    PLAYER_INFO_CHANGE("PLAYER_INFO_CHANGE"),
+
     DEAL_CARD("DEAL_CARD"),
     SETTLE("SETTLE"),
 
@@ -47,6 +50,7 @@ public enum Cmd {
 
     NEXT_ROUND("NEXT_ROUND"),
     NEXT_ROUND_RESULT("NEXT_ROUND_RESULT");
+
 
     private final String cmd;
 

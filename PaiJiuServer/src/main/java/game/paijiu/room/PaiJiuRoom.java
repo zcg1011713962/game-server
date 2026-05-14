@@ -263,6 +263,10 @@ public class PaiJiuRoom {
             throw new RuntimeException("下注金额错误");
         }
 
+        if(player.getGold() < chip){
+            throw new RuntimeException("金币不足");
+        }
+        player.reduceGold(chip);
         return betMap.merge(userId, chip, Long::sum);
     }
 
@@ -315,18 +319,20 @@ public class PaiJiuRoom {
             if (compare > 0) {
                 win = WinState.WIN.code();
                 winAmount = betAmount;
+                // 翻倍
+                player.addGold(betAmount * 2);
             } else if (compare == 0) {
                 win = WinState.DRAW.code();
+                // 归还本金
+                player.addGold(betAmount);
             } else {
                 win = WinState.LOSE.code();
                 winAmount = -betAmount;
             }
             playerWin += winAmount;
             bankerBet += betAmount;
-
             HandResult handResult = CardUtils.calcHand(cards);
 
-            player.setGold(beforeGold + winAmount);
             long afterGold = player.getGold() == null ? beforeGold : player.getGold();
             result.add(SettlePlayerDTO.builder()
                     .userId(userId)

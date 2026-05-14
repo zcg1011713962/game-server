@@ -170,8 +170,10 @@ public class PaiJiuRoomManager {
         for(PaiJiuRoom room : roomMap.values()){
             Integer emptySeatId = room.findEmptySeat();
             // 等待状态且有空座位
-            if(emptySeatId != null && room.getState() == RoomState.WAIT){
-                return room;
+            if(emptySeatId != null){
+                if(room.getState() == RoomState.WAIT || room.getState() == RoomState.READY){
+                    return room;
+                }
             }
         }
         return null;

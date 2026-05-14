@@ -26,7 +26,12 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
             return;
         }
         if(req.getGatewayId() != null && GatewayChannelManager.get(req.getGatewayId()) != null){
-            DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
+            try {
+                DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
+            }catch (Exception e){
+                log.error("DispatcherHandler:{}", e.getMessage());
+                ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.SYSTEM_ERROR)));
+            }
         }else{
             ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.UNKNOWN_CMD)));
             log.error("非法的消息:{}", json);

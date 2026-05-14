@@ -1,23 +1,32 @@
 package game.paijiu.room;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.*;
 import game.common.entity.*;
+import game.common.entity.req.BetReq;
+import game.common.entity.req.GameRequest;
 import game.common.entity.res.SettlePush;
+import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
+import game.paijiu.util.DelayTaskUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Slf4j
 public class PaiJiuRoom {
     // 当前局号
     private long roundId = 1;
@@ -35,6 +44,10 @@ public class PaiJiuRoom {
     private RoomType roomType = RoomType.FREE_MATCH;
 
     private long baseScore = 0;
+
+    private long betEndTime = 0;
+    private int betSeconds = 15;
+    private ScheduledFuture<?> scheduledFuture;
 
 
     /**
@@ -463,6 +476,35 @@ public class PaiJiuRoom {
         return roundId;
     }
 
+    public synchronized void startBetCountdown(String gatewayId, Handler betHandler) {
+        this.betEndTime = System.currentTimeMillis() + betSeconds * 1000L;
+        if(scheduledFuture == null){
+            scheduledFuture = DelayTaskUtil.getInstance().schedule(() -> {
+                try {
+
+                    for (PaiJiuPlayer player : this.players.values()) {
+                        if (bankerSeat.intValue() != player.getSeatId().intValue() && !this.betMap.containsKey(player.getUserId())) {
+                            BetReq betReq = new BetReq();
+                            betReq.setRoomId(roomId);
+                            betReq.setChip(baseScore);
+                            GameRequest gameRequest = GameRequest.builder()
+                                    .roomId(roomId)
+                                    .userId(player.getUserId())
+                                    .gatewayId(gatewayId)
+                                    .data(JSONObject.from(betReq))
+                                    .build();
+                            betHandler.exec(gameRequest);
+                            log.info("玩家自动下注 roomId={}, userId={}, bet={}", this.roomId, player.getUserId(), baseScore);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("投注倒计时结束处理异常 roomId={}", this.roomId, e);
+                }finally {
+                    scheduledFuture = null;
+                }
+            }, betSeconds, TimeUnit.SECONDS);
+        }
+    }
 
 
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class GameRequest {
     private String traceId;
     private String gatewayId;

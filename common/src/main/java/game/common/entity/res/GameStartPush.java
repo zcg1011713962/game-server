@@ -17,4 +17,6 @@ public class GameStartPush {
     private Integer bankerSeat;
 
     private List<PlayerDTO> players;
+
+    private Integer betSeconds;
 }

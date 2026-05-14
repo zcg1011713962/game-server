@@ -2,6 +2,7 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
+import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.ReadyReq;
 import game.common.entity.res.GameResponse;
@@ -11,7 +12,6 @@ import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import lombok.extern.slf4j.Slf4j;
@@ -88,8 +88,16 @@ public class ReadyHandler extends DispatcherHandler {
                     .userId(req.getUserId())
                     .roomId(room.getRoomId())
                     .code(ErrorCode.SUCCESS.code())
-                    .data(GameStartPush.builder().bankerSeat(room.getBankerSeat()).roomId(room.getRoomId()).roomState(room.getState().code()).players(room.getPlayerDTOList()).build())
+                    .data(GameStartPush.builder()
+                            .bankerSeat(room.getBankerSeat())
+                            .roomId(room.getRoomId())
+                            .roomState(room.getState().code())
+                            .players(room.getPlayerDTOList())
+                            .betSeconds(room.getBetSeconds())
+                            .build())
                     .build());
+            // 自动投注倒计时
+            room.startBetCountdown(req.getGatewayId(), DispatcherHandler.getHandler(Cmd.BET.value()));
         }
         // 房间快照
         roomManager.save(room);

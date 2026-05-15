@@ -191,12 +191,18 @@ public class PaiJiuRoom {
         }
 
         if (state != RoomState.WAIT && state != RoomState.READY) {
-            throw new RuntimeException("当前状态不能准备");
+            try{
+                TimeUnit.MILLISECONDS.sleep(500);
+            }catch (InterruptedException e){
+                log.error("ready:{}", e.getMessage());
+            }
+            if(state != RoomState.WAIT && state != RoomState.READY){
+                throw new RuntimeException("当前状态不能准备");
+            }
         }
 
         player.setState(PlayerState.READY);
         state = RoomState.READY;
-
         return player;
     }
 

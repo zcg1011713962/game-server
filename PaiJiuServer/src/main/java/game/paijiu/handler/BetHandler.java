@@ -4,6 +4,8 @@ import game.common.constant.ErrorCode;
 import game.common.constant.PlayerState;
 import game.common.constant.PushType;
 import game.common.constant.RoomState;
+import game.common.entity.CardInfo;
+import game.common.entity.PaiJiuPlayer;
 import game.common.entity.PlayerCardDTO;
 import game.common.entity.User;
 import game.common.entity.req.BetReq;
@@ -13,12 +15,9 @@ import game.common.entity.res.GameResponse;
 import game.common.entity.res.PlayerBetPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
-import game.common.service.UserService;
 import game.common.util.JsonUtil;
-import game.common.entity.CardInfo;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
-import game.common.entity.PaiJiuPlayer;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.service.GamePushService;
@@ -139,7 +138,7 @@ public class BetHandler extends DispatcherHandler {
 
             DelayTaskUtil.getInstance().scheduleSeconds(()->{
                 // 结算
-                SettlePush settlePush  = room.settle();
+                SettlePush settlePush = room.settle();
 
                 roomManager.save(room);
                 GatewayChannelManager.send(

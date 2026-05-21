@@ -6,7 +6,9 @@ import game.common.entity.req.EnterRoomReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.EnterRoomResp;
 import game.common.entity.res.GameResponse;
+import game.common.entity.res.PlayerEnterPush;
 import game.common.protocol.Cmd;
+import game.common.util.CommonUtil;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
@@ -30,31 +32,34 @@ public class RoomInfoHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        EnterRoomReq data = JsonUtil.objToBean(req.getData(), EnterRoomReq.class);
-        if(req.getRoomId() == null){
-            req.setRoomId(data.getRoomId());
-        }
-        PaiJiuRoom room = roomManager.get(req.getRoomId());
-        if(room == null){
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
-            log.error("room info is null");
-            return;
-        }
-
-        GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
-                .traceId(UUID.randomUUID().toString())
-                .gatewayId(req.getGatewayId())
-                .pushType(PushType.SINGLE.code())
-                .cmd(Cmd.ROOM_INFO_RESULT)
-                .userId(req.getUserId())
-                .roomId(room.getRoomId())
-                .code(ErrorCode.SUCCESS.code())
-                .data(EnterRoomResp.builder()
-                        .roomId(room.getRoomId())
+        Long oldRoomId = roomManager.getRoomIdByUserId(req.getUserId());
+        log.info("RoomInfoHandler user:{} roomId:{}", req.getUserId(), oldRoomId);
+        if (oldRoomId != null) {
+            PaiJiuRoom room = roomManager.get(oldRoomId);
+            if(room != null){
+                // 进房成功
+                GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
+                        .traceId(UUID.randomUUID().toString())
+                        .gatewayId(req.getGatewayId())
+                        .pushType(PushType.SINGLE.code())
+                        .cmd(Cmd.ENTER_ROOM_RESULT)
                         .userId(req.getUserId())
-                        .roomState(room.getState().code())
-                        .players(room.getPlayerDTOList())
-                        .build()).build());
-
+                        .roomId(room.getRoomId())
+                        .code(ErrorCode.SUCCESS.code())
+                        .data(EnterRoomResp.builder()
+                                .roomId(room.getRoomId())
+                                .userId(req.getUserId())
+                                .roundId(room.getRoundId())
+                                .roomState(room.getState().code())
+                                .players(room.getPlayerDTOList())
+                                .seats(CommonUtil.toStringKeyMap(room.getSeats()))
+                                .betMap(CommonUtil.toStringKeyMap(room.getBetMap()))
+                                .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
+                                .settlePush(room.getSettlePush())
+                                .bankerSeat(room.getBankerSeat())
+                                .baseScore(room.getBaseScore())
+                                .build()).build());
+            }
+        }
     }
 }

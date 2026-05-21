@@ -159,7 +159,7 @@ public class PaiJiuRoomManager {
 
         // 第一次初始化房间号
         if (roomId != null && roomId == 1L) {
-            redisUtil.set(key, 1000L);
+            redisUtil.set(key, 100000L);
             roomId = redisUtil.incr(key, 1);
         }
 

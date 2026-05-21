@@ -36,7 +36,7 @@ public class CreateRoomHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        Long oldRoomId= roomManager.getRoomIdByUserId(req.getUserId());
+        Long oldRoomId = roomManager.getRoomIdByUserId(req.getUserId());
         if (oldRoomId != null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.EXIST_IN_OTHER_ROOM));
             return;
@@ -74,6 +74,7 @@ public class CreateRoomHandler extends DispatcherHandler {
                         .cardMap(CommonUtil.toStringKeyMap(room.getCardMap()))
                         .settlePush(room.getSettlePush())
                         .bankerSeat(room.getBankerSeat())
+                        .baseScore(room.getBaseScore())
                         .build()).build());
 
         // 房间广播

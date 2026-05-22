@@ -28,6 +28,8 @@ public class LoginService {
     @Autowired
     UserService userService;
 
+    private static final long expireTime = 7 * 24 * 60 * 60;
+
     public ServerMsg loginByGuest(GuestLoginReq guestLoginReq){
         if(StringUtils.isEmpty(guestLoginReq.getToken())){
             String userName;
@@ -48,27 +50,22 @@ public class LoginService {
             }
             long avatarId = ThreadLocalRandom.current().nextLong(0, 5);
 
-            DbUser dbUser = new DbUser();
-            dbUser.setUsername(userName);
-            dbUser.setPwd("12345678");
-            dbUser.setAvatar(String.valueOf(avatarId));
-            dbUser.setGold(1000L);
-            dbUser.setNickname(nickName);
-            dbUser.setId(id);
+            DbUser dbUser = getDbUser(id, userName, "12345678", String.valueOf(avatarId), 1000L, 0L, nickName);
             int ret = dbUserService.getBaseMapper().insert(dbUser);
             if (ret > 0) {
                 String token = JwtUtil.generateToken(dbUser.getId());
                 User user = new User();
                 BeanUtils.copyProperties(dbUser, user);
 
-                redisUtil.set(RedisKeyConstants.token(token), dbUser.getId(), 7 * 24 * 60 * 60);
+                redisUtil.set(RedisKeyConstants.token(token), dbUser.getId(), expireTime);
                 // 登录成功后缓存玩家信息
-                redisUtil.set(RedisKeyConstants.player(dbUser.getId()), user, 7 * 24 * 60 * 60);
+                redisUtil.set(RedisKeyConstants.player(dbUser.getId()), user, expireTime);
                 return ServerMsg.ok(LoginResp.builder()
                         .userId(id)
                         .nickname(nickName)
                         .avatar(String.valueOf(avatarId))
                         .gold(dbUser.getGold())
+                        .diamond(dbUser.getDiamond())
                         .token(token)
                         .build());
             }else {
@@ -80,14 +77,32 @@ public class LoginService {
                 return ServerMsg.error(null, 0, ErrorCode.TOKEN_INVALID);
             }
             User user = userService.getUserById(userId);
+            DbUser dbUser = dbUserService.getById(userId);
+            if(dbUser != null){
+                BeanUtils.copyProperties(dbUser, user);
+                redisUtil.set(RedisKeyConstants.token(guestLoginReq.getToken()), dbUser.getId(), expireTime);
+            }
             return ServerMsg.ok(LoginResp.builder()
                     .userId(user.getId())
                     .nickname(user.getNickname())
                     .avatar(String.valueOf(user.getAvatar()))
                     .gold(user.getGold())
+                    .diamond(user.getDiamond())
                     .token(guestLoginReq.getToken())
                     .build());
         }
+    }
+
+    public DbUser getDbUser(Long id, String userName, String pwd, String avatar, Long gold, Long diamond, String nickName) {
+        DbUser dbUser = new DbUser();
+        dbUser.setUsername(userName);
+        dbUser.setPwd(pwd);
+        dbUser.setAvatar(avatar);
+        dbUser.setGold(gold);
+        dbUser.setNickname(nickName);
+        dbUser.setDiamond(diamond);
+        dbUser.setId(id);
+        return dbUser;
     }
 
 }

@@ -16,6 +16,8 @@ public class User {
 
     private Long gold;
 
+    private Long diamond;
+
     private String nickname;
 
 }

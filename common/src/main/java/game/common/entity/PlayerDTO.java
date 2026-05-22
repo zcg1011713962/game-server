@@ -15,6 +15,8 @@ public class PlayerDTO {
 
     private Long gold;
 
+    private Long diamond;
+
     private String nickname;
 
     private Integer seatId;

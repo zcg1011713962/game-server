@@ -14,10 +14,11 @@
             <result property="status" column="status" />
             <result property="createTime" column="create_time" />
             <result property="updateTime" column="update_time" />
+            <result property="diamond" column="diamond" />
     </resultMap>
 
     <sql id="Base_Column_List">
         id,username,pwd,nickname,avatar,gold,
-        status,create_time,update_time
+        status,create_time,update_time,diamond
     </sql>
 </mapper>

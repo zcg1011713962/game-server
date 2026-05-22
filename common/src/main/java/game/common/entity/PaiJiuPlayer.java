@@ -9,6 +9,7 @@ public class PaiJiuPlayer {
     private Long userId;
     private String avatar;
     private Long gold;
+    private Long diamond;
     private String nickname;
     private Integer seatId = -1;
     private PlayerState state = PlayerState.NONE;

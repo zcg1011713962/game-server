@@ -32,15 +32,17 @@ public class NextRoundHandler extends DispatcherHandler {
     public void exec(GameRequest req) {
         NextRoundReq nextRoundReq = JsonUtil.parse(req.getData().toString(), NextRoundReq.class);
 
-        PaiJiuRoom room = roomManager.get(nextRoundReq.getRoomId());
+        PaiJiuRoom room = roomManager.get(nextRoundReq.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             log.error("ready room is null");
             return;
         }
         long roundId = room.nextRound(nextRoundReq.getRoundId());
+        if(roundId == nextRoundReq.getRoundId()){
+            return;
+        }
         roomManager.save(room);
-
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())

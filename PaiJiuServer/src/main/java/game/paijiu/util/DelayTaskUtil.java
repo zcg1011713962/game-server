@@ -35,6 +35,23 @@ public class DelayTaskUtil {
     }
 
     /**
+     * 固定频率执行任务
+     */
+    public ScheduledFuture<?> scheduleAtFixedRate(
+            Runnable task,
+            long initialDelay,
+            long period,
+            TimeUnit unit
+    ) {
+        return executor.scheduleAtFixedRate(
+                wrap(task),
+                initialDelay,
+                period,
+                unit
+        );
+    }
+
+    /**
      * 延迟执行任务
      */
     public ScheduledFuture<?> schedule(Runnable task, long delay, TimeUnit unit) {

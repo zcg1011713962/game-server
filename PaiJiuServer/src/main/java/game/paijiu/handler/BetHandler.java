@@ -58,7 +58,7 @@ public class BetHandler extends DispatcherHandler {
         if(data.getChip() > user.getGold() ) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.BET_TOO_LARGE));
         }
-        PaiJiuRoom room = roomManager.get(data.getRoomId());
+        PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;

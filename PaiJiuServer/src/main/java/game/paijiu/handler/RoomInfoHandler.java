@@ -35,7 +35,7 @@ public class RoomInfoHandler extends DispatcherHandler {
         Long oldRoomId = roomManager.getRoomIdByUserId(req.getUserId());
         log.info("RoomInfoHandler user:{} roomId:{}", req.getUserId(), oldRoomId);
         if (oldRoomId != null) {
-            PaiJiuRoom room = roomManager.get(oldRoomId);
+            PaiJiuRoom room = roomManager.get(oldRoomId, req.getGatewayId());
             if(room != null){
                 // 进房成功
                 GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()

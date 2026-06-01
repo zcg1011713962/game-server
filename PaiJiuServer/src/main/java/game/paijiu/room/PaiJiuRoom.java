@@ -6,7 +6,11 @@ import game.common.constant.*;
 import game.common.entity.*;
 import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
+import game.common.entity.res.GameResponse;
+import game.common.entity.res.PlayerLeaveSeatPush;
 import game.common.entity.res.SettlePush;
+import game.common.protocol.Cmd;
+import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
@@ -20,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Data
@@ -47,8 +52,11 @@ public class PaiJiuRoom {
 
     private long betEndTime = 0;
     private int betSeconds = 15;
+    // 投注定时器
     private ScheduledFuture<?> scheduledFuture;
-
+    // 准备定时器
+    private ScheduledFuture<?> unreadyCheckFuture;
+    private int unreadyTimeoutSeconds = 60;
 
     /**
      * userId -> 玩家
@@ -72,6 +80,10 @@ public class PaiJiuRoom {
     // 结算结果
     private SettlePush settlePush;
 
+    private AtomicBoolean initFlag = new AtomicBoolean(false);
+
+    private Set<Long> roundIdSet = new HashSet<>();
+
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
                 .roundId(roundId)
@@ -93,6 +105,16 @@ public class PaiJiuRoom {
         this.maxSeat = maxSeat;
         this.roomType = roomType;
         this.baseScore = baseScore;
+    }
+
+    public void init(String gatewayId){
+        if(initFlag.compareAndSet(false, true)){
+            startUnreadyCheckTask(gatewayId);
+        }
+    }
+
+    public void destroy(){
+        stopUnreadyCheckTask();
     }
 
     public synchronized PaiJiuPlayer enter(User info) {
@@ -153,8 +175,9 @@ public class PaiJiuRoom {
         seats.entrySet().removeIf(entry -> entry.getValue().equals(userId));
         player.setSeatId(finalSeatId);
         player.setState(PlayerState.SIT);
-
+        player.setSitDownTime(System.currentTimeMillis());
         seats.put(finalSeatId, userId);
+
         return player;
     }
 
@@ -462,6 +485,9 @@ public class PaiJiuRoom {
     }
 
     public synchronized long nextRound(Long rId) {
+        if(roundIdSet.contains(rId)){
+            return roundId;
+        }
         if(rId == roundId){
             // 1. 局号 +1
             roundId++;
@@ -513,4 +539,100 @@ public class PaiJiuRoom {
     }
 
 
+    private synchronized void startUnreadyCheckTask(String gatewayId) {
+        if (unreadyCheckFuture != null) {
+            return;
+        }
+        log.info("开启入座未准备扫描{}", roomId);
+        unreadyCheckFuture = DelayTaskUtil.getInstance().scheduleAtFixedRate(() -> {
+            try {
+                kickUnreadyTimeoutPlayers(gatewayId);
+            } catch (Exception e) {
+                log.error("未准备玩家自动离座异常 roomId={}", roomId, e);
+            }
+        }, 3, 5, TimeUnit.SECONDS);
+    }
+
+
+    private synchronized void kickUnreadyTimeoutPlayers(String gatewayId) {
+        if (state != RoomState.WAIT && state != RoomState.READY) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        long timeout = unreadyTimeoutSeconds * 1000L;
+
+        for (PaiJiuPlayer player : players.values()) {
+            if (player.getState() != PlayerState.SIT) {
+                continue;
+            }
+
+            if (player.getSeatId() == null || player.getSeatId() < 0) {
+                continue;
+            }
+
+            if (now - player.getSitDownTime() < timeout) {
+                continue;
+            }
+
+            log.info("未准备超时自动离座 roomId={}, userId={}, seatId={}",
+                    roomId, player.getUserId(), player.getSeatId());
+
+            this.leaveSeat(player.getUserId());
+
+            PlayerLeaveSeatPush push = PlayerLeaveSeatPush.builder()
+                    .roomId(roomId)
+                    .userId(player.getUserId())
+                    .seatId(player.getSeatId())
+                    .reason(1)
+                    .build();
+
+            GatewayChannelManager.send(
+                    gatewayId,
+                    GameResponse.builder()
+                            .traceId(UUID.randomUUID().toString())
+                            .gatewayId(gatewayId)
+                            .pushType(PushType.ROOM.code())
+                            .cmd(Cmd.PLAYER_LEAVE_SEAT)
+                            .roomId(roomId)
+                            .userId(player.getUserId())
+                            .code(ErrorCode.SUCCESS.code())
+                            .data(push)
+                            .build()
+            );
+        }
+    }
+
+
+    private synchronized void stopUnreadyCheckTask() {
+        if (unreadyCheckFuture != null) {
+            unreadyCheckFuture.cancel(false);
+            unreadyCheckFuture = null;
+        }
+    }
+
+
+    public synchronized PaiJiuPlayer leaveSeat(Long userId) {
+
+        PaiJiuPlayer player = players.get(userId);
+
+        if (player == null) {
+            throw new RuntimeException("玩家不存在");
+        }
+
+        if (player.getSeatId() == null || player.getSeatId() < 0) {
+            throw new RuntimeException("玩家未坐下");
+        }
+
+        if (state.code() > RoomState.READY.code()) {
+            throw new RuntimeException("游戏进行中不能离座");
+        }
+
+        seats.remove(player.getSeatId());
+
+        player.setSeatId(-1);
+        player.setState(PlayerState.NONE);
+
+        return player;
+    }
 }

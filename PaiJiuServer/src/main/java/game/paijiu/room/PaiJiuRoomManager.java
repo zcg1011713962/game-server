@@ -5,6 +5,7 @@ import game.common.constant.RedisKeyConstants;
 import game.common.constant.RoomState;
 import game.common.constant.RoomType;
 import game.common.entity.RoomDTO;
+import game.paijiu.handler.CancelReadyHandler;
 import game.paijiu.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,25 +32,27 @@ public class PaiJiuRoomManager {
     /**
      * 创建房间
      */
-    public PaiJiuRoom createRoom(RoomType roomType) {
+    public PaiJiuRoom createRoom(RoomType roomType, String gatewayId) {
         Long roomId = nextRoomId();
         PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10);
         roomMap.put(roomId, room);
         save(room);
         log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);
+        room.init(gatewayId);
         return room;
     }
 
     /**
      * 获取已经存在的房间
      */
-    public PaiJiuRoom getRoom(Long roomId) {
+    public PaiJiuRoom getRoom(Long roomId, String gatewayId) {
         if (roomId == null) {
             return null;
         }
 
         PaiJiuRoom room = roomMap.get(roomId);
         if (room != null) {
+            room.init(gatewayId);
             return room;
         }
 
@@ -66,9 +69,9 @@ public class PaiJiuRoomManager {
 
             PaiJiuRoom paiJiuRoom = new PaiJiuRoom();
             BeanUtils.copyProperties(roomDTO, paiJiuRoom);
-
             roomMap.put(roomId, paiJiuRoom);
 
+            paiJiuRoom.init(gatewayId);
             return paiJiuRoom;
         }
     }
@@ -92,6 +95,7 @@ public class PaiJiuRoomManager {
         PaiJiuRoom room = roomMap.remove(roomId);
         redisUtil.del(RedisKeyConstants.roomSnapshot(roomId));
         room.getPlayers().keySet().forEach(userId -> removeUserRoom(userId, roomId));
+        room.destroy();
     }
 
     /**
@@ -107,13 +111,14 @@ public class PaiJiuRoomManager {
         redisUtil.del(RedisKeyConstants.userRoom(userId));
     }
 
-    public PaiJiuRoom get(Long roomId) {
+    public PaiJiuRoom get(Long roomId, String gatewayId) {
         if (roomId == null) {
             return null;
         }
 
         PaiJiuRoom room = roomMap.get(roomId);
         if (room != null) {
+            room.init(gatewayId);
             return room;
         }
 
@@ -132,7 +137,7 @@ public class PaiJiuRoomManager {
             BeanUtils.copyProperties(roomDTO, paiJiuRoom);
 
             roomMap.put(roomId, paiJiuRoom);
-
+            paiJiuRoom.init(gatewayId);
             return paiJiuRoom;
         }
     }

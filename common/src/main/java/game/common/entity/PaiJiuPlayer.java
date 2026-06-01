@@ -13,6 +13,8 @@ public class PaiJiuPlayer {
     private String nickname;
     private Integer seatId = -1;
     private PlayerState state = PlayerState.NONE;
+    // 坐下时间
+    private long sitDownTime;
 
     private boolean online = true;
 

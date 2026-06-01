@@ -34,7 +34,7 @@ public class CancelReadyHandler extends DispatcherHandler {
     public void exec(GameRequest req) {
         ReadyReq data = JsonUtil.objToBean(req.getData(), ReadyReq.class);
 
-        PaiJiuRoom room = roomManager.get(data.getRoomId());
+        PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             log.error("ready room is null");
@@ -45,12 +45,12 @@ public class CancelReadyHandler extends DispatcherHandler {
 
         PaiJiuPlayer player = room.cancelReady(req.getUserId());
 
-        PlayerReadyPush readyPush = new PlayerReadyPush();
-        readyPush.setRoomId(room.getRoomId());
-        readyPush.setUserId(req.getUserId());
-        readyPush.setSeatId(player.getSeatId());
-        readyPush.setState(player.getState().code());
-        readyPush.setRoomStatus(room.getState().code());
+        PlayerReadyPush readyPush = PlayerReadyPush.builder().roomId(room.getRoomId())
+                .userId(req.getUserId())
+                .seatId(player.getSeatId())
+                .state(player.getState().code())
+                .roomStatus(room.getState().code()).build();
+
         // 取消准备返回
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())

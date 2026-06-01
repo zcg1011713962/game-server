@@ -43,7 +43,7 @@ public class EnterRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-        PaiJiuRoom room = roomManager.getRoom(req.getRoomId());
+        PaiJiuRoom room = roomManager.getRoom(req.getRoomId(), req.getGatewayId());
         if(room == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;

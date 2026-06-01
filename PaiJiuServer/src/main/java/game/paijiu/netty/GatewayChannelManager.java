@@ -36,7 +36,7 @@ public class GatewayChannelManager {
     public static void send(String gatewayId, GameResponse gameResponse) {
         Channel channel = GATEWAY_MAP.get(gatewayId);
         if (channel != null && channel.isActive()) {
-            log.info("send to gatewayId:{} {}", gatewayId, gameResponse);
+            log.debug("send to gatewayId:{} {}", gatewayId, gameResponse);
             String msg = JsonUtil.toJson(gameResponse);
             channel.writeAndFlush(msg);
         }

@@ -7,6 +7,7 @@ import game.common.entity.*;
 import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.GameResponse;
+import game.common.entity.res.NextRoundPush;
 import game.common.entity.res.PlayerLeaveSeatPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
@@ -86,6 +87,12 @@ public class PaiJiuRoom {
 
     private Set<Long> settledRoundIdSet = new HashSet<>();
 
+    private Map<Long, ScheduledFuture<?>> settleScheduledMap = new HashMap<>();
+
+    private PaiJiuRoomManager paiJiuRoomManager;
+
+    private String gatewayId;
+
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
                 .roundId(roundId)
@@ -110,7 +117,9 @@ public class PaiJiuRoom {
         this.maxRoundId = maxRoundId;
     }
 
-    public void init(String gatewayId){
+    public void init(String gatewayId, PaiJiuRoomManager paiJiuRoomManager){
+        this.paiJiuRoomManager = paiJiuRoomManager;
+        this.gatewayId = gatewayId;
         if(initFlag.compareAndSet(false, true)){
             startUnreadyCheckTask(gatewayId);
         }
@@ -202,6 +211,7 @@ public class PaiJiuRoom {
 
         if (players.isEmpty()) {
             state = RoomState.WAIT;
+            log.info("roomId: {} 房间状态:{}", roomId, state.name());
         }
         return player;
     }
@@ -223,12 +233,13 @@ public class PaiJiuRoom {
                 log.error("ready:{}", e.getMessage());
             }
             if(state != RoomState.WAIT && state != RoomState.READY){
-                throw new RuntimeException("当前状态不能准备");
+                throw new RuntimeException("当前状态不能准备:" + state.name());
             }
         }
 
         player.setState(PlayerState.READY);
         state = RoomState.READY;
+        log.info("roomId: {} 房间状态:{}", roomId, state.name());
         return player;
     }
 
@@ -254,6 +265,7 @@ public class PaiJiuRoom {
             }
         }
         state = readyFlag ? RoomState.READY : RoomState.WAIT;
+        log.info("roomId: {} 房间状态:{}", roomId, state.name());
         return player;
     }
 
@@ -280,6 +292,7 @@ public class PaiJiuRoom {
 
     public synchronized void startGame() {
         state = RoomState.BET;
+        log.info("roomId: {} 房间状态:{}", roomId, state.name());
 
         for (PaiJiuPlayer player : players.values()) {
             if (player.getSeatId() != null && player.getSeatId() >= 0) {
@@ -292,7 +305,7 @@ public class PaiJiuRoom {
 
     public synchronized long bet(Long userId, long chip) {
         if (state != RoomState.BET) {
-            throw new RuntimeException("当前不是下注阶段");
+            throw new RuntimeException("当前不是下注阶段:" + state.name());
         }
 
         PaiJiuPlayer player = players.get(userId);
@@ -422,6 +435,7 @@ public class PaiJiuRoom {
                 .build());
 
         state = RoomState.SETTLE;
+        log.info("roomId: {} 房间状态:{}", roomId, state.name());
         settlePush = SettlePush.builder()
                 .roomId(roomId)
                 .roomState(state.code())
@@ -430,10 +444,34 @@ public class PaiJiuRoom {
                 .build();
 
         settledRoundIdSet.add(this.roundId);
+        Set<Long> userIds = this.players.values().stream().map(PaiJiuPlayer::getUserId).collect(Collectors.toSet());
+        long currRoundId = this.roundId;
         // 延时7秒自动下一轮
-        DelayTaskUtil.getInstance().scheduleSeconds(()->{
-           nextRound(this.roundId);
-        }, 7);
+        ScheduledFuture<?> scheduledTask= DelayTaskUtil.getInstance().scheduleSeconds(()->{
+            long rId = nextRound(currRoundId);
+            if(rId!= currRoundId){
+                log.info("下一轮成功,自动 from {} to {}", currRoundId, rId);
+                this.saveRoom();
+                for (Long userId : userIds) {
+                    GatewayChannelManager.send(gatewayId, GameResponse.builder()
+                            .traceId(UUID.randomUUID().toString())
+                            .gatewayId(gatewayId)
+                            .pushType(PushType.ROOM.code())
+                            .cmd(Cmd.NEXT_ROUND_RESULT)
+                            .userId(userId)
+                            .roomId(this.roomId)
+                            .code(ErrorCode.SUCCESS.code())
+                            .data(NextRoundPush.builder()
+                                    .roundId(currRoundId)
+                                    .roomState(state.code())
+                                    .roomId(roomId)
+                                    .players(this.getPlayerDTOList())
+                                    .build())
+                            .build());
+                }
+            }
+        }, 10);
+        this.settleScheduledMap.put(this.roundId, scheduledTask);
         return settlePush;
     }
 
@@ -503,8 +541,14 @@ public class PaiJiuRoom {
             if(roundId + 1 > maxRoundId){
                 return roundId;
             }
+            ScheduledFuture<?> scheduledTask = this.settleScheduledMap.get(rId);
+            if(scheduledTask != null){
+                scheduledTask.cancel(false);
+                this.settleScheduledMap.remove(rId);
+            }
             // 1. 局号 +1
             roundId++;
+            log.info("房间:{} 进入第{} 局", this.roomId, this.roundId);
             // 2. 清空上一局数据
             betMap.clear();
             cardMap.clear();
@@ -514,10 +558,12 @@ public class PaiJiuRoom {
             for (PaiJiuPlayer p : players.values()) {
                 if (p.getSeatId() >= 0) {
                     p.setState(PlayerState.SIT); // 或 READY
+                    p.setSitDownTime(System.currentTimeMillis());
                 }
             }
             // 4. 状态切回等待
             state = RoomState.WAIT;
+            log.info("roomId: {} 房间状态:{}", roomId, state.name());
         }
         return roundId;
     }
@@ -593,7 +639,7 @@ public class PaiJiuRoom {
                     roomId, player.getUserId(), player.getSeatId());
 
             this.leaveSeat(player.getUserId());
-
+            this.saveRoom();
             PlayerLeaveSeatPush push = PlayerLeaveSeatPush.builder()
                     .roomId(roomId)
                     .userId(player.getUserId())
@@ -648,5 +694,9 @@ public class PaiJiuRoom {
         player.setState(PlayerState.NONE);
 
         return player;
+    }
+
+    public void saveRoom(){
+        paiJiuRoomManager.save(this);
     }
 }

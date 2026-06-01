@@ -31,7 +31,6 @@ public class NextRoundHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         NextRoundReq nextRoundReq = JsonUtil.parse(req.getData().toString(), NextRoundReq.class);
-
         PaiJiuRoom room = roomManager.get(nextRoundReq.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
@@ -39,6 +38,10 @@ public class NextRoundHandler extends DispatcherHandler {
             return;
         }
         long roundId = room.nextRound(nextRoundReq.getRoundId());
+        if(nextRoundReq.getRoundId() != roundId){
+            log.info("下一轮成功，手动from {} to {}", nextRoundReq.getRoundId(), roundId);
+        }
+
         roomManager.save(room);
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())

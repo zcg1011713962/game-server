@@ -38,7 +38,7 @@ public class PaiJiuRoomManager {
         roomMap.put(roomId, room);
         save(room);
         log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);
-        room.init(gatewayId);
+        room.init(gatewayId, this);
         return room;
     }
 
@@ -52,7 +52,7 @@ public class PaiJiuRoomManager {
 
         PaiJiuRoom room = roomMap.get(roomId);
         if (room != null) {
-            room.init(gatewayId);
+            room.init(gatewayId, this);
             return room;
         }
 
@@ -71,7 +71,7 @@ public class PaiJiuRoomManager {
             BeanUtils.copyProperties(roomDTO, paiJiuRoom);
             roomMap.put(roomId, paiJiuRoom);
 
-            paiJiuRoom.init(gatewayId);
+            paiJiuRoom.init(gatewayId, this);
             return paiJiuRoom;
         }
     }
@@ -118,7 +118,7 @@ public class PaiJiuRoomManager {
 
         PaiJiuRoom room = roomMap.get(roomId);
         if (room != null) {
-            room.init(gatewayId);
+            room.init(gatewayId, this);
             return room;
         }
 
@@ -137,7 +137,7 @@ public class PaiJiuRoomManager {
             BeanUtils.copyProperties(roomDTO, paiJiuRoom);
 
             roomMap.put(roomId, paiJiuRoom);
-            paiJiuRoom.init(gatewayId);
+            paiJiuRoom.init(gatewayId, this);
             return paiJiuRoom;
         }
     }

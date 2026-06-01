@@ -33,6 +33,7 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
                 }else{
                     GameThreadPoolUtil.execute(()-> DispatcherHandler.getHandler(req.getCmd().value()).exec(req));
                 }
+                log.info("收到请求:{}", req.getCmd());
             }catch (Exception e){
                 log.error("DispatcherHandler:{}", e.getMessage());
                 ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.SYSTEM_ERROR)));

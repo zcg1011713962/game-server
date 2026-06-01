@@ -32,9 +32,9 @@ public class PaiJiuRoomManager {
     /**
      * 创建房间
      */
-    public PaiJiuRoom createRoom(RoomType roomType, String gatewayId) {
+    public PaiJiuRoom createRoom(RoomType roomType, String gatewayId, long maxRoundId) {
         Long roomId = nextRoomId();
-        PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10);
+        PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10, maxRoundId);
         roomMap.put(roomId, room);
         save(room);
         log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);

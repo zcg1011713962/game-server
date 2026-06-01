@@ -41,7 +41,7 @@ public class CreateRoomHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.EXIST_IN_OTHER_ROOM));
             return;
         }
-        PaiJiuRoom room = roomManager.createRoom(RoomType.LOCK_MATCH, req.getGatewayId());
+        PaiJiuRoom room = roomManager.createRoom(RoomType.LOCK_MATCH, req.getGatewayId(), 16L);
         User user = userService.getUserById(req.getUserId());
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_LOGIN));

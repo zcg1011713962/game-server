@@ -42,7 +42,6 @@ public class SettleHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-        long currRoundId = room.getRoundId();
         // 结算
         SettlePush settlePush = room.settle();
         // 房间快照
@@ -52,28 +51,5 @@ public class SettleHandler extends DispatcherHandler {
                 req.getGatewayId(),
                 GameResponse.push(room.getRoomId(), Cmd.SETTLE, settlePush)
         );
-
-        DelayTaskUtil.submit(UUID.randomUUID().toString(), ()->{
-            long roundId = room.nextRound(currRoundId);
-            if(roundId == currRoundId){
-                return;
-            }
-            roomManager.save(room);
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
-                    .traceId(UUID.randomUUID().toString())
-                    .gatewayId(req.getGatewayId())
-                    .pushType(PushType.ROOM.code())
-                    .cmd(Cmd.NEXT_ROUND_RESULT)
-                    .userId(req.getUserId())
-                    .roomId(room.getRoomId())
-                    .code(ErrorCode.SUCCESS.code())
-                    .data(NextRoundPush.builder()
-                            .roundId(roundId)
-                            .roomState(room.getState().code())
-                            .roomId(room.getRoomId())
-                            .players(room.getPlayerDTOList())
-                            .build())
-                    .build());
-        }, 5, TimeUnit.SECONDS);
     }
 }

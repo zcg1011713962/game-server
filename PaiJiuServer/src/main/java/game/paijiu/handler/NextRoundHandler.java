@@ -39,9 +39,6 @@ public class NextRoundHandler extends DispatcherHandler {
             return;
         }
         long roundId = room.nextRound(nextRoundReq.getRoundId());
-        if(roundId == nextRoundReq.getRoundId()){
-            return;
-        }
         roomManager.save(room);
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())

@@ -36,6 +36,8 @@ public class PaiJiuRoom {
     // 当前局号
     private long roundId = 1;
 
+    private long maxRoundId = 1;
+
     private Long roomId;
 
     private int maxSeat = 8;
@@ -82,7 +84,7 @@ public class PaiJiuRoom {
 
     private AtomicBoolean initFlag = new AtomicBoolean(false);
 
-    private Set<Long> roundIdSet = new HashSet<>();
+    private Set<Long> settledRoundIdSet = new HashSet<>();
 
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
@@ -100,11 +102,12 @@ public class PaiJiuRoom {
                 .cardMap(cardMap).build();
     }
 
-    public PaiJiuRoom(Long roomId, RoomType roomType, int maxSeat, long baseScore) {
+    public PaiJiuRoom(Long roomId, RoomType roomType, int maxSeat, long baseScore, long maxRoundId) {
         this.roomId = roomId;
         this.maxSeat = maxSeat;
         this.roomType = roomType;
         this.baseScore = baseScore;
+        this.maxRoundId = maxRoundId;
     }
 
     public void init(String gatewayId){
@@ -343,12 +346,14 @@ public class PaiJiuRoom {
         long bankerBet = 0;
         // 结算闲家
         for (PaiJiuPlayer player : players.values()) {
-            if(player.getUserId().equals(bankerUserId)){
-                continue;
-            }
             if (player.getState() != PlayerState.PLAYING) {
                 continue;
             }
+            player.setState(PlayerState.SIT);
+            if(player.getUserId().equals(bankerUserId)){
+                continue;
+            }
+
             Long userId = player.getUserId();
             List<CardInfo> cards = cardMap.get(userId);
 
@@ -423,6 +428,12 @@ public class PaiJiuRoom {
                 .bankerSeat(bankerSeat)
                 .players(result)
                 .build();
+
+        settledRoundIdSet.add(this.roundId);
+        // 延时7秒自动下一轮
+        DelayTaskUtil.getInstance().scheduleSeconds(()->{
+           nextRound(this.roundId);
+        }, 7);
         return settlePush;
     }
 
@@ -485,10 +496,13 @@ public class PaiJiuRoom {
     }
 
     public synchronized long nextRound(Long rId) {
-        if(roundIdSet.contains(rId)){
+        if(!settledRoundIdSet.contains(rId)){
             return roundId;
         }
         if(rId == roundId){
+            if(roundId + 1 > maxRoundId){
+                return roundId;
+            }
             // 1. 局号 +1
             roundId++;
             // 2. 清空上一局数据

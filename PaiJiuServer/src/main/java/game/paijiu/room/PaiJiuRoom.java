@@ -11,6 +11,7 @@ import game.common.entity.res.NextRoundPush;
 import game.common.entity.res.PlayerLeaveSeatPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
+import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
@@ -96,6 +97,7 @@ public class PaiJiuRoom {
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
                 .roundId(roundId)
+                .maxRoundId(maxRoundId)
                 .roomId(roomId)
                 .maxSeat(maxSeat)
                 .ownerUserId(ownerUserId)
@@ -147,6 +149,7 @@ public class PaiJiuRoom {
         player.setNickname(info.getNickname());
         player.setGold(info.getGold());
         player.setAvatar(info.getAvatar());
+        player.setDiamond(info.getDiamond());
 
         players.put(info.getId(), player);
         return player;
@@ -155,11 +158,11 @@ public class PaiJiuRoom {
     public synchronized PaiJiuPlayer sitDown(Long userId, Integer seatId) {
         PaiJiuPlayer player = players.get(userId);
         if (player == null) {
-            throw new RuntimeException("玩家不在房间");
+            throw new GameException(GameError.ERROR2);
         }
 
         if(player.getState().code() > PlayerState.SIT.code()){
-            throw new RuntimeException("用户状态不允许坐下" + player.getState());
+            throw new GameException(GameError.ERROR3);
         }
 
         Integer finalSeatId = seatId;
@@ -169,19 +172,19 @@ public class PaiJiuRoom {
         }
 
         if (finalSeatId == null) {
-            throw new RuntimeException("没有空座位");
+            throw new GameException(GameError.ERROR4);
         }
 
         if (finalSeatId < 0 || finalSeatId >= maxSeat) {
-            throw new RuntimeException("座位非法");
+            throw new GameException(GameError.ERROR5);
         }
 
         if (seats.containsKey(finalSeatId)) {
-            throw new RuntimeException("座位已被占用");
+            throw new GameException(GameError.ERROR6);
         }
 
         if (this.state.code() > RoomState.READY.code()) {
-            throw new RuntimeException("房间状态不允许坐下");
+            throw new GameException(GameError.ERROR7);
         }
 
         seats.entrySet().removeIf(entry -> entry.getValue().equals(userId));
@@ -218,23 +221,21 @@ public class PaiJiuRoom {
 
     public synchronized PaiJiuPlayer ready(Long userId) {
         PaiJiuPlayer player = players.get(userId);
+
         if (player == null) {
-            throw new RuntimeException("玩家不在房间");
+            throw new GameException(GameError.ERROR2);
         }
 
         if (player.getSeatId() == null || player.getSeatId() < 0) {
-            throw new RuntimeException("玩家未入座");
+            throw new GameException(GameError.ERROR8);
         }
 
-        if (state != RoomState.WAIT && state != RoomState.READY) {
-            try{
-                TimeUnit.MILLISECONDS.sleep(500);
-            }catch (InterruptedException e){
-                log.error("ready:{}", e.getMessage());
-            }
-            if(state != RoomState.WAIT && state != RoomState.READY){
-                throw new RuntimeException("当前状态不能准备:" + state.name());
-            }
+        if(state != RoomState.WAIT && state != RoomState.READY){
+            throw new GameException(GameError.ERROR9);
+        }
+
+        if(this.roundId > maxRoundId){
+            throw new GameException(GameError.ERROR19);
         }
 
         player.setState(PlayerState.READY);
@@ -246,15 +247,15 @@ public class PaiJiuRoom {
     public synchronized PaiJiuPlayer cancelReady(Long userId) {
         PaiJiuPlayer player = players.get(userId);
         if (player == null) {
-            throw new RuntimeException("玩家不在房间");
+            throw new GameException(GameError.ERROR2);
         }
 
         if (player.getSeatId() == null || player.getSeatId() < 0) {
-            throw new RuntimeException("玩家未入座");
+            throw new GameException(GameError.ERROR8);
         }
 
         if (state != RoomState.READY) {
-            throw new RuntimeException("当前状态不能取消准备");
+            throw new GameException(GameError.ERROR10);
         }
 
         player.setState(PlayerState.SIT);
@@ -305,24 +306,22 @@ public class PaiJiuRoom {
 
     public synchronized long bet(Long userId, long chip) {
         if (state != RoomState.BET) {
-            throw new RuntimeException("当前不是下注阶段:" + state.name());
+            throw new GameException(GameError.ERROR11);
         }
 
         PaiJiuPlayer player = players.get(userId);
         if (player == null) {
-            throw new RuntimeException("玩家不在房间");
+            throw new GameException(GameError.ERROR2);
         }
 
         if (player.getState() != PlayerState.PLAYING) {
-            throw new RuntimeException("玩家不在游戏中");
+            throw new GameException(GameError.ERROR12);
         }
-
         if (chip <= 0) {
-            throw new RuntimeException("下注金额错误");
+            throw new GameException(GameError.ERROR13);
         }
-
         if(player.getGold() < chip){
-            throw new RuntimeException("金币不足");
+            throw new GameException(GameError.ERROR14);
         }
         player.reduceGold(chip);
         return betMap.merge(userId, chip, Long::sum);
@@ -341,17 +340,17 @@ public class PaiJiuRoom {
     public synchronized SettlePush settle() {
 
         if (state != RoomState.DEAL) {
-            throw new RuntimeException("当前不是结算阶段");
+            throw new GameException(GameError.ERROR15);
         }
 
         Long bankerUserId = seats.get(bankerSeat);
         if (bankerUserId == null) {
-            throw new RuntimeException("庄家不存在");
+            throw new GameException(GameError.ERROR16);
         }
 
         List<CardInfo> bankerCards = cardMap.get(bankerUserId);
         if (bankerCards == null) {
-            throw new RuntimeException("庄家牌不存在");
+            throw new GameException(GameError.ERROR17);
         }
 
         List<SettlePlayerDTO> result = new ArrayList<>();
@@ -538,9 +537,6 @@ public class PaiJiuRoom {
             return roundId;
         }
         if(rId == roundId){
-            if(roundId + 1 > maxRoundId){
-                return roundId;
-            }
             ScheduledFuture<?> scheduledTask = this.settleScheduledMap.get(rId);
             if(scheduledTask != null){
                 scheduledTask.cancel(false);
@@ -673,21 +669,16 @@ public class PaiJiuRoom {
 
 
     public synchronized PaiJiuPlayer leaveSeat(Long userId) {
-
         PaiJiuPlayer player = players.get(userId);
-
         if (player == null) {
-            throw new RuntimeException("玩家不存在");
+            throw new GameException(GameError.ERROR2);
         }
-
         if (player.getSeatId() == null || player.getSeatId() < 0) {
-            throw new RuntimeException("玩家未坐下");
+            throw new GameException(GameError.ERROR8);
         }
-
         if (state.code() > RoomState.READY.code()) {
-            throw new RuntimeException("游戏进行中不能离座");
+            throw new GameException(GameError.ERROR18);
         }
-
         seats.remove(player.getSeatId());
 
         player.setSeatId(-1);
@@ -696,7 +687,7 @@ public class PaiJiuRoom {
         return player;
     }
 
-    public void saveRoom(){
+    public synchronized void saveRoom(){
         paiJiuRoomManager.save(this);
     }
 }

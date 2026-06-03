@@ -54,7 +54,7 @@ public class FreeMatchHandler extends DispatcherHandler {
         }else{
             room = roomManager.findWaitRoom();
             if(room == null){ // 没有空房间
-                room = roomManager.createRoom(RoomType.FREE_MATCH, req.getGatewayId(), Long.MAX_VALUE);
+                room = roomManager.createRoom(RoomType.FREE_MATCH, req.getGatewayId(), 100000);
             }
         }
         PaiJiuPlayer paiJiuPlayer = room.enter(user);

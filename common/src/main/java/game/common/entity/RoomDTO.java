@@ -18,6 +18,8 @@ public class RoomDTO {
     // 当前局号
     private long roundId = 1;
 
+    private long maxRoundId = 1;
+
     private Long roomId;
 
     private int maxSeat = 8;

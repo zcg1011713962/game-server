@@ -5,6 +5,7 @@ import game.common.entity.req.GameRequest;
 import game.common.entity.res.GameResponse;
 import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
+import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.util.GameThreadPoolUtil;
 import io.netty.channel.ChannelHandler;
@@ -29,7 +30,15 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
         if(req.getGatewayId() != null && GatewayChannelManager.get(req.getGatewayId()) != null){
             try {
                 if(req.getRoomId() != null){
-                    GameThreadPoolUtil.executeRoom(String.valueOf(req.getRoomId()), ()-> DispatcherHandler.getHandler(req.getCmd().value()).exec(req));
+                    GameThreadPoolUtil.executeRoom(String.valueOf(req.getRoomId()), ()-> {
+                        try {
+                            DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
+                        }catch (GameException e){
+                            ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, e.getCode(), e.getMessage())));
+                        }catch (Exception e){
+                            ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.SYSTEM_ERROR)));
+                        }
+                    });
                 }else{
                     GameThreadPoolUtil.execute(()-> DispatcherHandler.getHandler(req.getCmd().value()).exec(req));
                 }

@@ -38,6 +38,7 @@ public class PaiJiuPlayer {
         dto.setNickname(nickname);
         dto.setSeatId(seatId);
         dto.setState(state.code());
+        dto.setDiamond(diamond);
         return dto;
     }
 }

@@ -10,4 +10,5 @@ public class LoginResp {
     private String avatar;
     private Long gold;
     private String token;
+    private Long roomCard;
 }

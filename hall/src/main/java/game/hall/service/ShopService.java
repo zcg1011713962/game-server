@@ -1,7 +1,9 @@
 package game.hall.service;
 
+import game.common.entity.User;
+
 public interface ShopService {
 
-    void buyProduct(Long userId, Long productId);
+    User buyProduct(Long userId, Long productId);
 
 }

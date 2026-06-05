@@ -16,7 +16,7 @@ public class User {
 
     private Long gold;
 
-    private Long diamond;
+    private Long roomCard;
 
     private String nickname;
 

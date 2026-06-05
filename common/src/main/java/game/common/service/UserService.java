@@ -4,4 +4,10 @@ import game.common.entity.User;
 
 public interface UserService {
     User getUserById(Long userId);
+
+    Long changeRoomCard(Long userId, long delta);
+
+    void refreshUserCache(Long userId);
+
+    Long changeGold(Long userId, long delta);
 }

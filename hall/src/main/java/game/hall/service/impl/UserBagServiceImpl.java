@@ -71,4 +71,24 @@ public class UserBagServiceImpl implements UserBagService {
                         .gt(DbUserBag::getPropCount, 0)
         );
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void reduceProp(Long userId, String propCode, long count) {
+        if (userId == null || propCode == null || count <= 0) {
+            throw new RuntimeException("扣除道具参数错误");
+        }
+
+        DbUserBag bag = userBagMapper.selectOne(
+                new LambdaQueryWrapper<DbUserBag>()
+                        .eq(DbUserBag::getUserId, userId)
+                        .eq(DbUserBag::getPropCode, propCode)
+        );
+
+        if (bag == null || bag.getPropCount() < count) {
+            throw new RuntimeException("道具数量不足");
+        }
+
+        bag.setPropCount(bag.getPropCount() - count);
+        userBagMapper.updateById(bag);
+    }
 }

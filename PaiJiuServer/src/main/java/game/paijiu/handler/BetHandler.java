@@ -10,15 +10,18 @@ import game.common.entity.PlayerCardDTO;
 import game.common.entity.User;
 import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
-import game.common.entity.res.*;
+import game.common.entity.res.DealCardPush;
+import game.common.entity.res.GameResponse;
+import game.common.entity.res.PlayerBetPush;
+import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
+import game.common.service.RedisUserService;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.service.GamePushService;
-import game.paijiu.service.GameUserService;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -36,9 +38,9 @@ public class BetHandler extends DispatcherHandler {
     @Autowired
     PaiJiuRoomManager roomManager;
     @Autowired
-    GameUserService userService;
-    @Autowired
     GamePushService gamePushService;
+    @Autowired
+    RedisUserService redisUserService;
 
     public BetHandler() {
         super(Cmd.BET.value());
@@ -52,9 +54,14 @@ public class BetHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.PARAM_ERROR));
             return;
         }
-        User user = userService.getUserById(req.getUserId());
+        User user = redisUserService.getUserById(req.getUserId());
+        if(user == null){
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.USER_NOT_FOUND_ERROR));
+            return;
+        }
         if(data.getChip() > user.getGold() ) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.BET_TOO_LARGE));
+            return;
         }
         PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
         if (room == null) {

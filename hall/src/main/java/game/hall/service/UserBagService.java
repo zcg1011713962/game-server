@@ -10,4 +10,6 @@ public interface UserBagService {
     long getPropCount(Long userId, String propCode);
 
     List<DbUserBag> listUserBag(Long userId);
+
+    void reduceProp(Long userId, String propCode, long count);
 }

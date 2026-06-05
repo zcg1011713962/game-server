@@ -4,12 +4,14 @@ public enum ErrorCode {
     // ===================== 通用 =====================
     SUCCESS(0, "ok"),
     FAIL(1, "fail"),
+    NOT_AUTH(401, "未校验"),
 
     PARAM_ERROR(1001, "参数错误"),
     UNKNOWN_CMD(1002, "未知命令"),
     SYSTEM_ERROR(1003, "系统异常"),
     LOGIN_ERROR(1004, "登录账户密码错误"),
     CREATE_USER_ERROR(1006, "创建用户失败"),
+    USER_NOT_FOUND_ERROR(1007, "缓存用户不存在"),
 
 
     // ===================== 登录 =====================

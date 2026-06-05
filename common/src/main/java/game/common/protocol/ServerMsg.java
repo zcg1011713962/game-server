@@ -73,4 +73,18 @@ public class ServerMsg {
         return res;
     }
 
+    public static ServerMsg error(ErrorCode errorCode) {
+        ServerMsg res = new ServerMsg();
+        res.setCode(errorCode.code());
+        res.setMsg(errorCode.msg());
+        return res;
+    }
+
+    public static ServerMsg error(int code, String msg) {
+        ServerMsg res = new ServerMsg();
+        res.setCode(code);
+        res.setMsg(msg);
+        return res;
+    }
+
 }

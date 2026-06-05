@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(scanBasePackages = "game.paijiu")
+@SpringBootApplication(scanBasePackages = {"game.paijiu","game.common"})
 public class PaiJiuApplication {
 
     public static void main(String[] args) {

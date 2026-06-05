@@ -1,4 +1,4 @@
-package game.hall.domain;
+package game.hall.mybatis.domain;
 
 import java.util.Date;
 
@@ -23,8 +23,6 @@ public class DbUser {
     private Date createTime;
 
     private Date updateTime;
-
-    private Long diamond;
 
     public Long getId() {
         return id;
@@ -96,13 +94,5 @@ public class DbUser {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Long getDiamond() {
-        return diamond;
-    }
-
-    public void setDiamond(Long diamond) {
-        this.diamond = diamond;
     }
 }

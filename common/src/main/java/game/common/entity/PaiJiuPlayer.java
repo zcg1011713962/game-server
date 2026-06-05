@@ -9,7 +9,6 @@ public class PaiJiuPlayer {
     private Long userId;
     private String avatar;
     private Long gold;
-    private Long diamond;
     private String nickname;
     private Integer seatId = -1;
     private PlayerState state = PlayerState.NONE;
@@ -38,7 +37,6 @@ public class PaiJiuPlayer {
         dto.setNickname(nickname);
         dto.setSeatId(seatId);
         dto.setState(state.code());
-        dto.setDiamond(diamond);
         return dto;
     }
 }

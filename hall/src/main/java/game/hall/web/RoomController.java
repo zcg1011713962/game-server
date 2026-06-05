@@ -2,7 +2,7 @@ package game.hall.web;
 
 import game.common.entity.req.RemoveRoomReq;
 import game.common.protocol.ServerMsg;
-import game.hall.util.RedisUtil;
+import game.common.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

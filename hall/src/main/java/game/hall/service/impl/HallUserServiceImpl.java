@@ -1,14 +1,14 @@
-package game.hall.server;
+package game.hall.service.impl;
 
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.User;
 import game.common.service.UserService;
-import game.hall.util.RedisUtil;
+import game.common.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HallUserService implements UserService {
+public class HallUserServiceImpl implements UserService {
     @Autowired
     RedisUtil redisUtil;
     @Override

@@ -1,5 +1,6 @@
-package game.hall.server;
+package game.hall.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import game.common.constant.ErrorCode;
 import game.common.constant.RedisKeyConstants;
@@ -7,11 +8,12 @@ import game.common.entity.User;
 import game.common.protocol.ServerMsg;
 import game.common.service.UserService;
 import game.common.util.JwtUtil;
-import game.hall.domain.DbUser;
+import game.common.util.RedisUtil;
 import game.hall.entity.req.GuestLoginReq;
 import game.hall.entity.res.LoginResp;
-import game.hall.service.DbUserService;
-import game.hall.util.RedisUtil;
+import game.hall.mybatis.domain.DbUser;
+import game.hall.mybatis.service.DbUserService;
+import game.hall.service.LoginService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-public class LoginService {
+public class LoginServiceImpl implements LoginService {
     @Autowired
     private DbUserService dbUserService;
     @Autowired
@@ -50,29 +52,23 @@ public class LoginService {
             }
             long avatarId = ThreadLocalRandom.current().nextLong(0, 5);
 
-            DbUser dbUser = getDbUser(id, userName, "12345678", String.valueOf(avatarId), 1000L, 0L, nickName);
+            DbUser dbUser = getDbUser(id, userName, "12345678", String.valueOf(avatarId), 1000L, nickName);
             int ret = dbUserService.getBaseMapper().insert(dbUser);
             if (ret > 0) {
                 String token = JwtUtil.generateToken(dbUser.getId());
-                User user = new User();
-                BeanUtils.copyProperties(dbUser, user);
-
-                redisUtil.set(RedisKeyConstants.token(token), dbUser.getId(), expireTime);
-                // 登录成功后缓存玩家信息
-                redisUtil.set(RedisKeyConstants.player(dbUser.getId()), user, expireTime);
+                redisUtil.hmset(RedisKeyConstants.player(dbUser.getId()), BeanUtil.beanToMap(dbUser), expireTime);
                 return ServerMsg.ok(LoginResp.builder()
                         .userId(id)
                         .nickname(nickName)
                         .avatar(String.valueOf(avatarId))
                         .gold(dbUser.getGold())
-                        .diamond(dbUser.getDiamond())
                         .token(token)
                         .build());
             }else {
                 return ServerMsg.error(null, 0, ErrorCode.CREATE_USER_ERROR);
             }
         }else {
-            Long userId = redisUtil.get(RedisKeyConstants.token(guestLoginReq.getToken()), Long.class);
+            Long userId = JwtUtil.getUserId(guestLoginReq.getToken());
             if(userId == null){
                 return ServerMsg.error(null, 0, ErrorCode.TOKEN_INVALID);
             }
@@ -87,20 +83,18 @@ public class LoginService {
                     .nickname(user.getNickname())
                     .avatar(String.valueOf(user.getAvatar()))
                     .gold(user.getGold())
-                    .diamond(user.getDiamond())
                     .token(guestLoginReq.getToken())
                     .build());
         }
     }
 
-    public DbUser getDbUser(Long id, String userName, String pwd, String avatar, Long gold, Long diamond, String nickName) {
+    public DbUser getDbUser(Long id, String userName, String pwd, String avatar, Long gold, String nickName) {
         DbUser dbUser = new DbUser();
         dbUser.setUsername(userName);
         dbUser.setPwd(pwd);
         dbUser.setAvatar(avatar);
         dbUser.setGold(gold);
         dbUser.setNickname(nickName);
-        dbUser.setDiamond(diamond);
         dbUser.setId(id);
         return dbUser;
     }

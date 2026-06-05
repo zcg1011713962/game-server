@@ -9,6 +9,5 @@ public class LoginResp {
     private String nickname;
     private String avatar;
     private Long gold;
-    private Long diamond;
     private String token;
 }

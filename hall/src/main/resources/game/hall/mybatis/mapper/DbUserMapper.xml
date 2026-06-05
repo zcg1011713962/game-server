@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="game.hall.mapper.DbUserMapper">
+<mapper namespace="game.hall.mybatis.mapper.DbUserMapper">
 
-    <resultMap id="BaseResultMap" type="game.hall.domain.DbUser">
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbUser">
             <id property="id" column="id" />
             <result property="username" column="username" />
             <result property="pwd" column="pwd" />

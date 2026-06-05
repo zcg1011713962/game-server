@@ -18,23 +18,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-
-        <!-- HTTP 接口：登录/大厅/房间列表 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.game</groupId>
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
-
-        <!-- Redis：在线状态/房间缓存，可选 -->
+        <!-- HTTP 接口：登录/大厅/房间列表 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!-- MySQL -->

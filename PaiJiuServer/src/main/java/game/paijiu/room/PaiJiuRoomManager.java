@@ -5,14 +5,12 @@ import game.common.constant.RedisKeyConstants;
 import game.common.constant.RoomState;
 import game.common.constant.RoomType;
 import game.common.entity.RoomDTO;
-import game.paijiu.handler.CancelReadyHandler;
-import game.paijiu.util.RedisUtil;
+import game.common.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

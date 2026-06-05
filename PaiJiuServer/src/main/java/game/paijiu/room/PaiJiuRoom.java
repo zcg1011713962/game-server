@@ -149,7 +149,6 @@ public class PaiJiuRoom {
         player.setNickname(info.getNickname());
         player.setGold(info.getGold());
         player.setAvatar(info.getAvatar());
-        player.setDiamond(info.getDiamond());
 
         players.put(info.getId(), player);
         return player;

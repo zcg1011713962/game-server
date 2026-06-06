@@ -1,6 +1,7 @@
 package game.paijiu.room;
 
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSONObject;
 import game.common.constant.*;
 import game.common.entity.*;
@@ -11,6 +12,7 @@ import game.common.entity.res.NextRoundPush;
 import game.common.entity.res.PlayerLeaveSeatPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
+import game.common.service.RedisUserService;
 import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.Handler;
@@ -22,6 +24,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
@@ -137,19 +140,15 @@ public class PaiJiuRoom {
             old.setOnline(true);
             return old;
         }
-
         if (players.isEmpty()) {
             ownerUserId = info.getId();
         }
-
         PaiJiuPlayer player = new PaiJiuPlayer();
         player.setUserId(info.getId());
         player.setState(PlayerState.NONE);
         player.setOnline(true);
         player.setNickname(info.getNickname());
-        player.setGold(info.getGold());
         player.setAvatar(info.getAvatar());
-
         players.put(info.getId(), player);
         return player;
     }
@@ -307,22 +306,21 @@ public class PaiJiuRoom {
         if (state != RoomState.BET) {
             throw new GameException(GameError.ERROR11);
         }
-
         PaiJiuPlayer player = players.get(userId);
         if (player == null) {
             throw new GameException(GameError.ERROR2);
         }
-
         if (player.getState() != PlayerState.PLAYING) {
             throw new GameException(GameError.ERROR12);
         }
         if (chip <= 0) {
             throw new GameException(GameError.ERROR13);
         }
-        if(player.getGold() < chip){
+        RedisUserService redisUserService = SpringUtil.getBean(RedisUserService.class);
+        Long gold = redisUserService.changeGold(player.getUserId(), -chip);
+        if(gold < 0){
             throw new GameException(GameError.ERROR14);
         }
-        player.reduceGold(chip);
         return betMap.merge(userId, chip, Long::sum);
     }
 
@@ -351,7 +349,7 @@ public class PaiJiuRoom {
         if (bankerCards == null) {
             throw new GameException(GameError.ERROR17);
         }
-
+        RedisUserService redisUserService = SpringUtil.getBean(RedisUserService.class);
         List<SettlePlayerDTO> result = new ArrayList<>();
         long playerWin = 0;
         long bankerBet = 0;
@@ -364,41 +362,37 @@ public class PaiJiuRoom {
             if(player.getUserId().equals(bankerUserId)){
                 continue;
             }
-
             Long userId = player.getUserId();
             List<CardInfo> cards = cardMap.get(userId);
 
             long betAmount = betMap.getOrDefault(userId, 0L);
-            long beforeGold = player.getGold() == null ? 0L : player.getGold();
-
             int win;
-            long winAmount = 0;
+            long change = 0;
             int compare = CardUtils.compare(cards, bankerCards);
             if (compare > 0) {
                 win = WinState.WIN.code();
-                winAmount = betAmount;
-                // 翻倍
-                player.addGold(betAmount * 2);
+                change = betAmount * 2;
             } else if (compare == 0) {
                 win = WinState.DRAW.code();
-                // 归还本金
-                player.addGold(betAmount);
+                change = betAmount;
             } else {
                 win = WinState.LOSE.code();
-                winAmount = -betAmount;
             }
+
+            HandResult handResult = CardUtils.calcHand(cards);
+            long winAmount = change - betAmount;
             playerWin += winAmount;
             bankerBet += betAmount;
-            HandResult handResult = CardUtils.calcHand(cards);
 
-            long afterGold = player.getGold() == null ? beforeGold : player.getGold();
+            Long afterGold = redisUserService.changeGold(userId, change);
+            AssetPushManager.pushGold(gatewayId, userId, change, afterGold);
+
             result.add(SettlePlayerDTO.builder()
                     .userId(userId)
                     .seatId(player.getSeatId())
                     .win(win)
                     .betAmount(betAmount)
                     .winAmount(winAmount)
-                    .beforeGold(beforeGold)
                     .afterGold(afterGold)
                     .cards(cards)
                     .cardTypeName(handResult.getName())
@@ -415,22 +409,22 @@ public class PaiJiuRoom {
             bankerWinFlag = 2;
         }
 
+        Long afterGold = redisUserService.changeGold(bankerUserId, bankerWinAmount);
+        AssetPushManager.pushGold(gatewayId, bankerUserId, bankerWinAmount, afterGold);
+
         PaiJiuPlayer bankerPlayer = players.get(bankerUserId);
-        long beforeGold = bankerPlayer.getGold();
-        bankerPlayer.setGold(beforeGold + bankerWinAmount);
-        long afterGold = bankerPlayer.getGold() == null ? beforeGold : bankerPlayer.getGold();
         result.add(SettlePlayerDTO.builder()
                 .userId(bankerPlayer.getUserId())
                 .seatId(bankerPlayer.getSeatId())
                 .win(bankerWinFlag)
                 .betAmount(bankerBet)
                 .winAmount(bankerWinAmount)
-                .beforeGold(beforeGold)
                 .afterGold(afterGold)
                 .cards(bankerCards)
                 .cardTypeName(handResult.getName())
                 .settleDesc(calcDesc(bankerWinAmount).getDesc())
                 .build());
+
 
         state = RoomState.SETTLE;
         log.info("roomId: {} 房间状态:{}", roomId, state.name());

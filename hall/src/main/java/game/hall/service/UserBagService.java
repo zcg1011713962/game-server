@@ -5,11 +5,11 @@ import game.hall.mybatis.domain.DbUserBag;
 import java.util.List;
 
 public interface UserBagService {
-    void addProp(Long userId, String propCode, long count);
+    long changeProp(Long userId, String propCode, long changeCount);
 
     long getPropCount(Long userId, String propCode);
 
     List<DbUserBag> listUserBag(Long userId);
 
-    void reduceProp(Long userId, String propCode, long count);
+    void updateByRedis(Long userId);
 }

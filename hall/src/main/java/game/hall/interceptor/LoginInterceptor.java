@@ -24,6 +24,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             return writeUnauthorized(response);
         }
         Long userId = JwtUtil.getUserId(token);
+        if (userId == null) {
+            return writeUnauthorized(response);
+        }
         UserContext.setUserId(userId);
         return true;
     }

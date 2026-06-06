@@ -33,6 +33,7 @@ public class ReadyHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         ReadyReq data = JsonUtil.objToBean(req.getData(), ReadyReq.class);
+        log.info("ReadyHandler:{} {}", req.getUserId(), JsonUtil.toJson(data));
 
         PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
         if (room == null) {

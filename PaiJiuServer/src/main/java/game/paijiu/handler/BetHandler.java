@@ -49,18 +49,14 @@ public class BetHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         BetReq data = JsonUtil.objToBean(req.getData(), BetReq.class);
-
         if (data == null || data.getRoomId() == null || data.getChip() == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.PARAM_ERROR));
             return;
         }
+        log.info("BetHandler:{} {}", req.getUserId(), JsonUtil.toJson(data));
         User user = redisUserService.getUserById(req.getUserId());
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.USER_NOT_FOUND_ERROR));
-            return;
-        }
-        if(data.getChip() > user.getGold() ) {
-            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.BET_TOO_LARGE));
             return;
         }
         PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
@@ -68,11 +64,9 @@ public class BetHandler extends DispatcherHandler {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-
         long totalBet = room.bet(req.getUserId(), data.getChip());
 
         Integer seatId = room.getSeatId(req.getUserId());
-
         PlayerBetPush pushData = PlayerBetPush.builder()
                 .roomId(room.getRoomId())
                 .userId(req.getUserId())

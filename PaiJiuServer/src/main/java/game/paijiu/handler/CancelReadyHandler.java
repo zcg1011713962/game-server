@@ -33,7 +33,7 @@ public class CancelReadyHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         ReadyReq data = JsonUtil.objToBean(req.getData(), ReadyReq.class);
-
+        log.info("CancelReadyHandler:{} {}", req.getUserId(), JsonUtil.toJson(data));
         PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));

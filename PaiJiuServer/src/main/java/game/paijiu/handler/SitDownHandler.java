@@ -36,6 +36,7 @@ public class SitDownHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         SitDownReq data = JsonUtil.objToBean(req.getData(), SitDownReq.class);
+        log.info("SitDownHandler:{} {}", req.getUserId(), JsonUtil.toJson(data));
 
         if (data == null || data.getRoomId() == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.PARAM_ERROR));

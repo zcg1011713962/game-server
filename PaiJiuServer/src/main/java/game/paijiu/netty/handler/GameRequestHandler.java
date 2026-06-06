@@ -40,7 +40,16 @@ public class GameRequestHandler extends SimpleChannelInboundHandler<String> {
                         }
                     });
                 }else{
-                    GameThreadPoolUtil.execute(()-> DispatcherHandler.getHandler(req.getCmd().value()).exec(req));
+                    GameThreadPoolUtil.execute(()-> {
+                        try {
+                            DispatcherHandler.getHandler(req.getCmd().value()).exec(req);
+                        }catch (GameException e){
+                            ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, e.getCode(), e.getMessage())));
+                        }catch (Exception e){
+                            log.error("Handler异常:{}", e.getMessage());
+                            ctx.writeAndFlush(JsonUtil.toJson(GameResponse.error(req, ErrorCode.SYSTEM_ERROR)));
+                        }
+                    });
                 }
                 log.info("收到请求:{}", req.getCmd());
             }catch (Exception e){

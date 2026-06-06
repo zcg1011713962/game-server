@@ -8,6 +8,7 @@ import game.common.entity.res.GameResponse;
 import game.common.entity.res.PlayerLeavePush;
 import game.common.entity.res.PlayerLeaveSeatPush;
 import game.common.protocol.Cmd;
+import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
@@ -31,6 +32,7 @@ public class LeaveSeatHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
+        log.info("LeaveSeatHandler:{}", req.getUserId());
         PaiJiuRoom room = roomManager.get(req.getRoomId(), req.getGatewayId());
         if (room == null) {
             return;

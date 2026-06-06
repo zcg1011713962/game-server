@@ -40,7 +40,7 @@ public class FreeMatchHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        log.info("FreeMatchHandler:{}", req);
+        log.info("FreeMatchHandler:{}", req.getUserId());
         User user = redisUserService.getUserById(req.getUserId());
         if(user == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.USER_NOT_FOUND_ERROR));

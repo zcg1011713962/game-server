@@ -36,8 +36,8 @@ public class LeaveRoomHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        log.info("LeaveRoomHandler:{}", req);
         LeaveRoomReq leaveRoomReq = JsonUtil.parse(req.getData().toString(), LeaveRoomReq.class);
+        log.info("LeaveRoomHandler:{} {}", req.getUserId(), JsonUtil.toJson(leaveRoomReq));
         if(leaveRoomReq.getRoomId() == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;

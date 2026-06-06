@@ -26,8 +26,6 @@ public class SettlePlayerDTO {
 
     private Long winAmount;
 
-    private Long beforeGold;
-
     private Long afterGold;
 
     private List<CardInfo> cards;

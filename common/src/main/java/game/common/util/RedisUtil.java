@@ -3,10 +3,14 @@ package game.common.util;
 import com.alibaba.fastjson2.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +19,33 @@ public class RedisUtil {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    private static final DefaultRedisScript<Long> CHANGE_ASSET_SCRIPT;
+
+    static {
+        CHANGE_ASSET_SCRIPT = new DefaultRedisScript<>();
+        CHANGE_ASSET_SCRIPT.setResultType(Long.class);
+        CHANGE_ASSET_SCRIPT.setScriptText(
+                "local current = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0') "
+                        + "local delta = tonumber(ARGV[2]) "
+                        + "if delta == nil then "
+                        + " return -2 "
+                        + "end "
+                        + "local after = current + delta "
+                        + "if after < 0 then "
+                        + " return -1 "
+                        + "end "
+                        + "redis.call('HINCRBY', KEYS[1], ARGV[1], delta) "
+                        + "return after "
+        );
+    }
+
+    // =========================
+    // 普通 Value 缓存
+    // =========================
 
     public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
@@ -38,11 +69,10 @@ public class RedisUtil {
         return redisTemplate.hasKey(key);
     }
 
-    public Boolean expire(String key, long seconds) {
-        if (seconds <= 0) {
-            return false;
+    public void expire(String key, long seconds) {
+        if (seconds > 0) {
+            redisTemplate.expire(key, seconds, TimeUnit.SECONDS);
         }
-        return redisTemplate.expire(key, seconds, TimeUnit.SECONDS);
     }
 
     public Long getExpire(String key) {
@@ -64,6 +94,10 @@ public class RedisUtil {
     public Long decr(String key, long delta) {
         return redisTemplate.opsForValue().increment(key, -delta);
     }
+
+    // =========================
+    // 普通 Hash 缓存：对象用
+    // =========================
 
     public void hset(String key, String field, Object value) {
         redisTemplate.opsForHash().put(key, field, value);
@@ -101,38 +135,100 @@ public class RedisUtil {
         if (map.isEmpty()) {
             return null;
         }
+
         return JSON.parseObject(
                 JSON.toJSONString(map),
                 clazz
         );
     }
 
-    public Object hmget(String key, String fields) {
-        return redisTemplate.opsForHash().get(key, fields);
+    public Object hmget(String key, String field) {
+        return redisTemplate.opsForHash().get(key, field);
     }
 
-    public List<Object> hmget(String key, Collection<Object> fields) {
-        return redisTemplate.opsForHash().multiGet(key, fields);
+    // =========================
+    // 资产 Hash：金币/房卡/钻石专用
+    // 必须使用 StringRedisTemplate
+    // =========================
+
+    public void assetHSet(String key, String field, long value) {
+        stringRedisTemplate.opsForHash().put(
+                key,
+                field,
+                String.valueOf(value)
+        );
     }
 
-    public Long hdel(String key, Object... fields) {
-        return redisTemplate.opsForHash().delete(key, fields);
+    public void assetHSet(String key, String field, long value, long expireSeconds) {
+        assetHSet(key, field, value);
+        assetExpire(key, expireSeconds);
     }
 
-    public Boolean hHasKey(String key, String field) {
-        return redisTemplate.opsForHash().hasKey(key, field);
+    public void assetHMSet(String key, Map<String, ?> map) {
+        if (map == null || map.isEmpty()) {
+            return;
+        }
+
+        Map<String, String> data = new HashMap<>();
+
+        map.forEach((field, value) -> {
+            if (field != null && value != null) {
+                data.put(field, String.valueOf(value));
+            }
+        });
+
+        if (!data.isEmpty()) {
+            stringRedisTemplate.opsForHash().putAll(key, data);
+        }
     }
 
-    public Long hincr(String key, String field, long value) {
-        return redisTemplate.opsForHash().increment(key, field, value);
+    public void assetHMSet(String key, Map<String, ?> map, long expireSeconds) {
+        assetHMSet(key, map);
+        assetExpire(key, expireSeconds);
     }
 
-    public Double hincr(String key, String field, double value) {
-        return redisTemplate.opsForHash().increment(key, field, value);
+    public Long assetHGetLong(String key, String field) {
+        Object value = stringRedisTemplate.opsForHash().get(key, field);
+
+        if (value == null) {
+            return 0L;
+        }
+
+        return Long.parseLong(String.valueOf(value));
     }
 
-    public Long hsize(String key) {
-        return redisTemplate.opsForHash().size(key);
+    public Map<Object, Object> assetHMGet(String key) {
+        return stringRedisTemplate.opsForHash().entries(key);
+    }
+
+    public Long assetHDel(String key, Object... fields) {
+        return stringRedisTemplate.opsForHash().delete(key, fields);
+    }
+
+    public void assetExpire(String key, long seconds) {
+        if (seconds > 0) {
+            stringRedisTemplate.expire(key, seconds, TimeUnit.SECONDS);
+        }
+    }
+
+    /**
+     * 资产变更：正数增加，负数扣除
+     *
+     * 返回：
+     * >=0 最新值
+     * -1 余额不足
+     * -2 参数错误
+     */
+    public Long changeAsset(String key, String field, long delta) {
+        if (!StringUtils.hasText(key) || !StringUtils.hasText(field)) {
+            return -2L;
+        }
+        return stringRedisTemplate.execute(
+                CHANGE_ASSET_SCRIPT,
+                Collections.singletonList(key),
+                field,
+                String.valueOf(delta)
+        );
     }
 
     public void convertAndSend(String channel, Object msg) {

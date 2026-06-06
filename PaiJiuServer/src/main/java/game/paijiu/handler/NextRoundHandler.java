@@ -31,6 +31,7 @@ public class NextRoundHandler extends DispatcherHandler {
     @Override
     public void exec(GameRequest req) {
         NextRoundReq nextRoundReq = JsonUtil.parse(req.getData().toString(), NextRoundReq.class);
+
         PaiJiuRoom room = roomManager.get(nextRoundReq.getRoomId(), req.getGatewayId());
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));

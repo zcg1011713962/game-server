@@ -41,38 +41,18 @@ public class ShopServiceImpl implements ShopService {
         if (!Integer.valueOf(1).equals(config.getIsEnable())) {
             throw new HallException("商品已下架");
         }
-
+        // 购买加赠送
         long totalCount = config.getItemCount() + config.getGiftCount();
-
         if (totalCount <= 0) {
             throw new HallException("商品数量错误");
         }
-
         // 当前先按 productType 发放
         if (Integer.valueOf(1).equals(config.getProductType())) {
-
-            userBagService.addProp(
-                    userId,
-                    PropCodeEnum.ROOM_CARD.getCode(),
-                    totalCount
-            );
-
+            userBagService.changeProp(userId, PropCodeEnum.ROOM_CARD.getCode(), totalCount);
         } else if (Integer.valueOf(2).equals(config.getProductType())) {
-
-            userBagService.addProp(
-                    userId,
-                    PropCodeEnum.GOLD.getCode(),
-                    totalCount
-            );
-
+            userService.changeGold(userId, totalCount);
         } else if (Integer.valueOf(3).equals(config.getProductType())) {
-
-            userBagService.addProp(
-                    userId,
-                    PropCodeEnum.DIAMOND.getCode(),
-                    totalCount
-            );
-
+            userBagService.changeProp(userId, PropCodeEnum.DIAMOND.getCode(), totalCount);
         } else {
             throw new HallException("暂不支持该商品类型");
         }

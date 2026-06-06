@@ -31,16 +31,16 @@ public class LoginServiceImpl implements LoginService {
     private RedisUtil redisUtil;
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserBagService userBagService;
 
     private static final long EXPIRE_TIME = 7 * 24 * 60 * 60;
 
     @Override
     public ServerMsg loginByGuest(GuestLoginReq req) {
         if (StringUtils.isBlank(req.getToken())) {
+            // 创建用户
             return createGuestUser();
         }
+        // 缓存登录
         return loginByToken(req.getToken());
     }
 
@@ -99,10 +99,7 @@ public class LoginServiceImpl implements LoginService {
                                      Long gold,
                                      String token) {
 
-        long roomCard = userBagService.getPropCount(
-                userId,
-                PropCodeEnum.ROOM_CARD.getCode()
-        );
+        User user = userService.getUserById(userId);
 
         return ServerMsg.ok(LoginResp.builder()
                 .userId(userId)
@@ -110,12 +107,12 @@ public class LoginServiceImpl implements LoginService {
                 .avatar(avatar)
                 .gold(gold)
                 .token(token)
-                .roomCard(roomCard)
+                .roomCard(user == null ? 0 : user.getRoomCard())
                 .build());
     }
 
     private void cacheUser(DbUser dbUser) {
-        redisUtil.hmset(
+        redisUtil.assetHMSet(
                 RedisKeyConstants.player(dbUser.getId()),
                 BeanUtil.beanToMap(dbUser, false, true),
                 EXPIRE_TIME

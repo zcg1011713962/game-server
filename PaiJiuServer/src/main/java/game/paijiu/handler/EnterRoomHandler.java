@@ -37,8 +37,8 @@ public class EnterRoomHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        log.info("EnterRoomHandler:{}", req);
         EnterRoomReq enterRoomReq = JsonUtil.parse(req.getData().toString(), EnterRoomReq.class);
+        log.info("EnterRoomHandler:{} {}", req.getUserId(), JsonUtil.toJson(enterRoomReq));
         if(enterRoomReq.getRoomId() == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;

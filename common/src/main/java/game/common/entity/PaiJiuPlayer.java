@@ -9,6 +9,7 @@ public class PaiJiuPlayer {
     private String avatar;
     private String nickname;
     private Integer seatId = -1;
+    private Long gold;
     private PlayerState state = PlayerState.NONE;
     // 坐下时间
     private long sitDownTime;
@@ -21,6 +22,7 @@ public class PaiJiuPlayer {
         dto.setNickname(nickname);
         dto.setSeatId(seatId);
         dto.setState(state.code());
+        dto.setGold(gold);
         return dto;
     }
 }

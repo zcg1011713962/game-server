@@ -12,6 +12,7 @@ import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.DealCardPush;
 import game.common.entity.res.GameResponse;
+import game.common.entity.res.NextRoundPush;
 import game.common.entity.res.PlayerBetPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
@@ -35,12 +36,15 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class BetHandler extends DispatcherHandler {
+
     @Autowired
-    PaiJiuRoomManager roomManager;
+    private PaiJiuRoomManager roomManager;
+
     @Autowired
-    GamePushService gamePushService;
+    private GamePushService gamePushService;
+
     @Autowired
-    RedisUserService redisUserService;
+    private RedisUserService redisUserService;
 
     public BetHandler() {
         super(Cmd.BET.value());
@@ -48,25 +52,39 @@ public class BetHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
+
         BetReq data = JsonUtil.objToBean(req.getData(), BetReq.class);
+
         if (data == null || data.getRoomId() == null || data.getChip() == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.PARAM_ERROR));
             return;
         }
-        log.info("BetHandler:{} {}", req.getUserId(), JsonUtil.toJson(data));
+
+        log.info("BetHandler userId={} data={}", req.getUserId(), JsonUtil.toJson(data));
+
         User user = redisUserService.getUserById(req.getUserId());
-        if(user == null){
+
+        if (user == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.USER_NOT_FOUND_ERROR));
             return;
         }
+
         PaiJiuRoom room = roomManager.get(data.getRoomId(), req.getGatewayId());
+
         if (room == null) {
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
+
+        if (room.getState() != RoomState.BET) {
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.NOT_BET_STATUS));
+            return;
+        }
+
         long totalBet = room.bet(req.getUserId(), data.getChip());
 
         Integer seatId = room.getSeatId(req.getUserId());
+
         PlayerBetPush pushData = PlayerBetPush.builder()
                 .roomId(room.getRoomId())
                 .userId(req.getUserId())
@@ -85,11 +103,9 @@ public class BetHandler extends DispatcherHandler {
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(pushData).build());
-        // 金币变化
-        //gamePushService.pushGoldChange(req, room.getRoomId(), req.getUserId(), , -data.getChip(), "bet");
+                .data(pushData)
+                .build());
 
-        // 广播
         GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(req.getGatewayId())
@@ -98,53 +114,205 @@ public class BetHandler extends DispatcherHandler {
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(pushData).build());
+                .data(pushData)
+                .build());
 
-        // 所有人都下注了，进入发牌
-        if (room.canDeal()) {
-            room.setState(RoomState.DEAL);
-            // 1. 生成牌
-            List<List<CardInfo>> hands = CardUtils.deal(room.getPlayingCount());
-
-            // 2. 转换为DTO
-            List<PlayerCardDTO> list = new ArrayList<>();
-            int index = 0;
-            for (PaiJiuPlayer p : room.getPlayers().values()) {
-                if (p.getState() == PlayerState.PLAYING) {
-                    List<CardInfo> hand = hands.get(index++);
-                    // 保存手牌
-                    room.getCardMap().put(p.getUserId(), hand);
-
-                    PlayerCardDTO dto = new PlayerCardDTO();
-                    dto.setUserId(p.getUserId());
-                    dto.setSeatId(p.getSeatId());
-                    dto.setCards(hand);
-                    list.add(dto);
-                }
-            }
-            // 房间快照
+        if (!room.canDeal()) {
             roomManager.save(room);
+            return;
+        }
 
-            GameResponse dealPush = GameResponse.push(room.getRoomId(), Cmd.DEAL_CARD, DealCardPush.builder()
-                            .roomId(room.getRoomId())
-                            .roomState(room.getState().code())
-                            .bankerSeat(room.getBankerSeat())
-                            .playerCards(list)
-                            .build()
-            );
+        startDeal(req, room);
+    }
 
-            DelayTaskUtil.getInstance().scheduleSeconds(()-> GatewayChannelManager.send(req.getGatewayId(), dealPush), 3);
+    /**
+     * 所有人下注完成，进入发牌阶段
+     */
+    private void startDeal(GameRequest req, PaiJiuRoom room) {
 
-            DelayTaskUtil.getInstance().scheduleSeconds(()->{
-                // 结算
-                SettlePush settlePush = room.settle();
+        if (room.getState() == RoomState.DEAL) {
+            return;
+        }
 
-                roomManager.save(room);
+        room.setState(RoomState.DEAL);
+
+        List<List<CardInfo>> hands = CardUtils.deal(room.getPlayingCount());
+
+        List<PlayerCardDTO> playerCardList = new ArrayList<>();
+
+        int index = 0;
+
+        for (PaiJiuPlayer p : room.getPlayers().values()) {
+
+            if (p.getState() != PlayerState.PLAYING) {
+                continue;
+            }
+
+            List<CardInfo> hand = hands.get(index++);
+
+            room.getCardMap().put(p.getUserId(), hand);
+
+            PlayerCardDTO dto = new PlayerCardDTO();
+            dto.setUserId(p.getUserId());
+            dto.setSeatId(p.getSeatId());
+            dto.setCards(hand);
+
+            playerCardList.add(dto);
+        }
+
+        /**
+         * 时间轴：
+         *
+         * now
+         * +1000ms   开始发牌
+         * +6000ms   翻牌
+         * +9000ms   结算
+         * +13000ms  下一轮
+         */
+        long now = System.currentTimeMillis();
+
+        long dealStartTime = now + 1000L;
+        long showCardTime = now + 6000L;
+        long settleTime = now + 9000L;
+        long nextRoundTime = now + 13000L;
+
+        roomManager.save(room);
+
+        DealCardPush dealCardPush = DealCardPush.builder()
+                .roomId(room.getRoomId())
+                .roomState(room.getState().code())
+                .bankerSeat(room.getBankerSeat())
+                .playerCards(playerCardList)
+                .serverTime(now)
+                .dealStartTime(dealStartTime)
+                .showCardTime(showCardTime)
+                .settleTime(settleTime)
+                .nextRoundTime(nextRoundTime)
+                .build();
+
+        GatewayChannelManager.send(
+                req.getGatewayId(),
+                GameResponse.push(
+                        room.getRoomId(),
+                        Cmd.DEAL_CARD,
+                        dealCardPush
+                )
+        );
+
+        scheduleSettle(req, room.getRoomId(), now, settleTime, nextRoundTime);
+
+        scheduleNextRound(req, room.getRoomId(), nextRoundTime);
+    }
+
+    /**
+     * 定时结算
+     */
+    private void scheduleSettle(
+            GameRequest req,
+            Long roomId,
+            long roundStartTime,
+            long settleTime,
+            long nextRoundTime
+    ) {
+
+        long settleDelayMs = Math.max(0L, settleTime - System.currentTimeMillis());
+
+        DelayTaskUtil.getInstance().scheduleMillis(() -> {
+
+            try {
+                PaiJiuRoom currRoom = roomManager.get(roomId, req.getGatewayId());
+
+                if (currRoom == null) {
+                    log.warn("结算失败，房间不存在 roomId={}", roomId);
+                    return;
+                }
+
+                if (currRoom.getState() != RoomState.DEAL) {
+                    log.warn("结算跳过，房间状态不是DEAL roomId={} state={}", currRoom.getRoomId(), currRoom.getState());
+                    return;
+                }
+
+                SettlePush settlePush = currRoom.settle(System.currentTimeMillis(), settleTime, nextRoundTime);
+                roomManager.save(currRoom);
+
                 GatewayChannelManager.send(
                         req.getGatewayId(),
-                        GameResponse.push(room.getRoomId(), Cmd.SETTLE, settlePush)
+                        GameResponse.push(
+                                currRoom.getRoomId(),
+                                Cmd.SETTLE,
+                                settlePush
+                        )
                 );
-            }, 7);
-        }
+
+            } catch (Exception e) {
+                log.error("结算异常 roomId={}", roomId, e);
+            }
+
+        }, settleDelayMs);
+    }
+
+    /**
+     * 定时自动进入下一轮
+     */
+    private void scheduleNextRound(
+            GameRequest req,
+            Long roomId,
+            long nextRoundTime
+    ) {
+
+        long nextRoundDelayMs = Math.max(0L, nextRoundTime - System.currentTimeMillis());
+
+        DelayTaskUtil.getInstance().scheduleMillis(() -> {
+
+            try {
+                PaiJiuRoom currRoom = roomManager.get(roomId, req.getGatewayId());
+
+                if (currRoom == null) {
+                    log.warn("下一轮失败，房间不存在 roomId={}", roomId);
+                    return;
+                }
+
+                if (currRoom.getState() != RoomState.SETTLE) {
+                    log.warn("下一轮跳过，房间状态不是SETTLE roomId={} state={}", currRoom.getRoomId(), currRoom.getState());
+                    return;
+                }
+
+                /**
+                 * 这里需要你在 PaiJiuRoom 里实现 nextRound()
+                 * 建议里面做：
+                 * 1. roundId + 1
+                 * 2. state = READY 或 WAIT
+                 * 3. 清空 betMap
+                 * 4. 清空 cardMap
+                 * 5. 清空结算数据
+                 * 6. 玩家状态改成 SIT/READY前状态
+                 */
+                currRoom.nextRound();
+
+                roomManager.save(currRoom);
+
+                NextRoundPush nextRoundPush = NextRoundPush.builder()
+                        .roomId(currRoom.getRoomId())
+                        .roundId(currRoom.getRoundId())
+                        .roomState(currRoom.getState().code())
+                        .players(currRoom.getPlayerDTOList())
+                        .serverTime(System.currentTimeMillis())
+                        .nextRoundTime(nextRoundTime)
+                        .build();
+
+                GatewayChannelManager.send(
+                        req.getGatewayId(),
+                        GameResponse.push(
+                                currRoom.getRoomId(),
+                                Cmd.NEXT_ROUND,
+                                nextRoundPush
+                        )
+                );
+
+            } catch (Exception e) {
+                log.error("自动进入下一轮异常 roomId={}", roomId, e);
+            }
+
+        }, nextRoundDelayMs);
     }
 }

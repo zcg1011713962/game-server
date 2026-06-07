@@ -89,8 +89,6 @@ public class PaiJiuRoom {
 
     private AtomicBoolean initFlag = new AtomicBoolean(false);
 
-    private Set<Long> settledRoundIdSet = new HashSet<>();
-
     private Map<Long, ScheduledFuture<?>> settleScheduledMap = new HashMap<>();
 
     private PaiJiuRoomManager paiJiuRoomManager;
@@ -149,6 +147,7 @@ public class PaiJiuRoom {
         player.setOnline(true);
         player.setNickname(info.getNickname());
         player.setAvatar(info.getAvatar());
+        player.setGold(info.getGold());
         players.put(info.getId(), player);
         return player;
     }
@@ -321,6 +320,7 @@ public class PaiJiuRoom {
         if(gold < 0){
             throw new GameException(GameError.ERROR14);
         }
+        player.setGold(gold);
         return betMap.merge(userId, chip, Long::sum);
     }
 
@@ -334,7 +334,7 @@ public class PaiJiuRoom {
     }
 
 
-    public synchronized SettlePush settle() {
+    public synchronized SettlePush settle(long settleTime, long serverTime, long nextRoundTime) {
 
         if (state != RoomState.DEAL) {
             throw new GameException(GameError.ERROR15);
@@ -387,6 +387,8 @@ public class PaiJiuRoom {
             Long afterGold = redisUserService.changeGold(userId, change);
             AssetPushManager.pushGold(gatewayId, userId, change, afterGold);
 
+            player.setGold(afterGold);
+
             result.add(SettlePlayerDTO.builder()
                     .userId(userId)
                     .seatId(player.getSeatId())
@@ -413,6 +415,8 @@ public class PaiJiuRoom {
         AssetPushManager.pushGold(gatewayId, bankerUserId, bankerWinAmount, afterGold);
 
         PaiJiuPlayer bankerPlayer = players.get(bankerUserId);
+        bankerPlayer.setGold(afterGold);
+
         result.add(SettlePlayerDTO.builder()
                 .userId(bankerPlayer.getUserId())
                 .seatId(bankerPlayer.getSeatId())
@@ -427,43 +431,16 @@ public class PaiJiuRoom {
 
 
         state = RoomState.SETTLE;
-        log.info("roomId: {} 房间状态:{}", roomId, state.name());
         settlePush = SettlePush.builder()
                 .roomId(roomId)
                 .roomState(state.code())
                 .bankerSeat(bankerSeat)
-                .players(result)
+                .settlePlayers(result)
+                .players(this.getPlayerDTOList())
+                .setServerTime(serverTime)
+                .setSettleTime(settleTime)
+                .nextRoundTime(nextRoundTime)
                 .build();
-
-        settledRoundIdSet.add(this.roundId);
-        Set<Long> userIds = this.players.values().stream().map(PaiJiuPlayer::getUserId).collect(Collectors.toSet());
-        long currRoundId = this.roundId;
-        // 延时7秒自动下一轮
-        ScheduledFuture<?> scheduledTask= DelayTaskUtil.getInstance().scheduleSeconds(()->{
-            long rId = nextRound(currRoundId);
-            if(rId!= currRoundId){
-                log.info("下一轮成功,自动 from {} to {}", currRoundId, rId);
-                this.saveRoom();
-                for (Long userId : userIds) {
-                    GatewayChannelManager.send(gatewayId, GameResponse.builder()
-                            .traceId(UUID.randomUUID().toString())
-                            .gatewayId(gatewayId)
-                            .pushType(PushType.ROOM.code())
-                            .cmd(Cmd.NEXT_ROUND_RESULT)
-                            .userId(userId)
-                            .roomId(this.roomId)
-                            .code(ErrorCode.SUCCESS.code())
-                            .data(NextRoundPush.builder()
-                                    .roundId(currRoundId)
-                                    .roomState(state.code())
-                                    .roomId(roomId)
-                                    .players(this.getPlayerDTOList())
-                                    .build())
-                            .build());
-                }
-            }
-        }, 10);
-        this.settleScheduledMap.put(this.roundId, scheduledTask);
         return settlePush;
     }
 
@@ -525,40 +502,29 @@ public class PaiJiuRoom {
         this.bankerSeat = list.get(index).getSeatId();
     }
 
-    public synchronized long nextRound(Long rId) {
-        if(!settledRoundIdSet.contains(rId)){
-            return roundId;
-        }
-        if(rId == roundId){
-            ScheduledFuture<?> scheduledTask = this.settleScheduledMap.get(rId);
-            if(scheduledTask != null){
-                scheduledTask.cancel(false);
-                this.settleScheduledMap.remove(rId);
+    public synchronized void nextRound() {
+        // 1. 局号 +1
+        roundId++;
+        log.info("房间:{} 进入第{} 局", this.roomId, this.roundId);
+        // 2. 清空上一局数据
+        betMap.clear();
+        cardMap.clear();
+        settlePush = null;
+        bankerSeat = -1;
+        // 3. 玩家状态重置
+        for (PaiJiuPlayer p : players.values()) {
+            if (p.getSeatId() >= 0) {
+                p.setState(PlayerState.SIT); // 或 READY
+                p.setSitDownTime(System.currentTimeMillis());
             }
-            // 1. 局号 +1
-            roundId++;
-            log.info("房间:{} 进入第{} 局", this.roomId, this.roundId);
-            // 2. 清空上一局数据
-            betMap.clear();
-            cardMap.clear();
-            settlePush = null;
-            bankerSeat = -1;
-            // 3. 玩家状态重置
-            for (PaiJiuPlayer p : players.values()) {
-                if (p.getSeatId() >= 0) {
-                    p.setState(PlayerState.SIT); // 或 READY
-                    p.setSitDownTime(System.currentTimeMillis());
-                }
-            }
-            // 4. 状态切回等待
-            state = RoomState.WAIT;
-            log.info("roomId: {} 房间状态:{}", roomId, state.name());
         }
-        return roundId;
+        // 4. 状态切回等待
+        state = RoomState.WAIT;
+        log.info("roomId: {} 房间状态:{}", roomId, state.name());
     }
 
-    public synchronized void startBetCountdown(String gatewayId, Handler betHandler) {
-        this.betEndTime = System.currentTimeMillis() + betSeconds * 1000L;
+    public synchronized void startBetCountdown(String gatewayId, Handler betHandler, long betEndTime) {
+        this.betEndTime = betEndTime;
         if(scheduledFuture == null){
             scheduledFuture = DelayTaskUtil.getInstance().schedule(() -> {
                 try {

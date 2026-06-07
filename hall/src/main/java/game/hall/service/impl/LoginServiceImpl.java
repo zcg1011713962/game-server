@@ -3,7 +3,6 @@ package game.hall.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import game.common.constant.ErrorCode;
-import game.common.constant.PropCodeEnum;
 import game.common.constant.RedisKeyConstants;
 import game.common.entity.User;
 import game.common.protocol.ServerMsg;
@@ -15,9 +14,7 @@ import game.hall.entity.res.LoginResp;
 import game.hall.mybatis.domain.DbUser;
 import game.hall.mybatis.service.DbUserService;
 import game.hall.service.LoginService;
-import game.hall.service.UserBagService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
 package game.common.entity.res;
 
+import game.common.entity.PlayerDTO;
 import game.common.entity.SettlePlayerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,13 @@ public class SettlePush {
 
     private Integer bankerSeat;
 
-    private List<SettlePlayerDTO> players;
+    private List<SettlePlayerDTO> settlePlayers;
+
+    private List<PlayerDTO> players;
+
+    private Long setServerTime;
+
+    private Long setSettleTime;
+
+    private Long nextRoundTime;
 }

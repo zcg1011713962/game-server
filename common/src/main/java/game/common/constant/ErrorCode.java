@@ -36,7 +36,8 @@ public enum ErrorCode {
     // ===================== 下注 =====================
     BET_INVALID(6001, "下注无效"),
     GOLD_NOT_ENOUGH(6002, "金币不足"),
-    BET_TOO_LARGE(6003, "下注过大");
+    BET_TOO_LARGE(6003, "下注过大"),
+    NOT_BET_STATUS(6004, "非下注状态");
 
     private final int code;
     private final String msg;

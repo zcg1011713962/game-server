@@ -14,4 +14,6 @@ public class NextRoundPush {
     private Long roundId;
     private Integer roomState;
     private List<PlayerDTO> players;
+    private Long serverTime;
+    private Long nextRoundTime;
 }

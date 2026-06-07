@@ -1,14 +1,14 @@
 package game.common.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Slf4j
 public class JwtUtil {
     private static final String SECRET = "p7K9vX3qLm2Zt8QwY5HfR0sN6cA1eD4jUoGkB9PzVxC7M2rT";
     private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -18,14 +18,20 @@ public class JwtUtil {
     private JwtUtil() {}
     // 获取用户ID
     public static Long getUserId(String token) {
-        Claims claims = parseClaims(token);
 
-        Object userId = claims.get("userId");
-        if (userId == null) {
+        try {
+            Claims claims = parseClaims(token);
+            Object userId = claims.get("userId");
+            if (userId == null) {
+                return null;
+            }
+            return Long.valueOf(userId.toString());
+        } catch (ExpiredJwtException e) {
+            return null;
+        } catch (Exception e) {
+            log.error("JwtUtil.getUserId error:{}", e.getMessage());
             return null;
         }
-
-        return Long.valueOf(userId.toString());
     }
 
     // 解析 token

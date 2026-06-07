@@ -41,19 +41,24 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 
     /**
-     * 返回 401 JSON 给客户端
+     * token失效
+     * 返回业务错误码，不返回HTTP 401
      */
     private boolean writeUnauthorized(HttpServletResponse response) {
+
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        // 不返回HTTP错误
+        response.setStatus(HttpServletResponse.SC_OK);
 
         try (PrintWriter writer = response.getWriter()) {
             writer.write(JsonUtil.toJson(ServerMsg.error(ErrorCode.NOT_AUTH)));
             writer.flush();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("writeUnauthorized error", e);
         }
-        return false; // 阻止继续调用 Controller
+
+        return false;
     }
 }

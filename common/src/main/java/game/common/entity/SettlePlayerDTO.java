@@ -33,4 +33,5 @@ public class SettlePlayerDTO {
     private String cardTypeName;
 
     private String settleDesc;
+
 }

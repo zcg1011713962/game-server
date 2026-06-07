@@ -82,6 +82,14 @@ public class ReadyHandler extends DispatcherHandler {
             // 选庄
             room.selectBanker();
 
+            long now = System.currentTimeMillis();
+            long roundAnimStartTime = now;
+            long roundAnimExpireTime = now + 3000L;
+
+            // 下注结束时间从动画后开始算
+            long betStartTime = roundAnimExpireTime;
+            long betEndTime = betStartTime + room.getBetSeconds() * 1000L;
+
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
                     .gatewayId(req.getGatewayId())
@@ -93,13 +101,19 @@ public class ReadyHandler extends DispatcherHandler {
                     .data(GameStartPush.builder()
                             .bankerSeat(room.getBankerSeat())
                             .roomId(room.getRoomId())
+                            .roundId(room.getRoundId())
                             .roomState(room.getState().code())
                             .players(room.getPlayerDTOList())
                             .betSeconds(room.getBetSeconds())
+                            .serverTime(now)
+                            .roundAnimStartTime(roundAnimStartTime)
+                            .roundAnimExpireTime(roundAnimExpireTime)
+                            .betStartTime(betStartTime)
+                            .betEndTime(betEndTime)
                             .build())
                     .build());
             // 自动投注倒计时
-            room.startBetCountdown(req.getGatewayId(), DispatcherHandler.getHandler(Cmd.BET.value()));
+            room.startBetCountdown(req.getGatewayId(), DispatcherHandler.getHandler(Cmd.BET.value()), betEndTime);
         }
         // 房间快照
         roomManager.save(room);

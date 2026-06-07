@@ -19,4 +19,16 @@ public class DealCardPush {
      * 每个玩家的牌
      */
     private List<PlayerCardDTO> playerCards;
+
+    private Long serverTime;
+
+    private Long dealStartTime;
+
+    private Long showCardTime;
+
+    private Long settleTime;
+
+    private Long nextRoundTime;
+
+
 }

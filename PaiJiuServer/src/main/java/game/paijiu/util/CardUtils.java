@@ -21,9 +21,6 @@ public class CardUtils {
         return arr;
     }
 
-    /**
-     * 发牌：每人2张
-     */
     public static List<List<CardInfo>> deal(long playerCount) {
         List<CardInfo> deck = shuffle(getDeck());
 
@@ -43,65 +40,70 @@ public class CardUtils {
         return hands;
     }
 
-    /**
-     * 计算点数：取个位
-     */
     public static int calcPoint(List<CardInfo> cards) {
         checkHand(cards);
         return (cards.get(0).getValue() + cards.get(1).getValue()) % 10;
     }
 
-    /**
-     * 是否对子
-     */
     public static boolean isPair(List<CardInfo> cards) {
         checkHand(cards);
         return Objects.equals(cards.get(0).getName(), cards.get(1).getName());
     }
 
-    /**
-     * 单张牌大小
-     */
     public static int getCardRank(CardInfo card) {
-        return card.getId();
+        if (card == null || card.getName() == null) {
+            return 0;
+        }
+
+        return switch (card.getName()) {
+            case "天牌" -> 17;
+            case "地牌" -> 16;
+            case "人牌" -> 15;
+            case "和牌" -> 14;
+            case "梅花" -> 13;
+            case "长三" -> 12;
+            case "板凳" -> 11;
+            case "斧头" -> 10;
+            case "红头十" -> 9;
+            case "高脚七" -> 8;
+            case "铜锤六" -> 7;
+            case "九点" -> 6;
+            case "八点" -> 5;
+            case "七点" -> 4;
+            case "五点" -> 3;
+            case "大头六" -> 2;
+            case "丁三" -> 1;
+            default -> 0;
+        };
     }
 
-    /**
-     * 最大单张牌
-     */
     public static int getMaxCardRank(List<CardInfo> cards) {
         checkHand(cards);
-        return Math.max(
-                getCardRank(cards.get(0)),
-                getCardRank(cards.get(1))
-        );
+        return Math.max(getCardRank(cards.get(0)), getCardRank(cards.get(1)));
     }
 
-    /**
-     * 计算牌型
-     */
     public static HandResult calcHand(List<CardInfo> cards) {
-
         checkHand(cards);
 
         PaiJiuType type = getPaiJiuType(cards);
-
         int point = calcPoint(cards);
 
         return switch (type) {
-            case ZHI_ZUN, DOUBLE_TIAN, DOUBLE_DI, DOUBLE_REN, DOUBLE_E -> new HandResult(
+            case ZHI_ZUN, DOUBLE_TIAN, DOUBLE_DI, DOUBLE_REN, DOUBLE_HE -> new HandResult(
                     cards,
                     type.getRank(),
                     point,
                     type.getName()
             );
+
             case PAIR -> new HandResult(
                     cards,
-                    700 + getMaxCardRank(cards),
+                    type.getRank() + getMaxCardRank(cards),
                     point,
-                    "对子-" + cards.get(0).getName()
+                    type.getName() + "-" + cards.get(0).getName()
             );
-            default -> new HandResult(
+
+            case POINT -> new HandResult(
                     cards,
                     point,
                     point,
@@ -110,70 +112,50 @@ public class CardUtils {
         };
     }
 
-    /**
-     * 比牌
-     * > 0 a赢
-     * < 0 b赢
-     * = 0 平局
-     */
     public static int compare(List<CardInfo> a, List<CardInfo> b) {
         HandResult ra = calcHand(a);
         HandResult rb = calcHand(b);
 
         if (ra.getType() != rb.getType()) {
-            return ra.getType() - rb.getType();
+            return Integer.compare(ra.getType(), rb.getType());
         }
 
-        return getMaxCardRank(a) - getMaxCardRank(b);
-    }
+        PaiJiuType type = getPaiJiuType(a);
 
-    public static boolean isWin(List<CardInfo> a, List<CardInfo> b) {
-        return compare(a, b) > 0;
-    }
-
-    private static void checkHand(List<CardInfo> cards) {
-        if (cards == null || cards.size() != 2) {
-            throw new RuntimeException("一手牌必须是2张");
+        if (type == PaiJiuType.POINT) {
+            return 0; // 普通点数相同直接平
         }
+
+        return Integer.compare(getMaxCardRank(a), getMaxCardRank(b));
     }
 
 
     public static PaiJiuType getPaiJiuType(List<CardInfo> cards) {
-
         checkHand(cards);
 
-        CardInfo c1 = cards.get(0);
-        CardInfo c2 = cards.get(1);
+        String n1 = cards.get(0).getName();
+        String n2 = cards.get(1).getName();
 
-        String n1 = c1.getName();
-        String n2 = c2.getName();
-
-        // 至尊
         if (isNames(cards, "丁三", "大头六")) {
             return PaiJiuType.ZHI_ZUN;
         }
 
-        // 双天
         if (n1.equals("天牌") && n2.equals("天牌")) {
             return PaiJiuType.DOUBLE_TIAN;
         }
 
-        // 双地
         if (n1.equals("地牌") && n2.equals("地牌")) {
             return PaiJiuType.DOUBLE_DI;
         }
 
-        // 双人
         if (n1.equals("人牌") && n2.equals("人牌")) {
             return PaiJiuType.DOUBLE_REN;
         }
 
-        // 双鹅
         if (n1.equals("和牌") && n2.equals("和牌")) {
-            return PaiJiuType.DOUBLE_E;
+            return PaiJiuType.DOUBLE_HE;
         }
 
-        // 普通对子
         if (isPair(cards)) {
             return PaiJiuType.PAIR;
         }
@@ -181,13 +163,21 @@ public class CardUtils {
         return PaiJiuType.POINT;
     }
 
-
     private static boolean isNames(List<CardInfo> cards, String a, String b) {
-
         String n1 = cards.get(0).getName();
         String n2 = cards.get(1).getName();
 
         return (n1.equals(a) && n2.equals(b))
                 || (n1.equals(b) && n2.equals(a));
+    }
+
+    private static void checkHand(List<CardInfo> cards) {
+        if (cards == null || cards.size() != 2) {
+            throw new RuntimeException("一手牌必须是2张");
+        }
+
+        if (cards.get(0) == null || cards.get(1) == null) {
+            throw new RuntimeException("牌不能为空");
+        }
     }
 }

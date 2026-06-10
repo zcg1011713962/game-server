@@ -14,6 +14,14 @@ public class PaiJiuPlayer {
     // 坐下时间
     private long sitDownTime;
     private boolean online = true;
+    // null = 未操作
+    // 0 = 不抢
+    // 1 = 抢庄
+    private Integer grabBanker;
+
+    public void resetGrabBanker() {
+        this.grabBanker = null;
+    }
 
     public PlayerDTO toDTO() {
         PlayerDTO dto = new PlayerDTO();

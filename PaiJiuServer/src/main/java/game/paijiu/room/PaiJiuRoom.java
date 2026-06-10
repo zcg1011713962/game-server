@@ -7,14 +7,12 @@ import game.common.constant.*;
 import game.common.entity.*;
 import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
-import game.common.entity.res.GameResponse;
-import game.common.entity.res.NextRoundPush;
-import game.common.entity.res.PlayerLeaveSeatPush;
-import game.common.entity.res.SettlePush;
+import game.common.entity.res.*;
 import game.common.protocol.Cmd;
 import game.common.service.RedisUserService;
 import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
+import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
@@ -57,8 +55,8 @@ public class PaiJiuRoom {
 
     private long baseScore = 0;
 
-    private long betEndTime = 0;
-    private int betSeconds = 15;
+    private long betSeconds = 10;
+
     // 投注定时器
     private ScheduledFuture<?> scheduledFuture;
     // 准备定时器
@@ -289,17 +287,146 @@ public class PaiJiuRoom {
     }
 
     public synchronized void startGame() {
-        state = RoomState.BET;
-        log.info("roomId: {} 房间状态:{}", roomId, state.name());
+        log.info("房间:{} 所有玩家准备好,开始游戏", roomId);
 
         for (PaiJiuPlayer player : players.values()) {
             if (player.getSeatId() != null && player.getSeatId() >= 0) {
+
                 player.setState(PlayerState.PLAYING);
+                // 新一局重置抢庄状态
+                player.setGrabBanker(null);
             }
         }
-
+        bankerSeat = -1;
         betMap.clear();
     }
+
+    public void startGrabBanker(String gatewayId) {
+        this.state = RoomState.GRAB_BANKER;
+        log.info("房间:{} 进入抢庄阶段", roomId);
+
+        for (PaiJiuPlayer player : players.values()) {
+            player.setGrabBanker(null);
+        }
+
+        long now = System.currentTimeMillis();
+
+        long grabBankerSeconds = 6L;
+        long grabStartTime = now;
+        long grabEndTime = now + grabBankerSeconds * 1000L;
+
+        GatewayChannelManager.send(gatewayId, GameResponse.builder()
+                .traceId(UUID.randomUUID().toString())
+                .gatewayId(gatewayId)
+                .pushType(PushType.ROOM.code())
+                .cmd(Cmd.GRAB_BANKER_START)
+                .roomId(this.roomId)
+                .code(ErrorCode.SUCCESS.code())
+                .data(GrabBankerStartPush.builder()
+                        .roomId(this.roomId)
+                        .roundId(this.roundId)
+                        .roomState(this.state.code())
+                        .serverTime(now)
+                        .grabBankerSeconds(grabBankerSeconds)
+                        .grabStartTime(grabStartTime)
+                        .grabEndTime(grabEndTime)
+                        .build())
+                .build());
+
+        startGrabBankerCountdown(gatewayId, grabEndTime);
+    }
+    //抢庄倒计时
+    public void startGrabBankerCountdown(String gatewayId, Long grabEndTime) {
+        long delay = Math.max(0, grabEndTime - System.currentTimeMillis());
+        DelayTaskUtil.getInstance().scheduleMillis(()->{
+            try {
+                finishGrabBanker(gatewayId);
+            } catch (Exception e) {
+                log.error("抢庄倒计时结束处理异常 roomId={}", this.roomId, e);
+            }
+        }, delay);
+    }
+    // 抢庄结束
+    public synchronized boolean isAllGrabBankerDone() {
+        return players.values()
+                .stream()
+                .filter(p -> p.getSeatId() != null && p.getSeatId() >= 0)
+                .allMatch(p -> p.getGrabBanker() != null);
+    }
+
+    public synchronized void finishGrabBanker(String gatewayId) {
+        // 防止倒计时和全部抢庄完成同时触发，重复执行
+        if (this.state != RoomState.GRAB_BANKER) {
+            return;
+        }
+        log.info("房间:{} 抢庄结束", roomId);
+
+        List<PaiJiuPlayer> grabPlayers = this.players.values()
+                .stream()
+                .filter(p -> Objects.equals(p.getGrabBanker(), 1))
+                .collect(Collectors.toList());
+
+        PaiJiuPlayer banker;
+
+        if (grabPlayers.isEmpty()) {
+            banker = randomPlayer(new ArrayList<>(this.players.values()));
+        } else {
+            banker = randomPlayer(grabPlayers);
+        }
+
+        if (banker == null) {
+            log.error("finishGrabBanker banker is null roomId={}", this.roomId);
+            return;
+        }
+
+        this.bankerSeat = banker.getSeatId();
+
+        long now = System.currentTimeMillis();
+
+        // 庄家动画播放 3 秒
+        long bankerAnimStartTime = now;
+        long bankerAnimExpireTime = now + 3000L;
+        // 投注时间
+        long betStartTime = bankerAnimExpireTime;
+        long betEndTime = betStartTime + this.betSeconds * 1000L;
+
+        GatewayChannelManager.send(gatewayId, GameResponse.builder()
+                .traceId(UUID.randomUUID().toString())
+                .gatewayId(gatewayId)
+                .pushType(PushType.ROOM.code())
+                .cmd(Cmd.GRAB_BANKER_RESULT)
+                .roomId(this.roomId)
+                .code(ErrorCode.SUCCESS.code())
+                .data(GrabBankerResultPush.builder()
+                        .roomId(this.roomId)
+                        .roundId(this.roundId)
+                        .roomState(this.state.code())
+                        .bankerUserId(banker.getUserId())
+                        .bankerSeat(banker.getSeatId())
+                        .serverTime(now)
+                        .bankerAnimStartTime(bankerAnimStartTime)
+                        .bankerAnimExpireTime(bankerAnimExpireTime)
+                        .betStartTime(betStartTime)
+                        .betEndTime(betEndTime)
+                        .players(getPlayerDTOList())
+                        .build())
+                .build());
+
+        this.state = RoomState.BET;
+        log.info("房间:{} 开始投注", roomId);
+        startBetCountdown(gatewayId, DispatcherHandler.getHandler(Cmd.BET.value()), betEndTime);
+        saveRoom();
+    }
+
+    private PaiJiuPlayer randomPlayer(List<PaiJiuPlayer> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+
+        return list.get(new Random().nextInt(list.size()));
+    }
+
+
 
     public synchronized long bet(Long userId, long chip) {
         if (state != RoomState.BET) {
@@ -491,15 +618,8 @@ public class PaiJiuRoom {
         return players.size();
     }
 
-    public void selectBanker() {
-        List<PaiJiuPlayer> list = players.values().stream()
-                .filter(p -> p.getSeatId() >= 0)
-                .toList();
-
-        if (list.isEmpty()) return;
-
-        int index = new Random().nextInt(list.size());
-        this.bankerSeat = list.get(index).getSeatId();
+    public PaiJiuPlayer getPlayer(Long userId){
+        return players.get(userId);
     }
 
     public synchronized void nextRound() {
@@ -524,32 +644,38 @@ public class PaiJiuRoom {
     }
 
     public synchronized void startBetCountdown(String gatewayId, Handler betHandler, long betEndTime) {
-        this.betEndTime = betEndTime;
-        if(scheduledFuture == null){
+        if (scheduledFuture == null) {
+            long delay = Math.max(0, betEndTime - System.currentTimeMillis());
+
             scheduledFuture = DelayTaskUtil.getInstance().schedule(() -> {
                 try {
-
                     for (PaiJiuPlayer player : this.players.values()) {
-                        if (bankerSeat.intValue() != player.getSeatId().intValue() && !this.betMap.containsKey(player.getUserId())) {
+                        if (bankerSeat.intValue() != player.getSeatId().intValue()
+                                && !this.betMap.containsKey(player.getUserId())) {
+
                             BetReq betReq = new BetReq();
                             betReq.setRoomId(roomId);
                             betReq.setChip(baseScore);
+
                             GameRequest gameRequest = GameRequest.builder()
                                     .roomId(roomId)
                                     .userId(player.getUserId())
                                     .gatewayId(gatewayId)
                                     .data(JSONObject.from(betReq))
                                     .build();
+
                             betHandler.exec(gameRequest);
-                            log.info("玩家自动下注 roomId={}, userId={}, bet={}", this.roomId, player.getUserId(), baseScore);
+
+                            log.info("玩家自动下注 roomId={}, userId={}, bet={}",
+                                    this.roomId, player.getUserId(), baseScore);
                         }
                     }
                 } catch (Exception e) {
                     log.error("投注倒计时结束处理异常 roomId={}", this.roomId, e);
-                }finally {
+                } finally {
                     scheduledFuture = null;
                 }
-            }, betSeconds, TimeUnit.SECONDS);
+            }, delay, TimeUnit.MILLISECONDS);
         }
     }
 

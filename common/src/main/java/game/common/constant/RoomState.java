@@ -4,9 +4,10 @@ public enum RoomState {
 
     WAIT(0), // 等待
     READY(1), // 准备
-    BET(2), // 投注
-    DEAL(3), // 发牌
-    SETTLE(4); // 结算
+    GRAB_BANKER(2),
+    BET(3), // 投注
+    DEAL(4), // 发牌
+    SETTLE(5); // 结算
 
     private final int code;
 

@@ -14,21 +14,11 @@ public class GameStartPush {
 
     private Long roundId;
 
-    private Integer roomState;
-
-    private Integer bankerSeat;
-
     private List<PlayerDTO> players;
-
-    private Integer betSeconds;
 
     private Long serverTime;
 
-    private Long betStartTime;
-
-    private Long betEndTime;
-
     private Long roundAnimStartTime;
 
-    private Long roundAnimExpireTime;
+    private Long roundAnimEndTime;
 }

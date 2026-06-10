@@ -2,6 +2,7 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
+import game.common.constant.RoomState;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.ReadyReq;
@@ -14,6 +15,7 @@ import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
+import game.paijiu.util.DelayTaskUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -77,19 +79,11 @@ public class ReadyHandler extends DispatcherHandler {
 
 
         if (room.getAllReady()) {
-            log.info("所有玩家准备好，开始游戏");
             room.startGame();
-            // 选庄
-            room.selectBanker();
-
+            // 推送游戏开始
             long now = System.currentTimeMillis();
             long roundAnimStartTime = now;
-            long roundAnimExpireTime = now + 3000L;
-
-            // 下注结束时间从动画后开始算
-            long betStartTime = roundAnimExpireTime;
-            long betEndTime = betStartTime + room.getBetSeconds() * 1000L;
-
+            long roundAnimEndTime = now + 3000L;
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
                     .gatewayId(req.getGatewayId())
@@ -99,21 +93,24 @@ public class ReadyHandler extends DispatcherHandler {
                     .roomId(room.getRoomId())
                     .code(ErrorCode.SUCCESS.code())
                     .data(GameStartPush.builder()
-                            .bankerSeat(room.getBankerSeat())
                             .roomId(room.getRoomId())
                             .roundId(room.getRoundId())
-                            .roomState(room.getState().code())
                             .players(room.getPlayerDTOList())
-                            .betSeconds(room.getBetSeconds())
                             .serverTime(now)
                             .roundAnimStartTime(roundAnimStartTime)
-                            .roundAnimExpireTime(roundAnimExpireTime)
-                            .betStartTime(betStartTime)
-                            .betEndTime(betEndTime)
+                            .roundAnimEndTime(roundAnimEndTime)
                             .build())
                     .build());
-            // 自动投注倒计时
-            room.startBetCountdown(req.getGatewayId(), DispatcherHandler.getHandler(Cmd.BET.value()), betEndTime);
+
+            long delay = Math.max(0, roundAnimEndTime - System.currentTimeMillis());
+            DelayTaskUtil.getInstance().scheduleMillis(()->{
+                try {
+                    // 进入抢庄阶段
+                    room.startGrabBanker(req.getGatewayId());
+                } catch (Exception e) {
+                    log.error("进入抢庄阶段异常 roomId={}", room.getRoomId(), e);
+                }
+            }, delay);
         }
         // 房间快照
         roomManager.save(room);

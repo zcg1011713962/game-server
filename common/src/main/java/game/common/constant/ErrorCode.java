@@ -32,6 +32,7 @@ public enum ErrorCode {
     GAME_NOT_START(5001, "游戏未开始"),
     GAME_ALREADY_START(5002, "游戏已开始"),
     NOT_YOUR_TURN(5003, "未轮到你"),
+    GRAB_BANKER_ERROR(5004, "非抢庄阶段"),
 
     // ===================== 下注 =====================
     BET_INVALID(6001, "下注无效"),

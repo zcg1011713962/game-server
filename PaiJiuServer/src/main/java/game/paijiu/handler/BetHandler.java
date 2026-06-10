@@ -25,6 +25,7 @@ import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.service.GamePushService;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
+import game.paijiu.util.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -129,54 +130,39 @@ public class BetHandler extends DispatcherHandler {
      * 所有人下注完成，进入发牌阶段
      */
     private void startDeal(GameRequest req, PaiJiuRoom room) {
-
         if (room.getState() == RoomState.DEAL) {
             return;
         }
-
         room.setState(RoomState.DEAL);
 
         List<List<CardInfo>> hands = CardUtils.deal(room.getPlayingCount());
-
         List<PlayerCardDTO> playerCardList = new ArrayList<>();
-
         int index = 0;
-
         for (PaiJiuPlayer p : room.getPlayers().values()) {
-
             if (p.getState() != PlayerState.PLAYING) {
                 continue;
             }
-
             List<CardInfo> hand = hands.get(index++);
-
             room.getCardMap().put(p.getUserId(), hand);
-
             PlayerCardDTO dto = new PlayerCardDTO();
             dto.setUserId(p.getUserId());
             dto.setSeatId(p.getSeatId());
             dto.setCards(hand);
-
             playerCardList.add(dto);
         }
-
+        roomManager.save(room);
         /**
          * 时间轴：
-         *
-         * now
          * +1000ms   开始发牌
          * +6000ms   翻牌
          * +9000ms   结算
          * +13000ms  下一轮
          */
         long now = System.currentTimeMillis();
-
-        long dealStartTime = now + 1000L;
-        long showCardTime = now + 6000L;
-        long settleTime = now + 9000L;
-        long nextRoundTime = now + 13000L;
-
-        roomManager.save(room);
+        long dealStartTime = TimerUtil.getDealStartTime(now);
+        long showCardTime = TimerUtil.getShowCardStartTime(now);
+        long settleStartTime = TimerUtil.getSettleStartTime(now);
+        long nextRoundStartTime = TimerUtil.getNextRoundStartTime(now);
 
         DealCardPush dealCardPush = DealCardPush.builder()
                 .roomId(room.getRoomId())
@@ -186,8 +172,8 @@ public class BetHandler extends DispatcherHandler {
                 .serverTime(now)
                 .dealStartTime(dealStartTime)
                 .showCardTime(showCardTime)
-                .settleTime(settleTime)
-                .nextRoundTime(nextRoundTime)
+                .settleTime(settleStartTime)
+                .nextRoundTime(nextRoundStartTime)
                 .build();
 
         GatewayChannelManager.send(
@@ -199,9 +185,8 @@ public class BetHandler extends DispatcherHandler {
                 )
         );
 
-        scheduleSettle(req, room.getRoomId(), now, settleTime, nextRoundTime);
-
-        scheduleNextRound(req, room.getRoomId(), nextRoundTime);
+        scheduleSettle(req, room.getRoomId(), settleStartTime, nextRoundStartTime);
+        scheduleNextRound(req, room.getRoomId(), nextRoundStartTime);
     }
 
     /**
@@ -210,12 +195,11 @@ public class BetHandler extends DispatcherHandler {
     private void scheduleSettle(
             GameRequest req,
             Long roomId,
-            long roundStartTime,
-            long settleTime,
-            long nextRoundTime
+            long settleStartTime,
+            long nextRoundStartTime
     ) {
 
-        long settleDelayMs = Math.max(0L, settleTime - System.currentTimeMillis());
+        long settleDelayMs = Math.max(0L, settleStartTime - System.currentTimeMillis());
 
         DelayTaskUtil.getInstance().scheduleMillis(() -> {
 
@@ -232,7 +216,7 @@ public class BetHandler extends DispatcherHandler {
                     return;
                 }
 
-                SettlePush settlePush = currRoom.settle(System.currentTimeMillis(), settleTime, nextRoundTime);
+                SettlePush settlePush = currRoom.settle(System.currentTimeMillis(), settleStartTime, nextRoundStartTime);
                 roomManager.save(currRoom);
 
                 GatewayChannelManager.send(
@@ -257,10 +241,10 @@ public class BetHandler extends DispatcherHandler {
     private void scheduleNextRound(
             GameRequest req,
             Long roomId,
-            long nextRoundTime
+            long nextRoundStartTime
     ) {
 
-        long nextRoundDelayMs = Math.max(0L, nextRoundTime - System.currentTimeMillis());
+        long nextRoundDelayMs = Math.max(0L, nextRoundStartTime - System.currentTimeMillis());
 
         DelayTaskUtil.getInstance().scheduleMillis(() -> {
 
@@ -297,7 +281,7 @@ public class BetHandler extends DispatcherHandler {
                         .roomState(currRoom.getState().code())
                         .players(currRoom.getPlayerDTOList())
                         .serverTime(System.currentTimeMillis())
-                        .nextRoundTime(nextRoundTime)
+                        .nextRoundTime(nextRoundStartTime)
                         .build();
 
                 GatewayChannelManager.send(

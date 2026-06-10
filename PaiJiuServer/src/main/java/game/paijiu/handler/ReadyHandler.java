@@ -16,6 +16,7 @@ import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.util.DelayTaskUtil;
+import game.paijiu.util.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -82,8 +83,8 @@ public class ReadyHandler extends DispatcherHandler {
             room.startGame();
             // 推送游戏开始
             long now = System.currentTimeMillis();
-            long roundAnimStartTime = now;
-            long roundAnimEndTime = now + 3000L;
+            long roundAnimStartTime = TimerUtil.getRoundAnimStartTime(now);
+            long roundAnimEndTime = TimerUtil.getRoundAnimEndTime(now);
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
                     .gatewayId(req.getGatewayId())
@@ -101,7 +102,7 @@ public class ReadyHandler extends DispatcherHandler {
                             .roundAnimEndTime(roundAnimEndTime)
                             .build())
                     .build());
-
+            // 开始游戏动画播放完
             long delay = Math.max(0, roundAnimEndTime - System.currentTimeMillis());
             DelayTaskUtil.getInstance().scheduleMillis(()->{
                 try {

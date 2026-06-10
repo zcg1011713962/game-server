@@ -16,6 +16,7 @@ import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
 import game.paijiu.util.DelayTaskUtil;
+import game.paijiu.util.TimerUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,8 +56,6 @@ public class PaiJiuRoom {
 
     private long baseScore = 0;
 
-    private long betSeconds = 10;
-
     // 投注定时器
     private ScheduledFuture<?> scheduledFuture;
     // 准备定时器
@@ -64,7 +63,7 @@ public class PaiJiuRoom {
     private int unreadyTimeoutSeconds = 60;
 
     /**
-     * userId -> 玩家
+     * userId -> 玩家(包括观众)
      */
     private Map<Long, PaiJiuPlayer> players = new ConcurrentHashMap<>();
 
@@ -308,12 +307,9 @@ public class PaiJiuRoom {
         for (PaiJiuPlayer player : players.values()) {
             player.setGrabBanker(null);
         }
-
         long now = System.currentTimeMillis();
-
-        long grabBankerSeconds = 6L;
-        long grabStartTime = now;
-        long grabEndTime = now + grabBankerSeconds * 1000L;
+        long grabStartTime = TimerUtil.getGrabBankerStartTime(now);
+        long grabEndTime = TimerUtil.getGrabBankerEndTime(now);
 
         GatewayChannelManager.send(gatewayId, GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
@@ -327,12 +323,10 @@ public class PaiJiuRoom {
                         .roundId(this.roundId)
                         .roomState(this.state.code())
                         .serverTime(now)
-                        .grabBankerSeconds(grabBankerSeconds)
                         .grabStartTime(grabStartTime)
                         .grabEndTime(grabEndTime)
                         .build())
                 .build());
-
         startGrabBankerCountdown(gatewayId, grabEndTime);
     }
     //抢庄倒计时
@@ -363,14 +357,19 @@ public class PaiJiuRoom {
 
         List<PaiJiuPlayer> grabPlayers = this.players.values()
                 .stream()
+                .filter(player -> player.getState() == PlayerState.PLAYING)
+                .filter(player -> player.getSeatId() != null && player.getSeatId() >= 0)
                 .filter(p -> Objects.equals(p.getGrabBanker(), 1))
                 .collect(Collectors.toList());
 
         PaiJiuPlayer banker;
 
+
         if (grabPlayers.isEmpty()) {
+            // 都不抢随机选庄
             banker = randomPlayer(new ArrayList<>(this.players.values()));
         } else {
+            // 抢庄玩家内选庄
             banker = randomPlayer(grabPlayers);
         }
 
@@ -378,18 +377,19 @@ public class PaiJiuRoom {
             log.error("finishGrabBanker banker is null roomId={}", this.roomId);
             return;
         }
-
         this.bankerSeat = banker.getSeatId();
+        log.info("{}庄家座位:{}", this.roomId, this.bankerSeat);
 
         long now = System.currentTimeMillis();
-
         // 庄家动画播放 3 秒
-        long bankerAnimStartTime = now;
-        long bankerAnimExpireTime = now + 3000L;
+        long bankerAnimStartTime = TimerUtil.getBankerAnimStartTime(now);
+        long bankerAnimEndTime = TimerUtil.getBankerAnimEndTime(now);
         // 投注时间
-        long betStartTime = bankerAnimExpireTime;
-        long betEndTime = betStartTime + this.betSeconds * 1000L;
+        long betStartTime = TimerUtil.getBetStartTime(bankerAnimEndTime);
+        long betEndTime = TimerUtil.getBetEndTime(bankerAnimEndTime);
 
+        this.state = RoomState.BET;
+        log.info("房间:{} 开始投注", roomId);
         GatewayChannelManager.send(gatewayId, GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
                 .gatewayId(gatewayId)
@@ -405,15 +405,13 @@ public class PaiJiuRoom {
                         .bankerSeat(banker.getSeatId())
                         .serverTime(now)
                         .bankerAnimStartTime(bankerAnimStartTime)
-                        .bankerAnimExpireTime(bankerAnimExpireTime)
+                        .bankerAnimEndTime(bankerAnimEndTime)
                         .betStartTime(betStartTime)
                         .betEndTime(betEndTime)
                         .players(getPlayerDTOList())
                         .build())
                 .build());
-
-        this.state = RoomState.BET;
-        log.info("房间:{} 开始投注", roomId);
+        // 投注倒计时
         startBetCountdown(gatewayId, DispatcherHandler.getHandler(Cmd.BET.value()), betEndTime);
         saveRoom();
     }
@@ -422,7 +420,6 @@ public class PaiJiuRoom {
         if (list == null || list.isEmpty()) {
             return null;
         }
-
         return list.get(new Random().nextInt(list.size()));
     }
 
@@ -462,20 +459,21 @@ public class PaiJiuRoom {
 
 
     public synchronized SettlePush settle(long settleTime, long serverTime, long nextRoundTime) {
-
         if (state != RoomState.DEAL) {
             throw new GameException(GameError.ERROR15);
         }
-
         Long bankerUserId = seats.get(bankerSeat);
         if (bankerUserId == null) {
             throw new GameException(GameError.ERROR16);
         }
-
         List<CardInfo> bankerCards = cardMap.get(bankerUserId);
         if (bankerCards == null) {
             throw new GameException(GameError.ERROR17);
         }
+        state = RoomState.SETTLE;
+        log.info("房间:{} 结算:{} 轮", roomId, this.roundId);
+
+
         RedisUserService redisUserService = SpringUtil.getBean(RedisUserService.class);
         List<SettlePlayerDTO> result = new ArrayList<>();
         long playerWin = 0;
@@ -557,7 +555,6 @@ public class PaiJiuRoom {
                 .build());
 
 
-        state = RoomState.SETTLE;
         settlePush = SettlePush.builder()
                 .roomId(roomId)
                 .roomState(state.code())
@@ -646,11 +643,11 @@ public class PaiJiuRoom {
     public synchronized void startBetCountdown(String gatewayId, Handler betHandler, long betEndTime) {
         if (scheduledFuture == null) {
             long delay = Math.max(0, betEndTime - System.currentTimeMillis());
-
+            // 投注时间结束开始自动投注
             scheduledFuture = DelayTaskUtil.getInstance().schedule(() -> {
                 try {
                     for (PaiJiuPlayer player : this.players.values()) {
-                        if (bankerSeat.intValue() != player.getSeatId().intValue()
+                        if (player.getSeatId() >= 0 && bankerSeat.intValue() != player.getSeatId().intValue()
                                 && !this.betMap.containsKey(player.getUserId())) {
 
                             BetReq betReq = new BetReq();

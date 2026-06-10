@@ -52,7 +52,7 @@ public class GrabBankerResultPush {
     /**
      * 庄家动画结束时间
      */
-    private Long bankerAnimExpireTime;
+    private Long bankerAnimEndTime;
 
     /**
      * 投注开始

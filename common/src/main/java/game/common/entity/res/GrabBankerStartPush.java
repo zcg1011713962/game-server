@@ -26,11 +26,6 @@ public class GrabBankerStartPush {
     private Long serverTime;
 
     /**
-     * 抢庄倒计时秒数
-     */
-    private Long grabBankerSeconds;
-
-    /**
      * 抢庄开始时间
      */
     private Long grabStartTime;

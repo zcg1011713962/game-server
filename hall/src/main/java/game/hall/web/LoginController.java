@@ -23,7 +23,7 @@ public class LoginController {
         try {
             return loginService.loginByGuest(guestLoginReq);
         } catch (Exception e) {
-            log.error("guestLogin:{}", e.getMessage());
+            log.error("guestLogin", e);
             return ServerMsg.error(ErrorCode.SYSTEM_ERROR);
         }
     }

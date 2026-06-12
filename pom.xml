@@ -28,6 +28,8 @@
         <spring.boot.version>3.2.5</spring.boot.version>
         <netty.version>4.1.132.Final</netty.version>
         <jjwt.version>0.13.0</jjwt.version>
+        <version>${spring.boot.version}</version>
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
     </properties>
 
     <!-- 依赖版本统一管理 -->
@@ -62,12 +64,14 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
                 </plugin>
 
                 <!-- 编译插件统一 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>

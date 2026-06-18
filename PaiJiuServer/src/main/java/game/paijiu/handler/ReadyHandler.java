@@ -2,7 +2,6 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
-import game.common.constant.RoomState;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
 import game.common.entity.req.ReadyReq;
@@ -15,7 +14,7 @@ import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
-import game.paijiu.util.DelayTaskUtil;
+import game.common.util.DelayTaskUtil;
 import game.paijiu.util.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

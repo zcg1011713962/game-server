@@ -249,4 +249,80 @@ public class RedisUtil {
                 clazz
         );
     }
+
+
+    /**
+     * 右侧入队
+     */
+    public Long rightPush(String key, Object value) {
+        if (!StringUtils.hasText(key) || value == null) {
+            return 0L;
+        }
+
+        String json = value instanceof String
+                ? String.valueOf(value)
+                : JSON.toJSONString(value);
+
+        return stringRedisTemplate.opsForList().rightPush(key, json);
+    }
+
+    /**
+     * 左侧出队
+     */
+    public String leftPop(String key) {
+        if (!StringUtils.hasText(key)) {
+            return null;
+        }
+
+        return stringRedisTemplate.opsForList().leftPop(key);
+    }
+
+    /**
+     * 左侧阻塞出队
+     */
+    public String leftPop(String key, long timeout, TimeUnit unit) {
+        if (!StringUtils.hasText(key)) {
+            return null;
+        }
+
+        return stringRedisTemplate.opsForList().leftPop(key, timeout, unit);
+    }
+
+    /**
+     * 左侧出队并转对象
+     */
+    public <T> T leftPop(String key, Class<T> clazz) {
+        String json = leftPop(key);
+        if (!StringUtils.hasText(json)) {
+            return null;
+        }
+
+        return JSON.parseObject(json, clazz);
+    }
+
+    /**
+     * 左侧阻塞出队并转对象
+     */
+    public <T> T leftPop(String key, long timeout, TimeUnit unit, Class<T> clazz) {
+        String json = leftPop(key, timeout, unit);
+        if (!StringUtils.hasText(json)) {
+            return null;
+        }
+
+        return JSON.parseObject(json, clazz);
+    }
+
+    /**
+     * 队列长度
+     */
+    public Long listSize(String key) {
+        if (!StringUtils.hasText(key)) {
+            return 0L;
+        }
+
+        Long size = stringRedisTemplate.opsForList().size(key);
+        return size == null ? 0L : size;
+    }
+
+
 }

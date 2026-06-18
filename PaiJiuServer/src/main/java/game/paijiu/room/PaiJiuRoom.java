@@ -9,13 +9,14 @@ import game.common.entity.req.BetReq;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.*;
 import game.common.protocol.Cmd;
+import game.common.service.RedisSettleService;
 import game.common.service.RedisUserService;
+import game.common.util.DelayTaskUtil;
 import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.netty.handler.Handler;
 import game.paijiu.util.CardUtils;
-import game.paijiu.util.DelayTaskUtil;
 import game.paijiu.util.TimerUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
@@ -565,6 +565,18 @@ public class PaiJiuRoom {
                 .setSettleTime(settleTime)
                 .nextRoundTime(nextRoundTime)
                 .build();
+
+
+        SettleRecordQueueDTO settleRecordQueueDTO = SettleRecordQueueDTO.builder()
+                .roomId(roomId)
+                .roundId(roundId)
+                .bankerUserId(bankerUserId)
+                .bankerSeat(bankerSeat)
+                .settleTime(settleTime)
+                .settlePlayers(result).build();
+        RedisSettleService redisSettleService = SpringUtil.getBean(RedisSettleService.class);
+        redisSettleService.pushSettleRecord(settleRecordQueueDTO);
+
         return settlePush;
     }
 

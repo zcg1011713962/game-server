@@ -1,10 +1,7 @@
 package game.paijiu.netty.handler;
 
-import game.common.util.DelayTaskUtil;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class DispatcherHandler extends Handler{
     private static final Map<String, Handler> handlerObjectMap = new ConcurrentHashMap<>();
@@ -26,7 +23,4 @@ public class DispatcherHandler extends Handler{
         handlerObjectMap.putIfAbsent(cmd, handler);
     }
 
-    protected void delayTask(String taskId, Runnable task, long delay, TimeUnit unit){
-        DelayTaskUtil.submit(taskId, task, delay, unit);
-    }
 }

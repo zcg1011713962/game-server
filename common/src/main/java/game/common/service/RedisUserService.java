@@ -80,4 +80,6 @@ public class RedisUserService {
     public Long changeRoomCard(Long userId, long change) {
         return redisUtil.changeAsset(RedisKeyConstants.player(userId), "roomCard", change);
     }
+
+
 }

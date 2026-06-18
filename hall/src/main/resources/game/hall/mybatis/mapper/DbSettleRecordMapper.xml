@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="game.hall.mybatis.mapper.DbSettleRecordMapper">
+
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbSettleRecord">
+            <id property="id" column="id" />
+            <result property="roomId" column="room_id" />
+            <result property="roundId" column="round_id" />
+            <result property="userId" column="user_id" />
+            <result property="seatId" column="seat_id" />
+            <result property="bankerUserId" column="banker_user_id" />
+            <result property="bankerSeat" column="banker_seat" />
+            <result property="win" column="win" />
+            <result property="betAmount" column="bet_amount" />
+            <result property="winAmount" column="win_amount" />
+            <result property="afterGold" column="after_gold" />
+            <result property="cards" column="cards" />
+            <result property="cardTypeName" column="card_type_name" />
+            <result property="settleDesc" column="settle_desc" />
+            <result property="settleTime" column="settle_time" />
+            <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,room_id,round_id,user_id,seat_id,banker_user_id,
+        banker_seat,win,bet_amount,win_amount,after_gold,
+        cards,card_type_name,settle_desc,settle_time,create_time
+    </sql>
+</mapper>

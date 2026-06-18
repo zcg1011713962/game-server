@@ -49,8 +49,7 @@ public class RedisKeyConstants {
 
     public static final String PAIJIU_ROOM_ID_INCR = "paijiu:room:id:incr";
 
-
-
+    public static final String GAME_SETTLE_RECORD_QUEUE = "game:settle:record:queue";
 
     // ================= 工具方法 =================
 

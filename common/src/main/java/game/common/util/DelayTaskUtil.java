@@ -1,59 +1,103 @@
 package game.common.util;
 
-import java.util.Map;
-import java.util.concurrent.*;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@Slf4j
 public class DelayTaskUtil {
+    private static final DelayTaskUtil INSTANCE = new DelayTaskUtil();
 
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
-    private static final Map<String, ScheduledFuture<?>> taskMap = new ConcurrentHashMap<>();
+    public static DelayTaskUtil getInstance() {
+        return INSTANCE;
+    }
 
+    private final ScheduledThreadPoolExecutor executor;
+
+    private DelayTaskUtil() {
+        AtomicInteger index = new AtomicInteger(1);
+
+        this.executor = new ScheduledThreadPoolExecutor(
+                4,
+                r -> {
+                    Thread thread = new Thread(r);
+                    thread.setName("game-delay-task-" + index.getAndIncrement());
+                    thread.setDaemon(false);
+                    return thread;
+                }
+        );
+
+        // 取消任务后，立即从队列移除，避免内存堆积
+        this.executor.setRemoveOnCancelPolicy(true);
+    }
 
     /**
-     * 提交延时任务
-     * @param taskId 任务ID
-     * @param task 任务
-     * @param delay 延迟时间
-     * @param unit 时间单位
+     * 固定频率执行任务
      */
-    public static void submit(String taskId, Runnable task, long delay, TimeUnit unit) {
-        ScheduledFuture<?> future = scheduler.schedule(() -> {
-            try {
-                task.run();
-            } finally {
-                taskMap.remove(taskId);
-            }
-        }, delay, unit);
+    public ScheduledFuture<?> scheduleAtFixedRate(
+            Runnable task,
+            long initialDelay,
+            long period,
+            TimeUnit unit
+    ) {
+        return executor.scheduleAtFixedRate(
+                wrap(task),
+                initialDelay,
+                period,
+                unit
+        );
+    }
 
-        taskMap.put(taskId, future);
+    /**
+     * 延迟执行任务
+     */
+    public ScheduledFuture<?> schedule(Runnable task, long delay, TimeUnit unit) {
+        return executor.schedule(wrap(task), delay, unit);
+    }
+
+    /**
+     * 延迟多少毫秒执行
+     */
+    public ScheduledFuture<?> scheduleMillis(Runnable task, long delayMillis) {
+        return schedule(task, delayMillis, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 延迟多少秒执行
+     */
+    public ScheduledFuture<?> scheduleSeconds(Runnable task, long delaySeconds) {
+        return schedule(task, delaySeconds, TimeUnit.SECONDS);
     }
 
     /**
      * 取消任务
-     * @param taskId 任务ID
      */
-    public boolean cancel(String taskId) {
-        ScheduledFuture<?> future = taskMap.get(taskId);
-        if (future != null) {
-            boolean cancelled = future.cancel(false);
-            taskMap.remove(taskId);
-            return cancelled;
+    public void cancel(ScheduledFuture<?> future) {
+        if (future != null && !future.isDone()) {
+            future.cancel(false);
         }
-        return false;
     }
 
     /**
-     * 检查任务是否存在
+     * 包一层 try-catch，防止异常导致线程问题
      */
-    public boolean contains(String taskId) {
-        return taskMap.containsKey(taskId);
+    private Runnable wrap(Runnable task) {
+        return () -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                log.error("延时任务执行异常", e);
+            }
+        };
     }
 
     /**
-     * 获取任务数量
+     * 关闭线程池
      */
-    public int getTaskCount() {
-        return taskMap.size();
+    public void shutdown() {
+        executor.shutdown();
     }
-
 }

@@ -24,7 +24,7 @@ import game.paijiu.room.PaiJiuRoom;
 import game.paijiu.room.PaiJiuRoomManager;
 import game.paijiu.service.GamePushService;
 import game.paijiu.util.CardUtils;
-import game.paijiu.util.DelayTaskUtil;
+import game.common.util.DelayTaskUtil;
 import game.paijiu.util.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

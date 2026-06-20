@@ -33,7 +33,7 @@ public class SettleRecordConsumer {
                     if (dto == null) {
                         continue;
                     }
-
+                    log.info("结算记录 roomId:{} roundId:{}", dto.getRoomId(), dto.getRoundId());
                     settleService.saveSettleRecord(dto);
 
                 } catch (IllegalStateException e) {

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import game.common.entity.CardInfo;
 import game.common.entity.SettleRecordQueueDTO;
 import game.hall.entity.res.SettleRecordVO;
 import game.hall.mybatis.domain.DbSettleRecord;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +81,7 @@ public class SettleServiceImpl implements SettleService {
                 result.getRecords()
                         .stream()
                         .map(this::convert)
+                        .sorted(Comparator.comparing(SettleRecordVO::getRoundId))
                         .toList()
         );
 
@@ -99,7 +102,7 @@ public class SettleServiceImpl implements SettleService {
         vo.setCardTypeName(record.getCardTypeName());
         vo.setSettleDesc(record.getSettleDesc());
 
-        vo.setCards(record.getCards());
+        vo.setCards(JSONUtil.toList(record.getCards(), CardInfo.class));
 
         vo.setSettleTime(record.getSettleTime());
 

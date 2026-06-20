@@ -1,6 +1,9 @@
 package game.hall.entity.res;
 
+import game.common.entity.CardInfo;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class SettleRecordVO {
@@ -17,7 +20,7 @@ public class SettleRecordVO {
 
     private String settleDesc;
 
-    private String cards;
+    private List<CardInfo> cards;
 
     private Long settleTime;
 }

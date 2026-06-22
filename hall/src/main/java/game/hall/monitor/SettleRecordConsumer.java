@@ -27,15 +27,13 @@ public class SettleRecordConsumer {
         thread = new Thread(() -> {
             while (running && !Thread.currentThread().isInterrupted()) {
                 try {
-                    SettleRecordQueueDTO dto =
-                            redisSettleService.popSettleRecord();
+                    SettleRecordQueueDTO dto = redisSettleService.popSettleRecord();
 
                     if (dto == null) {
                         continue;
                     }
                     log.info("结算记录 roomId:{} roundId:{}", dto.getRoomId(), dto.getRoundId());
                     settleService.saveSettleRecord(dto);
-
                 } catch (IllegalStateException e) {
                     if (!running) {
                         break;

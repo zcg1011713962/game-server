@@ -367,7 +367,7 @@ public class PaiJiuRoom {
 
         if (grabPlayers.isEmpty()) {
             // 都不抢随机选庄
-            banker = randomPlayer(new ArrayList<>(this.players.values()));
+            banker = randomPlayer(getGamePlayingPlayers());
         } else {
             // 抢庄玩家内选庄
             banker = randomPlayer(grabPlayers);
@@ -423,7 +423,10 @@ public class PaiJiuRoom {
         return list.get(new Random().nextInt(list.size()));
     }
 
-
+    // 获取游戏中玩家
+    private List<PaiJiuPlayer> getGamePlayingPlayers(){
+        return players.values().stream().filter(p -> p.getState() == PlayerState.PLAYING && p.getSeatId() > -1).collect(Collectors.toList());
+    }
 
     public synchronized long bet(Long userId, long chip) {
         if (state != RoomState.BET) {

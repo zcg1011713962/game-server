@@ -13,4 +13,6 @@ public class SettleRecordReq {
      * 页大小
      */
     private Integer pageSize = 20;
+
+    private Integer roomId;
 }

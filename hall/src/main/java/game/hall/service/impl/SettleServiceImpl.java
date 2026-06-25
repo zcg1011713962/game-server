@@ -59,16 +59,18 @@ public class SettleServiceImpl implements SettleService {
     public IPage<SettleRecordVO> page(
             Long userId,
             Integer pageNo,
-            Integer pageSize
+            Integer pageSize,
+            Integer roomId
     ) {
 
         Page<DbSettleRecord> page = new Page<>(pageNo, pageSize);
 
-        LambdaQueryWrapper<DbSettleRecord> wrapper =
-                Wrappers.lambdaQuery();
-
+        LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(DbSettleRecord::getUserId, userId)
-                .orderByDesc(DbSettleRecord::getSettleTime);
+                .eq(roomId != null, DbSettleRecord::getRoomId, roomId)
+                .orderByAsc(DbSettleRecord::getRoomId)
+                .orderByAsc(DbSettleRecord::getRoundId);
+
         Page<DbSettleRecord> result = dbSettleRecordMapper.selectPage(page, wrapper);
         Page<SettleRecordVO> voPage =
                 new Page<>(

@@ -11,6 +11,7 @@ public interface SettleService {
     IPage<SettleRecordVO> page(
             Long userId,
             Integer pageNo,
-            Integer pageSize
+            Integer pageSize,
+            Integer roomId
     );
 }

@@ -6,7 +6,7 @@ public class TimerUtil {
     private static final long bankerAnimMil = 3000L; // 庄家动画播放
     private static final long BetMil = 10000L; // 投注时间
     private static final long dealMil = 1000L; // 发牌
-    private static final long showCardMil = 5000L; // 亮牌
+    private static final long showCardMil = 18000L; // 亮牌
     private static final long settleMil = 3000L; // 结算
     private static final long nextRoundMil = 4000L; // 下一轮
 

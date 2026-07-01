@@ -228,7 +228,7 @@ public class PaiJiuRoom {
             throw new GameException(GameError.ERROR9);
         }
 
-        if(this.roundId > maxRoundId){
+        if(this.roundId > maxRoundId && RoomType.LOCK_MATCH == roomType){
             throw new GameException(GameError.ERROR19);
         }
 

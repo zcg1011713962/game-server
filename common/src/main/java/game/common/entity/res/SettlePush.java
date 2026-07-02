@@ -25,9 +25,9 @@ public class SettlePush {
 
     private List<PlayerDTO> players;
 
-    private Long setServerTime;
+    private Long serverTime;
 
-    private Long setSettleTime;
+    private Long settleTime;
 
     private Long nextRoundTime;
 }

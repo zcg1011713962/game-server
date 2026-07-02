@@ -84,6 +84,8 @@ public class PaiJiuRoom {
     // 结算结果
     private SettlePush settlePush;
 
+    private Set<Long> openedCardUsers = ConcurrentHashMap.newKeySet();
+
     private AtomicBoolean initFlag = new AtomicBoolean(false);
 
     private Map<Long, ScheduledFuture<?>> settleScheduledMap = new HashMap<>();
@@ -298,6 +300,7 @@ public class PaiJiuRoom {
         }
         bankerSeat = -1;
         betMap.clear();
+        openedCardUsers.clear();
     }
 
     public void startGrabBanker(String gatewayId) {
@@ -564,8 +567,8 @@ public class PaiJiuRoom {
                 .bankerSeat(bankerSeat)
                 .settlePlayers(result)
                 .players(this.getPlayerDTOList())
-                .setServerTime(serverTime)
-                .setSettleTime(settleTime)
+                .serverTime(serverTime)
+                .settleTime(settleTime)
                 .nextRoundTime(nextRoundTime)
                 .build();
 
@@ -581,6 +584,35 @@ public class PaiJiuRoom {
         redisSettleService.pushSettleRecord(settleRecordQueueDTO);
 
         return settlePush;
+    }
+
+    public synchronized PaiJiuPlayer openCard(Long userId) {
+        if (state != RoomState.DEAL) {
+            throw new GameException(GameError.ERROR15);
+        }
+
+        PaiJiuPlayer player = players.get(userId);
+        if (player == null) {
+            throw new GameException(GameError.ERROR2);
+        }
+
+        if (player.getState() != PlayerState.PLAYING) {
+            throw new GameException(GameError.ERROR12);
+        }
+
+        if (player.getSeatId() == null || player.getSeatId() < 0) {
+            throw new GameException(GameError.ERROR8);
+        }
+
+        if (!cardMap.containsKey(userId)) {
+            throw new GameException(GameError.ERROR17);
+        }
+
+        if (!openedCardUsers.add(userId)) {
+            return null;
+        }
+
+        return player;
     }
 
     public SettleDescType calcDesc(long winGold) {
@@ -641,6 +673,7 @@ public class PaiJiuRoom {
         // 2. 清空上一局数据
         betMap.clear();
         cardMap.clear();
+        openedCardUsers.clear();
         settlePush = null;
         bankerSeat = -1;
         // 3. 玩家状态重置

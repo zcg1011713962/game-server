@@ -2,12 +2,15 @@ package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
 import game.common.constant.PushType;
+import game.common.constant.RoomState;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.GameResponse;
+import game.common.entity.res.NextRoundPush;
 import game.common.entity.res.PlayerOpenCardPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
+import game.common.util.DelayTaskUtil;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
 import game.paijiu.room.PaiJiuRoom;
@@ -21,6 +24,8 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class OpenCardHandler extends DispatcherHandler {
+
+    private static final long EARLY_NEXT_ROUND_DELAY_MS = 1200L;
 
     @Autowired
     private PaiJiuRoomManager roomManager;
@@ -98,6 +103,50 @@ public class OpenCardHandler extends DispatcherHandler {
                             settlePush
                     )
             );
+
+            scheduleEarlyNextRound(req, room.getRoomId());
         }
+    }
+
+    private void scheduleEarlyNextRound(GameRequest req, Long roomId) {
+        DelayTaskUtil.getInstance().scheduleMillis(() -> {
+            try {
+                PaiJiuRoom currRoom = roomManager.get(roomId, req.getGatewayId());
+
+                if (currRoom == null) {
+                    log.warn("提前进入下一轮失败，房间不存在 roomId={}", roomId);
+                    return;
+                }
+
+                if (currRoom.getState() != RoomState.SETTLE) {
+                    log.warn("提前进入下一轮跳过，房间状态不是SETTLE roomId={} state={}", currRoom.getRoomId(), currRoom.getState());
+                    return;
+                }
+
+                currRoom.nextRound();
+                roomManager.save(currRoom);
+
+                long now = System.currentTimeMillis();
+                NextRoundPush nextRoundPush = NextRoundPush.builder()
+                        .roomId(currRoom.getRoomId())
+                        .roundId(currRoom.getRoundId())
+                        .roomState(currRoom.getState().code())
+                        .players(currRoom.getPlayerDTOList())
+                        .serverTime(now)
+                        .nextRoundTime(now)
+                        .build();
+
+                GatewayChannelManager.send(
+                        req.getGatewayId(),
+                        GameResponse.push(
+                                currRoom.getRoomId(),
+                                Cmd.NEXT_ROUND,
+                                nextRoundPush
+                        )
+                );
+            } catch (Exception e) {
+                log.error("提前进入下一轮异常 roomId={}", roomId, e);
+            }
+        }, EARLY_NEXT_ROUND_DELAY_MS);
     }
 }

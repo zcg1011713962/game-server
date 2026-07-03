@@ -163,6 +163,7 @@ public class BetHandler extends DispatcherHandler {
         long showCardTime = TimerUtil.getShowCardStartTime(now);
         long settleStartTime = TimerUtil.getSettleStartTime(now);
         long nextRoundStartTime = TimerUtil.getNextRoundStartTime(now);
+        room.setCurrentNextRoundTime(nextRoundStartTime);
 
         DealCardPush dealCardPush = DealCardPush.builder()
                 .roomId(room.getRoomId())

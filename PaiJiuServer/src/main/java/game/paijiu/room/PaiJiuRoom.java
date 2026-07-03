@@ -94,6 +94,8 @@ public class PaiJiuRoom {
 
     private String gatewayId;
 
+    private long currentNextRoundTime;
+
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
                 .roundId(roundId)
@@ -301,6 +303,7 @@ public class PaiJiuRoom {
         bankerSeat = -1;
         betMap.clear();
         openedCardUsers.clear();
+        currentNextRoundTime = 0L;
     }
 
     public void startGrabBanker(String gatewayId) {
@@ -615,6 +618,11 @@ public class PaiJiuRoom {
         return player;
     }
 
+    public synchronized boolean isAllOpenCardDone() {
+        return getGamePlayingPlayers().stream()
+                .allMatch(player -> openedCardUsers.contains(player.getUserId()));
+    }
+
     public SettleDescType calcDesc(long winGold) {
 
         if (winGold <= 0) {
@@ -674,6 +682,7 @@ public class PaiJiuRoom {
         betMap.clear();
         cardMap.clear();
         openedCardUsers.clear();
+        currentNextRoundTime = 0L;
         settlePush = null;
         bankerSeat = -1;
         // 3. 玩家状态重置

@@ -6,6 +6,7 @@ import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
 import game.common.entity.res.GameResponse;
 import game.common.entity.res.PlayerOpenCardPush;
+import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
 import game.paijiu.netty.GatewayChannelManager;
 import game.paijiu.netty.handler.DispatcherHandler;
@@ -82,5 +83,21 @@ public class OpenCardHandler extends DispatcherHandler {
                 .code(ErrorCode.SUCCESS.code())
                 .data(push)
                 .build());
+
+        if (room.isAllOpenCardDone()) {
+            long now = System.currentTimeMillis();
+            long nextRoundTime = room.getCurrentNextRoundTime() > 0 ? room.getCurrentNextRoundTime() : now;
+            SettlePush settlePush = room.settle(now, now, nextRoundTime);
+            roomManager.save(room);
+
+            GatewayChannelManager.send(
+                    req.getGatewayId(),
+                    GameResponse.push(
+                            room.getRoomId(),
+                            Cmd.SETTLE,
+                            settlePush
+                    )
+            );
+        }
     }
 }

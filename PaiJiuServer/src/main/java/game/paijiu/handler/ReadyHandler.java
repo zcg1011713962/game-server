@@ -84,6 +84,7 @@ public class ReadyHandler extends DispatcherHandler {
             long now = System.currentTimeMillis();
             long roundAnimStartTime = TimerUtil.getRoundAnimStartTime(now);
             long roundAnimEndTime = TimerUtil.getRoundAnimEndTime(now);
+            room.setRoundTimeline(roundAnimStartTime, roundAnimEndTime);
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
                     .traceId(UUID.randomUUID().toString())
                     .gatewayId(req.getGatewayId())

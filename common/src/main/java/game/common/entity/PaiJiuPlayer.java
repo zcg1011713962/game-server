@@ -31,6 +31,7 @@ public class PaiJiuPlayer {
         dto.setSeatId(seatId);
         dto.setState(state.code());
         dto.setGold(gold);
+        dto.setGrabBanker(grabBanker);
         return dto;
     }
 }

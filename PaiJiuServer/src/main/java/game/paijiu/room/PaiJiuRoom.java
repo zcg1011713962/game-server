@@ -96,6 +96,19 @@ public class PaiJiuRoom {
 
     private long currentNextRoundTime;
 
+    private Long roundAnimStartTime;
+    private Long roundAnimEndTime;
+    private Long grabStartTime;
+    private Long grabEndTime;
+    private Long bankerAnimStartTime;
+    private Long bankerAnimEndTime;
+    private Long betStartTime;
+    private Long betEndTime;
+    private Long dealStartTime;
+    private Long showCardTime;
+    private Long settleTime;
+    private Long nextRoundTime;
+
     public RoomDTO toRoomDTO(){
         return RoomDTO.builder()
                 .roundId(roundId)
@@ -110,6 +123,19 @@ public class PaiJiuRoom {
                 .seats(seats)
                 .betMap(betMap)
                 .settlePush(settlePush)
+                .openedCardUsers(new HashSet<>(openedCardUsers))
+                .roundAnimStartTime(roundAnimStartTime)
+                .roundAnimEndTime(roundAnimEndTime)
+                .grabStartTime(grabStartTime)
+                .grabEndTime(grabEndTime)
+                .bankerAnimStartTime(bankerAnimStartTime)
+                .bankerAnimEndTime(bankerAnimEndTime)
+                .betStartTime(betStartTime)
+                .betEndTime(betEndTime)
+                .dealStartTime(dealStartTime)
+                .showCardTime(showCardTime)
+                .settleTime(settleTime)
+                .nextRoundTime(nextRoundTime)
                 .cardMap(cardMap).build();
     }
 
@@ -133,6 +159,28 @@ public class PaiJiuRoom {
         stopUnreadyCheckTask();
     }
 
+    public synchronized void setRoundTimeline(long roundAnimStartTime, long roundAnimEndTime) {
+        this.roundAnimStartTime = roundAnimStartTime;
+        this.roundAnimEndTime = roundAnimEndTime;
+    }
+
+    public EnterRoomResp.EnterRoomRespBuilder fillEnterRoomTimeline(EnterRoomResp.EnterRoomRespBuilder builder) {
+        return builder
+                .serverTime(System.currentTimeMillis())
+                .openedCardUsers(new HashSet<>(openedCardUsers))
+                .roundAnimStartTime(roundAnimStartTime)
+                .roundAnimEndTime(roundAnimEndTime)
+                .grabStartTime(grabStartTime)
+                .grabEndTime(grabEndTime)
+                .bankerAnimStartTime(bankerAnimStartTime)
+                .bankerAnimEndTime(bankerAnimEndTime)
+                .betStartTime(betStartTime)
+                .betEndTime(betEndTime)
+                .dealStartTime(dealStartTime)
+                .showCardTime(showCardTime)
+                .settleTime(settleTime)
+                .nextRoundTime(nextRoundTime);
+    }
     public synchronized PaiJiuPlayer enter(User info) {
         PaiJiuPlayer old = players.get(info.getId());
         if (old != null) {
@@ -304,6 +352,16 @@ public class PaiJiuRoom {
         betMap.clear();
         openedCardUsers.clear();
         currentNextRoundTime = 0L;
+        grabStartTime = null;
+        grabEndTime = null;
+        bankerAnimStartTime = null;
+        bankerAnimEndTime = null;
+        betStartTime = null;
+        betEndTime = null;
+        dealStartTime = null;
+        showCardTime = null;
+        settleTime = null;
+        nextRoundTime = null;
     }
 
     public void startGrabBanker(String gatewayId) {
@@ -316,6 +374,9 @@ public class PaiJiuRoom {
         long now = System.currentTimeMillis();
         long grabStartTime = TimerUtil.getGrabBankerStartTime(now);
         long grabEndTime = TimerUtil.getGrabBankerEndTime(now);
+        this.grabStartTime = grabStartTime;
+        this.grabEndTime = grabEndTime;
+        saveRoom();
 
         GatewayChannelManager.send(gatewayId, GameResponse.builder()
                 .traceId(UUID.randomUUID().toString())
@@ -393,6 +454,10 @@ public class PaiJiuRoom {
         // 投注时间
         long betStartTime = TimerUtil.getBetStartTime(bankerAnimEndTime);
         long betEndTime = TimerUtil.getBetEndTime(bankerAnimEndTime);
+        this.bankerAnimStartTime = bankerAnimStartTime;
+        this.bankerAnimEndTime = bankerAnimEndTime;
+        this.betStartTime = betStartTime;
+        this.betEndTime = betEndTime;
 
         this.state = RoomState.BET;
         log.info("房间:{} 开始投注", roomId);
@@ -480,6 +545,8 @@ public class PaiJiuRoom {
             throw new GameException(GameError.ERROR17);
         }
         state = RoomState.SETTLE;
+        this.settleTime = settleTime;
+        this.nextRoundTime = nextRoundTime;
         log.info("房间:{} 结算:{} 轮", roomId, this.roundId);
 
 
@@ -685,6 +752,18 @@ public class PaiJiuRoom {
         currentNextRoundTime = 0L;
         settlePush = null;
         bankerSeat = -1;
+        roundAnimStartTime = null;
+        roundAnimEndTime = null;
+        grabStartTime = null;
+        grabEndTime = null;
+        bankerAnimStartTime = null;
+        bankerAnimEndTime = null;
+        betStartTime = null;
+        betEndTime = null;
+        dealStartTime = null;
+        showCardTime = null;
+        settleTime = null;
+        nextRoundTime = null;
         // 3. 玩家状态重置
         for (PaiJiuPlayer p : players.values()) {
             if (p.getSeatId() >= 0) {

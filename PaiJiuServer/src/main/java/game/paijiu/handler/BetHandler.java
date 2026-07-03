@@ -150,7 +150,6 @@ public class BetHandler extends DispatcherHandler {
             dto.setCards(hand);
             playerCardList.add(dto);
         }
-        roomManager.save(room);
         /**
          * 时间轴：
          * +1000ms   开始发牌
@@ -164,6 +163,11 @@ public class BetHandler extends DispatcherHandler {
         long settleStartTime = TimerUtil.getSettleStartTime(now);
         long nextRoundStartTime = TimerUtil.getNextRoundStartTime(now);
         room.setCurrentNextRoundTime(nextRoundStartTime);
+        room.setDealStartTime(dealStartTime);
+        room.setShowCardTime(showCardTime);
+        room.setSettleTime(settleStartTime);
+        room.setNextRoundTime(nextRoundStartTime);
+        roomManager.save(room);
 
         DealCardPush dealCardPush = DealCardPush.builder()
                 .roomId(room.getRoomId())

@@ -77,7 +77,7 @@ public class CreateRoomHandler extends DispatcherHandler {
                 .userId(req.getUserId())
                 .roomId(room.getRoomId())
                 .code(ErrorCode.SUCCESS.code())
-                .data(EnterRoomResp.builder()
+                .data(room.fillEnterRoomTimeline(EnterRoomResp.builder())
                         .roomId(room.getRoomId())
                         .userId(req.getUserId())
                         .roundId(room.getRoundId())

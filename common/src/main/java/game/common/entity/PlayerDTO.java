@@ -30,4 +30,6 @@ public class PlayerDTO {
      * 3=游戏中
      */
     private Integer state;
+
+    private Integer grabBanker;
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 @Data
 @NoArgsConstructor
@@ -50,6 +51,24 @@ public class RoomDTO {
      * userId -> 手牌
      */
     private Map<Long, List<CardInfo>> cardMap = new ConcurrentHashMap<>();
+
+    /**
+     * 已亮牌 userId
+     */
+    private Set<Long> openedCardUsers;
+
+    private Long roundAnimStartTime;
+    private Long roundAnimEndTime;
+    private Long grabStartTime;
+    private Long grabEndTime;
+    private Long bankerAnimStartTime;
+    private Long bankerAnimEndTime;
+    private Long betStartTime;
+    private Long betEndTime;
+    private Long dealStartTime;
+    private Long showCardTime;
+    private Long settleTime;
+    private Long nextRoundTime;
 
     // 结算结果
     private SettlePush settlePush;

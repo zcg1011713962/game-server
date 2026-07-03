@@ -8,7 +8,13 @@ import java.util.List;
 @Data
 public class SettleRecordVO {
 
+    private Long roomId;
+
     private Long roundId;
+
+    private Long roundCount;
+
+    private Long bankerCount;
 
     private Integer win;
 
@@ -23,4 +29,10 @@ public class SettleRecordVO {
     private List<CardInfo> cards;
 
     private Long settleTime;
+
+    private Long startTime;
+
+    private Long endTime;
+
+    private Long duration;
 }

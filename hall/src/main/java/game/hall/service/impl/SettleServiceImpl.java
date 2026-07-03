@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,11 +64,15 @@ public class SettleServiceImpl implements SettleService {
             Integer roomId
     ) {
 
+        if (roomId == null) {
+            return pageRoomSummary(userId, pageNo, pageSize);
+        }
+
         Page<DbSettleRecord> page = new Page<>(pageNo, pageSize);
 
         LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(DbSettleRecord::getUserId, userId)
-                .eq(roomId != null, DbSettleRecord::getRoomId, roomId)
+                .eq(DbSettleRecord::getRoomId, roomId)
                 .orderByAsc(DbSettleRecord::getRoomId)
                 .orderByAsc(DbSettleRecord::getRoundId);
 
@@ -90,11 +95,88 @@ public class SettleServiceImpl implements SettleService {
         return voPage;
     }
 
+    private IPage<SettleRecordVO> pageRoomSummary(
+            Long userId,
+            Integer pageNo,
+            Integer pageSize
+    ) {
+        LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(DbSettleRecord::getUserId, userId)
+                .orderByDesc(DbSettleRecord::getSettleTime);
+
+        List<DbSettleRecord> records = dbSettleRecordMapper.selectList(wrapper);
+
+        List<SettleRecordVO> summaries = records.stream()
+                .collect(Collectors.groupingBy(DbSettleRecord::getRoomId))
+                .entrySet()
+                .stream()
+                .map(this::convertRoomSummary)
+                .sorted(Comparator.comparing(SettleRecordVO::getEndTime).reversed())
+                .collect(Collectors.toList());
+
+        long total = summaries.size();
+        int safePageNo = pageNo == null || pageNo < 1 ? 1 : pageNo;
+        int safePageSize = pageSize == null || pageSize < 1 ? 20 : pageSize;
+        int fromIndex = Math.min((safePageNo - 1) * safePageSize, summaries.size());
+        int toIndex = Math.min(fromIndex + safePageSize, summaries.size());
+
+        Page<SettleRecordVO> voPage = new Page<>(safePageNo, safePageSize, total);
+        voPage.setRecords(summaries.subList(fromIndex, toIndex));
+
+        return voPage;
+    }
+
+    private SettleRecordVO convertRoomSummary(
+            Map.Entry<Long, List<DbSettleRecord>> entry
+    ) {
+        List<DbSettleRecord> records = entry.getValue();
+        long startTime = records.stream()
+                .mapToLong(record -> record.getSettleTime() == null ? 0L : record.getSettleTime())
+                .min()
+                .orElse(0L);
+        long endTime = records.stream()
+                .mapToLong(record -> record.getSettleTime() == null ? 0L : record.getSettleTime())
+                .max()
+                .orElse(0L);
+        long winAmount = records.stream()
+                .mapToLong(record -> record.getWinAmount() == null ? 0L : record.getWinAmount())
+                .sum();
+        long betAmount = records.stream()
+                .mapToLong(record -> record.getBetAmount() == null ? 0L : record.getBetAmount())
+                .sum();
+        long roundCount = records.stream()
+                .map(DbSettleRecord::getRoundId)
+                .distinct()
+                .count();
+        long bankerCount = records.stream()
+                .filter(record -> record.getUserId() != null && record.getUserId().equals(record.getBankerUserId()))
+                .map(DbSettleRecord::getRoundId)
+                .distinct()
+                .count();
+
+        SettleRecordVO vo = new SettleRecordVO();
+        vo.setRoomId(entry.getKey());
+        vo.setRoundCount(roundCount);
+        vo.setBankerCount(bankerCount);
+        vo.setBetAmount(betAmount);
+        vo.setWinAmount(winAmount);
+        vo.setStartTime(startTime);
+        vo.setEndTime(endTime);
+        vo.setSettleTime(endTime);
+        vo.setDuration(Math.max(0L, endTime - startTime));
+        vo.setWin(winAmount > 0 ? 2 : winAmount < 0 ? 0 : 1);
+        vo.setCardTypeName("房间汇总");
+        vo.setSettleDesc("共" + roundCount + "局");
+
+        return vo;
+    }
+
     private SettleRecordVO convert(
             DbSettleRecord record
     ) {
         SettleRecordVO vo = new SettleRecordVO();
 
+        vo.setRoomId(record.getRoomId());
         vo.setRoundId(record.getRoundId());
         vo.setWin(record.getWin());
 

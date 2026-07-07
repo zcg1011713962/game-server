@@ -12,6 +12,7 @@ import java.util.List;
 public class NextRoundPush {
     private Long roomId;
     private Long roundId;
+    private Long maxRoundId;
     private Integer roomState;
     private List<PlayerDTO> players;
     private Long serverTime;

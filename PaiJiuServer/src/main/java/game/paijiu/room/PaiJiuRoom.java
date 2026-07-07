@@ -174,6 +174,7 @@ public class PaiJiuRoom {
     public EnterRoomResp.EnterRoomRespBuilder fillEnterRoomTimeline(EnterRoomResp.EnterRoomRespBuilder builder) {
         return builder
                 .serverTime(System.currentTimeMillis())
+                .maxRoundId(maxRoundId)
                 .roomFinalSettlePush(roomFinalSettlePush)
                 .openedCardUsers(new HashSet<>(openedCardUsers))
                 .roundAnimStartTime(roundAnimStartTime)

@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 public class EnterRoomResp {
     private Long roundId;
+    private Long maxRoundId;
     private Long roomId;
     private Long userId;
     private Integer roomState;

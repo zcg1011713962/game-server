@@ -14,6 +14,7 @@ public class GameStartPush {
 
     private Long roundId;
 
+    private Long maxRoundId;
     private List<PlayerDTO> players;
 
     private Long serverTime;

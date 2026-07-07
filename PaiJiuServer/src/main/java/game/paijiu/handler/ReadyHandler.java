@@ -112,6 +112,7 @@ public class ReadyHandler extends DispatcherHandler {
                     .data(GameStartPush.builder()
                             .roomId(room.getRoomId())
                             .roundId(room.getRoundId())
+                            .maxRoundId(room.getMaxRoundId())
                             .players(room.getPlayerDTOList())
                             .serverTime(now)
                             .roundAnimStartTime(roundAnimStartTime)

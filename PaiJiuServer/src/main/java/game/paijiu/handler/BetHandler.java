@@ -300,6 +300,7 @@ public class BetHandler extends DispatcherHandler {
                 NextRoundPush nextRoundPush = NextRoundPush.builder()
                         .roomId(currRoom.getRoomId())
                         .roundId(currRoom.getRoundId())
+                        .maxRoundId(currRoom.getMaxRoundId())
                         .roomState(currRoom.getState().code())
                         .players(currRoom.getPlayerDTOList())
                         .serverTime(System.currentTimeMillis())

@@ -31,13 +31,31 @@ public class PaiJiuRoomManager {
      * 创建房间
      */
     public PaiJiuRoom createRoom(RoomType roomType, String gatewayId, long maxRoundId) {
-        Long roomId = nextRoomId();
-        PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10, maxRoundId);
-        roomMap.put(roomId, room);
-        save(room);
-        log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);
-        room.init(gatewayId, this);
-        return room;
+        for (int i = 0; i < 1000; i++) {
+            Long roomId = nextRoomId();
+            if (roomId == null) {
+                continue;
+            }
+
+            if (roomMap.containsKey(roomId) || redisUtil.hasKey(RedisKeyConstants.roomSnapshot(roomId))) {
+                log.warn("生成房间号冲突，重新生成 roomId:{} roomType:{}", roomId, roomType);
+                continue;
+            }
+
+            PaiJiuRoom room = new PaiJiuRoom(roomId, roomType, 8, 10, maxRoundId);
+            PaiJiuRoom oldRoom = roomMap.putIfAbsent(roomId, room);
+            if (oldRoom != null) {
+                log.warn("内存房间号冲突，重新生成 roomId:{} roomType:{}", roomId, roomType);
+                continue;
+            }
+
+            save(room);
+            log.info("创建房间成功 roomId:{} roomType:{}", roomId, roomType);
+            room.init(gatewayId, this);
+            return room;
+        }
+
+        throw new IllegalStateException("创建房间失败，无法生成唯一房间号");
     }
 
     /**
@@ -171,6 +189,10 @@ public class PaiJiuRoomManager {
 
     public PaiJiuRoom findWaitRoom(){
         for(PaiJiuRoom room : roomMap.values()){
+            if (room.getRoomType() != RoomType.FREE_MATCH) {
+                continue;
+            }
+
             Integer emptySeatId = room.findEmptySeat();
             // 等待状态且有空座位
             if(emptySeatId != null){

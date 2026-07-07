@@ -1,6 +1,7 @@
 package game.common.entity;
 
 import game.common.constant.RoomState;
+import game.common.entity.res.RoomFinalSettlePush;
 import game.common.entity.res.SettlePush;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,4 +73,7 @@ public class RoomDTO {
 
     // 结算结果
     private SettlePush settlePush;
+    private Map<Long, Long> roomTotalWinMap = new ConcurrentHashMap<>();
+    private Map<Long, Integer> roomBankerCountMap = new ConcurrentHashMap<>();
+    private RoomFinalSettlePush roomFinalSettlePush;
 }

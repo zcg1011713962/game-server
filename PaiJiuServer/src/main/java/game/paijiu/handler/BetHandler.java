@@ -13,6 +13,7 @@ import game.common.entity.req.GameRequest;
 import game.common.entity.res.DealCardPush;
 import game.common.entity.res.GameResponse;
 import game.common.entity.res.NextRoundPush;
+import game.common.entity.res.RoomFinalSettlePush;
 import game.common.entity.res.PlayerBetPush;
 import game.common.entity.res.SettlePush;
 import game.common.protocol.Cmd;
@@ -221,7 +222,7 @@ public class BetHandler extends DispatcherHandler {
                     return;
                 }
 
-                SettlePush settlePush = currRoom.settle(System.currentTimeMillis(), settleStartTime, nextRoundStartTime);
+                SettlePush settlePush = currRoom.settle(settleStartTime, System.currentTimeMillis(), nextRoundStartTime);
                 roomManager.save(currRoom);
 
                 GatewayChannelManager.send(
@@ -276,6 +277,22 @@ public class BetHandler extends DispatcherHandler {
                  * 5. 清空结算数据
                  * 6. 玩家状态改成 SIT/READY前状态
                  */
+                if (currRoom.isLockMatchFinished()) {
+                    if (currRoom.getRoomFinalSettlePush() != null) {
+                        return;
+                    }
+                    RoomFinalSettlePush finalSettlePush = currRoom.buildRoomFinalSettlePush(System.currentTimeMillis());
+                    roomManager.save(currRoom);
+                    GatewayChannelManager.send(
+                            req.getGatewayId(),
+                            GameResponse.push(
+                                    currRoom.getRoomId(),
+                                    Cmd.ROOM_FINAL_SETTLE,
+                                    finalSettlePush
+                            )
+                    );
+                    return;
+                }
                 currRoom.nextRound();
 
                 roomManager.save(currRoom);

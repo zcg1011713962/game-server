@@ -9,6 +9,7 @@ public class PlayerOpenCardPush {
 
     private Long roomId;
 
+    private Long roundId;
     private Long userId;
 
     private Integer seatId;

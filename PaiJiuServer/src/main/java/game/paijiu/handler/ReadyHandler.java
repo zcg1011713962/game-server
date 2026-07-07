@@ -1,6 +1,7 @@
 package game.paijiu.handler;
 
 import game.common.constant.ErrorCode;
+import game.common.constant.RoomType;
 import game.common.constant.PushType;
 import game.common.entity.PaiJiuPlayer;
 import game.common.entity.req.GameRequest;
@@ -8,6 +9,7 @@ import game.common.entity.req.ReadyReq;
 import game.common.entity.res.GameResponse;
 import game.common.entity.res.GameStartPush;
 import game.common.entity.res.PlayerReadyPush;
+import game.common.entity.res.RoomFinalSettlePush;
 import game.common.protocol.Cmd;
 import game.common.util.JsonUtil;
 import game.paijiu.netty.GatewayChannelManager;
@@ -45,6 +47,20 @@ public class ReadyHandler extends DispatcherHandler {
         }
 
         req.setRoomId(room.getRoomId());
+
+        if (room.getRoomFinalSettlePush() != null || (room.getRoomType() == RoomType.LOCK_MATCH && room.getRoundId() > room.getMaxRoundId())) {
+            RoomFinalSettlePush finalSettlePush = room.buildRoomFinalSettlePush(System.currentTimeMillis());
+            roomManager.save(room);
+            GatewayChannelManager.send(
+                    req.getGatewayId(),
+                    GameResponse.push(
+                            room.getRoomId(),
+                            Cmd.ROOM_FINAL_SETTLE,
+                            finalSettlePush
+                    )
+            );
+            return;
+        }
 
         PaiJiuPlayer player = room.ready(req.getUserId());
 

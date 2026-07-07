@@ -23,6 +23,7 @@ public class EnterRoomResp {
     private Map<String, List<CardInfo>> cardMap;
     private Set<Long> openedCardUsers;
     private SettlePush settlePush;
+    private RoomFinalSettlePush roomFinalSettlePush;
     private Integer bankerSeat;
     private Long serverTime;
     private Long roundAnimStartTime;

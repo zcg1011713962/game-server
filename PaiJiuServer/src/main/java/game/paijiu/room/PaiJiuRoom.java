@@ -84,6 +84,10 @@ public class PaiJiuRoom {
     // 结算结果
     private SettlePush settlePush;
 
+    private Map<Long, Long> roomTotalWinMap = new ConcurrentHashMap<>();
+    private Map<Long, Integer> roomBankerCountMap = new ConcurrentHashMap<>();
+    private RoomFinalSettlePush roomFinalSettlePush;
+
     private Set<Long> openedCardUsers = ConcurrentHashMap.newKeySet();
 
     private AtomicBoolean initFlag = new AtomicBoolean(false);
@@ -123,6 +127,9 @@ public class PaiJiuRoom {
                 .seats(seats)
                 .betMap(betMap)
                 .settlePush(settlePush)
+                .roomTotalWinMap(roomTotalWinMap)
+                .roomBankerCountMap(roomBankerCountMap)
+                .roomFinalSettlePush(roomFinalSettlePush)
                 .openedCardUsers(new HashSet<>(openedCardUsers))
                 .roundAnimStartTime(roundAnimStartTime)
                 .roundAnimEndTime(roundAnimEndTime)
@@ -167,6 +174,7 @@ public class PaiJiuRoom {
     public EnterRoomResp.EnterRoomRespBuilder fillEnterRoomTimeline(EnterRoomResp.EnterRoomRespBuilder builder) {
         return builder
                 .serverTime(System.currentTimeMillis())
+                .roomFinalSettlePush(roomFinalSettlePush)
                 .openedCardUsers(new HashSet<>(openedCardUsers))
                 .roundAnimStartTime(roundAnimStartTime)
                 .roundAnimEndTime(roundAnimEndTime)
@@ -630,6 +638,7 @@ public class PaiJiuRoom {
                 .settleDesc(calcDesc(bankerWinAmount).getDesc())
                 .build());
 
+        accumulateRoomFinalSettle(result, bankerUserId);
 
         settlePush = SettlePush.builder()
                 .roomId(roomId)
@@ -655,7 +664,55 @@ public class PaiJiuRoom {
 
         return settlePush;
     }
+    private void accumulateRoomFinalSettle(List<SettlePlayerDTO> result, Long bankerUserId) {
+        for (SettlePlayerDTO playerResult : result) {
+            if (playerResult.getUserId() == null) {
+                continue;
+            }
+            roomTotalWinMap.merge(playerResult.getUserId(), playerResult.getWinAmount(), Long::sum);
+        }
 
+        if (bankerUserId != null) {
+            roomBankerCountMap.merge(bankerUserId, 1, Integer::sum);
+        }
+    }
+
+    public synchronized boolean isLockMatchFinished() {
+        return RoomType.LOCK_MATCH == roomType && roundId >= maxRoundId;
+    }
+
+    public synchronized RoomFinalSettlePush buildRoomFinalSettlePush(long serverTime) {
+        if (roomFinalSettlePush != null) {
+            return roomFinalSettlePush;
+        }
+
+        List<RoomFinalSettlePlayerDTO> finalPlayers = roomTotalWinMap.keySet()
+                .stream()
+                .map(userId -> {
+                    PaiJiuPlayer player = players.get(userId);
+                    return RoomFinalSettlePlayerDTO.builder()
+                            .userId(userId)
+                            .seatId(player == null ? -1 : player.getSeatId())
+                            .nickname(player == null ? "" : player.getNickname())
+                            .avatar(player == null ? "" : player.getAvatar())
+                            .totalWinAmount(roomTotalWinMap.getOrDefault(userId, 0L))
+                            .bankerCount(roomBankerCountMap.getOrDefault(userId, 0))
+                            .afterGold(player == null ? 0L : player.getGold())
+                            .build();
+                })
+                .sorted(Comparator.comparing(RoomFinalSettlePlayerDTO::getSeatId))
+                .collect(Collectors.toList());
+
+        roomFinalSettlePush = RoomFinalSettlePush.builder()
+                .roomId(roomId)
+                .roundId(roundId)
+                .roundCount(maxRoundId)
+                .serverTime(serverTime)
+                .message("已打够房卡局数，本房间已结束")
+                .players(finalPlayers)
+                .build();
+        return roomFinalSettlePush;
+    }
     public synchronized PaiJiuPlayer openCard(Long userId) {
         if (state != RoomState.DEAL) {
             throw new GameException(GameError.ERROR15);
@@ -909,3 +966,4 @@ public class PaiJiuRoom {
         paiJiuRoomManager.save(this);
     }
 }
+

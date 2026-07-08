@@ -59,4 +59,8 @@ public class TimerUtil {
     public static long getNextRoundStartTime(long now) {
         return getSettleStartTime(now) + nextRoundMil;
     }
+
+    public static long getNextRoundStartTimeAfterSettle(long settleStartTime) {
+        return settleStartTime + nextRoundMil;
+    }
 }

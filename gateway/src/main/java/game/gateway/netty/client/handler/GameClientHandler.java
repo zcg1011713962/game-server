@@ -32,6 +32,11 @@ public class GameClientHandler extends SimpleChannelInboundHandler<String> {
             SessionManager.bindRoom(gameResponse.getUserId(), gameResponse.getRoomId());
         }
 
+        if (gameResponse.getCmd() == null) {
+            log.warn("GameServer Response cmd is null, skip forward:{}", gameResponse);
+            return;
+        }
+
         ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData(), gameResponse.getCode(), gameResponse.getMsg());
         // 单人消息
         if(gameResponse.getPushType() == PushType.SINGLE.code()){

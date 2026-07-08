@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class GuestLoginReq {
     private String token;
+    private String deviceId;
 }

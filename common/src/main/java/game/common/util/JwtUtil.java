@@ -54,4 +54,14 @@ public class JwtUtil {
                 .compact();
     }
 
+    // 生成不过期 Token，游客登录使用
+    public static String generatePermanentToken(Long userId) {
+        long now = System.currentTimeMillis();
+        return Jwts.builder()
+                .claim("userId", userId)
+                .setIssuedAt(new Date(now))
+                .signWith(KEY, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 }

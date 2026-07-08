@@ -30,64 +30,101 @@ public class LoginServiceImpl implements LoginService {
     private UserService userService;
 
     private static final long EXPIRE_TIME = 7 * 24 * 60 * 60;
+    private static final String GUEST_DEVICE_USERNAME_PREFIX = "guest_device_";
+    private static final int MAX_DEVICE_ID_LENGTH = 40;
 
     @Override
     public ServerMsg loginByGuest(GuestLoginReq req) {
-        if (StringUtils.isBlank(req.getToken())) {
-            // 创建用户
-            return createGuestUser();
+        String token = req == null ? null : req.getToken();
+        String deviceId = req == null ? null : normalizeDeviceId(req.getDeviceId());
+
+        if (StringUtils.isNotBlank(token)) {
+            ServerMsg tokenLoginResp = loginByToken(token, deviceId);
+            if (tokenLoginResp.getCode() == ErrorCode.SUCCESS.code()
+                    || StringUtils.isBlank(deviceId)) {
+                return tokenLoginResp;
+            }
         }
-        // 缓存登录
-        return loginByToken(req.getToken());
+
+        DbUser deviceUser = getGuestUserByDeviceId(deviceId);
+        if (deviceUser != null) {
+            cacheUser(deviceUser);
+            return buildLoginResp(deviceUser);
+        }
+
+        return createGuestUser(deviceId);
     }
 
-    private ServerMsg createGuestUser() {
-        DbUser dbUser = buildGuestUser();
+    private ServerMsg createGuestUser(String deviceId) {
+        DbUser dbUser = buildGuestUser(deviceId);
+        DbUser exist = getUserByUsername(dbUser.getUsername());
+        if (exist != null) {
+            cacheUser(exist);
+            return buildLoginResp(exist);
+        }
+
         int ret = dbUserService.getBaseMapper().insert(dbUser);
         if (ret <= 0) {
             return ServerMsg.error(null, 0, ErrorCode.CREATE_USER_ERROR);
         }
         cacheUser(dbUser);
-        return buildLoginResp(
-                dbUser.getId(),
-                dbUser.getNickname(),
-                String.valueOf(dbUser.getAvatar()),
-                dbUser.getGold(),
-                JwtUtil.generateToken(dbUser.getId())
-        );
+        return buildLoginResp(dbUser);
     }
 
-    private ServerMsg loginByToken(String token) {
+    private ServerMsg loginByToken(String token, String deviceId) {
         Long userId = JwtUtil.getUserId(token);
         if (userId == null) {
             return ServerMsg.error(null, 0, ErrorCode.TOKEN_INVALID);
         }
-        User user = userService.getUserById(userId);
-        if (user != null) {
-            return buildLoginResp(
-                    user.getId(),
-                    user.getNickname(),
-                    String.valueOf(user.getAvatar()),
-                    user.getGold(),
-                    token
-            );
-        }
 
         DbUser dbUser = dbUserService.getBaseMapper().selectById(userId);
-
         if (dbUser == null) {
             return ServerMsg.error(null, 0, ErrorCode.TOKEN_INVALID);
         }
 
+        bindGuestDevice(dbUser, deviceId);
         cacheUser(dbUser);
+        return buildLoginResp(dbUser);
+    }
 
+    private ServerMsg buildLoginResp(DbUser dbUser) {
         return buildLoginResp(
                 dbUser.getId(),
                 dbUser.getNickname(),
                 String.valueOf(dbUser.getAvatar()),
                 dbUser.getGold(),
-                token
+                JwtUtil.generatePermanentToken(dbUser.getId())
         );
+    }
+
+    private DbUser getGuestUserByDeviceId(String deviceId) {
+        String username = getGuestDeviceUsername(deviceId);
+        if (StringUtils.isBlank(username)) {
+            return null;
+        }
+
+        return getUserByUsername(username);
+    }
+
+    private DbUser getUserByUsername(String username) {
+        QueryWrapper<DbUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        return dbUserService.getBaseMapper().selectOne(queryWrapper);
+    }
+
+    private void bindGuestDevice(DbUser dbUser, String deviceId) {
+        String username = getGuestDeviceUsername(deviceId);
+        if (dbUser == null || StringUtils.isBlank(username) || username.equals(dbUser.getUsername())) {
+            return;
+        }
+
+        DbUser exist = getUserByUsername(username);
+        if (exist != null && !exist.getId().equals(dbUser.getId())) {
+            return;
+        }
+
+        dbUser.setUsername(username);
+        dbUserService.getBaseMapper().updateById(dbUser);
     }
 
     private ServerMsg buildLoginResp(Long userId,
@@ -116,18 +153,20 @@ public class LoginServiceImpl implements LoginService {
         );
     }
 
-    private DbUser buildGuestUser() {
+    private DbUser buildGuestUser(String deviceId) {
+        String deviceUsername = getGuestDeviceUsername(deviceId);
+
         while (true) {
             long id = ThreadLocalRandom.current().nextLong(50000, 100000);
-            String username = "guest" + id;
+            if (dbUserService.getBaseMapper().selectById(id) != null) {
+                continue;
+            }
 
-            QueryWrapper<DbUser> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("username", username);
-
-            DbUser exist = dbUserService.getBaseMapper().selectOne(queryWrapper);
+            String username = StringUtils.isBlank(deviceUsername) ? "guest" + id : deviceUsername;
+            DbUser exist = getUserByUsername(username);
 
             if (exist != null) {
-                continue;
+                return exist;
             }
 
             long avatarId = ThreadLocalRandom.current().nextLong(0, 5);
@@ -158,5 +197,25 @@ public class LoginServiceImpl implements LoginService {
         dbUser.setGold(gold);
         dbUser.setNickname(nickname);
         return dbUser;
+    }
+
+    private String getGuestDeviceUsername(String deviceId) {
+        String normalizedDeviceId = normalizeDeviceId(deviceId);
+        if (StringUtils.isBlank(normalizedDeviceId)) {
+            return null;
+        }
+        return GUEST_DEVICE_USERNAME_PREFIX + normalizedDeviceId;
+    }
+
+    private String normalizeDeviceId(String deviceId) {
+        if (StringUtils.isBlank(deviceId)) {
+            return null;
+        }
+
+        String normalized = deviceId.trim().replaceAll("[^A-Za-z0-9_]", "");
+        if (normalized.length() > MAX_DEVICE_ID_LENGTH) {
+            normalized = normalized.substring(0, MAX_DEVICE_ID_LENGTH);
+        }
+        return normalized;
     }
 }

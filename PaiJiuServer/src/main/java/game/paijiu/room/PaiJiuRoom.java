@@ -545,6 +545,7 @@ public class PaiJiuRoom {
         if (state != RoomState.DEAL) {
             throw new GameException(GameError.ERROR15);
         }
+        stopBetCountdown();
         Long bankerUserId = seats.get(bankerSeat);
         if (bankerUserId == null) {
             throw new GameException(GameError.ERROR16);
@@ -849,6 +850,7 @@ public class PaiJiuRoom {
                             betReq.setChip(baseScore);
 
                             GameRequest gameRequest = GameRequest.builder()
+                                    .cmd(Cmd.BET)
                                     .roomId(roomId)
                                     .userId(player.getUserId())
                                     .gatewayId(gatewayId)
@@ -932,6 +934,13 @@ public class PaiJiuRoom {
                             .data(push)
                             .build()
             );
+        }
+    }
+
+    public synchronized void stopBetCountdown() {
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+            scheduledFuture = null;
         }
     }
 

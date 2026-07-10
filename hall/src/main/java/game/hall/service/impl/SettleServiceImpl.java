@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,10 +85,11 @@ public class SettleServiceImpl implements SettleService {
                         result.getTotal()
                 );
 
+        Map<Long, DbSettleRecord> bankerRecordMap = loadBankerRecordMap(roomId, result.getRecords());
         voPage.setRecords(
                 result.getRecords()
                         .stream()
-                        .map(this::convert)
+                        .map(record -> convert(record, bankerRecordMap.get(record.getRoundId())))
                         .sorted(Comparator.comparing(SettleRecordVO::getRoundId))
                         .toList()
         );
@@ -171,8 +173,40 @@ public class SettleServiceImpl implements SettleService {
         return vo;
     }
 
+    private Map<Long, DbSettleRecord> loadBankerRecordMap(
+            Integer roomId,
+            List<DbSettleRecord> records
+    ) {
+        if (records == null || records.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        List<Long> roundIds = records.stream()
+                .map(DbSettleRecord::getRoundId)
+                .distinct()
+                .toList();
+
+        LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(DbSettleRecord::getRoomId, roomId)
+                .in(DbSettleRecord::getRoundId, roundIds);
+
+        return dbSettleRecordMapper.selectList(wrapper)
+                .stream()
+                .filter(record -> record.getUserId() != null && record.getUserId().equals(record.getBankerUserId()))
+                .collect(Collectors.toMap(
+                        DbSettleRecord::getRoundId,
+                        record -> record,
+                        (left, right) -> left
+                ));
+    }
+
+    private SettleRecordVO convert(DbSettleRecord record) {
+        return convert(record, null);
+    }
+
     private SettleRecordVO convert(
-            DbSettleRecord record
+            DbSettleRecord record,
+            DbSettleRecord bankerRecord
     ) {
         SettleRecordVO vo = new SettleRecordVO();
 
@@ -187,6 +221,10 @@ public class SettleServiceImpl implements SettleService {
         vo.setSettleDesc(record.getSettleDesc());
 
         vo.setCards(JSONUtil.toList(record.getCards(), CardInfo.class));
+        if (bankerRecord != null) {
+            vo.setBankerCardTypeName(bankerRecord.getCardTypeName());
+            vo.setBankerCards(JSONUtil.toList(bankerRecord.getCards(), CardInfo.class));
+        }
 
         vo.setSettleTime(record.getSettleTime());
 

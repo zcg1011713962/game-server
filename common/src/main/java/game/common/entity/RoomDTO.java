@@ -1,6 +1,7 @@
 package game.common.entity;
 
 import game.common.constant.RoomState;
+import game.common.constant.RoomType;
 import game.common.entity.res.RoomFinalSettlePush;
 import game.common.entity.res.SettlePush;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,8 @@ public class RoomDTO {
     private long baseScore = 0;
 
     private RoomState state = RoomState.WAIT;
+
+    private RoomType roomType = RoomType.FREE_MATCH;
 
     /**
      * userId -> 玩家

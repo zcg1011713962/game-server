@@ -59,7 +59,20 @@ public class RoomInfoHandler extends DispatcherHandler {
                                 .bankerSeat(room.getBankerSeat())
                                 .baseScore(room.getBaseScore())
                                 .build()).build());
+                return;
             }
+
+            roomManager.removeUserRoom(req.getUserId(), oldRoomId);
         }
+
+        GatewayChannelManager.send(req.getGatewayId(), GameResponse.builder()
+                .traceId(UUID.randomUUID().toString())
+                .gatewayId(req.getGatewayId())
+                .pushType(PushType.SINGLE.code())
+                .cmd(Cmd.ROOM_INFO_RESULT)
+                .userId(req.getUserId())
+                .code(ErrorCode.SUCCESS.code())
+                .data(null)
+                .build());
     }
 }

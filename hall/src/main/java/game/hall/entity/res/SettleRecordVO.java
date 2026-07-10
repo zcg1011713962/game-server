@@ -24,9 +24,13 @@ public class SettleRecordVO {
 
     private String cardTypeName;
 
+    private String bankerCardTypeName;
+
     private String settleDesc;
 
     private List<CardInfo> cards;
+
+    private List<CardInfo> bankerCards;
 
     private Long settleTime;
 

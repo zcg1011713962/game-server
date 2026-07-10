@@ -11,6 +11,7 @@ import game.common.entity.res.*;
 import game.common.protocol.Cmd;
 import game.common.service.RedisSettleService;
 import game.common.service.RedisUserService;
+import game.common.util.CommonUtil;
 import game.common.util.DelayTaskUtil;
 import game.paijiu.exception.GameException;
 import game.paijiu.netty.GatewayChannelManager;
@@ -123,6 +124,7 @@ public class PaiJiuRoom {
                 .bankerSeat(bankerSeat)
                 .baseScore(baseScore)
                 .state(state)
+                .roomType(getSafeRoomType())
                 .players(players)
                 .seats(seats)
                 .betMap(betMap)
@@ -176,6 +178,8 @@ public class PaiJiuRoom {
                 .serverTime(System.currentTimeMillis())
                 .maxRoundId(maxRoundId)
                 .roomFinalSettlePush(roomFinalSettlePush)
+                .roomType(getSafeRoomType().code())
+                .roomTotalWinMap(CommonUtil.toStringKeyMap(new HashMap<>(roomTotalWinMap)))
                 .openedCardUsers(new HashSet<>(openedCardUsers))
                 .roundAnimStartTime(roundAnimStartTime)
                 .roundAnimEndTime(roundAnimEndTime)
@@ -289,7 +293,7 @@ public class PaiJiuRoom {
             throw new GameException(GameError.ERROR9);
         }
 
-        if(this.roundId > maxRoundId && RoomType.LOCK_MATCH == roomType){
+        if(this.roundId > maxRoundId && isScoreRoom()){
             throw new GameException(GameError.ERROR19);
         }
 
@@ -522,6 +526,9 @@ public class PaiJiuRoom {
         if (chip <= 0) {
             throw new GameException(GameError.ERROR13);
         }
+        if (isScoreRoom()) {
+            return betMap.merge(userId, chip, Long::sum);
+        }
         RedisUserService redisUserService = SpringUtil.getBean(RedisUserService.class);
         Long gold = redisUserService.changeGold(player.getUserId(), -chip);
         if(gold < 0){
@@ -561,6 +568,7 @@ public class PaiJiuRoom {
 
 
         RedisUserService redisUserService = SpringUtil.getBean(RedisUserService.class);
+        boolean scoreRoom = isScoreRoom();
         List<SettlePlayerDTO> result = new ArrayList<>();
         long playerWin = 0;
         long bankerBet = 0;
@@ -595,8 +603,13 @@ public class PaiJiuRoom {
             playerWin += winAmount;
             bankerBet += betAmount;
 
-            Long afterGold = redisUserService.changeGold(userId, change);
-            AssetPushManager.pushGold(gatewayId, userId, change, afterGold);
+            Long afterGold;
+            if (scoreRoom) {
+                afterGold = player.getGold();
+            } else {
+                afterGold = redisUserService.changeGold(userId, change);
+                AssetPushManager.pushGold(gatewayId, userId, change, afterGold);
+            }
 
             player.setGold(afterGold);
 
@@ -622,10 +635,14 @@ public class PaiJiuRoom {
             bankerWinFlag = 2;
         }
 
-        Long afterGold = redisUserService.changeGold(bankerUserId, bankerWinAmount);
-        AssetPushManager.pushGold(gatewayId, bankerUserId, bankerWinAmount, afterGold);
-
         PaiJiuPlayer bankerPlayer = players.get(bankerUserId);
+        Long afterGold;
+        if (scoreRoom) {
+            afterGold = bankerPlayer.getGold();
+        } else {
+            afterGold = redisUserService.changeGold(bankerUserId, bankerWinAmount);
+            AssetPushManager.pushGold(gatewayId, bankerUserId, bankerWinAmount, afterGold);
+        }
         bankerPlayer.setGold(afterGold);
 
         result.add(SettlePlayerDTO.builder()
@@ -680,7 +697,7 @@ public class PaiJiuRoom {
     }
 
     public synchronized boolean isLockMatchFinished() {
-        return RoomType.LOCK_MATCH == roomType && roundId >= maxRoundId;
+        return isScoreRoom() && roundId >= maxRoundId;
     }
 
     public synchronized RoomFinalSettlePush buildRoomFinalSettlePush(long serverTime) {
@@ -709,11 +726,21 @@ public class PaiJiuRoom {
                 .roomId(roomId)
                 .roundId(roundId)
                 .roundCount(maxRoundId)
+                .roomType(getSafeRoomType().code())
+                .scoreMode(isScoreRoom())
                 .serverTime(serverTime)
-                .message("已打够房卡局数，本房间已结束")
+                .message(isScoreRoom() ? "房间已结束，本局采用积分结算" : "已打够房卡局数，本房间已结束")
                 .players(finalPlayers)
                 .build();
         return roomFinalSettlePush;
+    }
+
+    public boolean isScoreRoom() {
+        return RoomType.LOCK_MATCH == getSafeRoomType();
+    }
+
+    private RoomType getSafeRoomType() {
+        return roomType == null ? RoomType.FREE_MATCH : roomType;
     }
     public synchronized PaiJiuPlayer openCard(Long userId) {
         if (state != RoomState.DEAL) {

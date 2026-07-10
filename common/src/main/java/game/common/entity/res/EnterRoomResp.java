@@ -17,10 +17,12 @@ public class EnterRoomResp {
     private Long roomId;
     private Long userId;
     private Integer roomState;
+    private Integer roomType;
     private Long baseScore;
     private List<PlayerDTO> players;
     private Map<String, Long> seats;
     private Map<String, Long> betMap;
+    private Map<String, Long> roomTotalWinMap;
     private Map<String, List<CardInfo>> cardMap;
     private Set<Long> openedCardUsers;
     private SettlePush settlePush;

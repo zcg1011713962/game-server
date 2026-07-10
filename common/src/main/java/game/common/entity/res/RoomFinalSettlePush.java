@@ -16,6 +16,8 @@ public class RoomFinalSettlePush {
     private Long roomId;
     private Long roundId;
     private Long roundCount;
+    private Integer roomType;
+    private Boolean scoreMode;
     private Long serverTime;
     private String message;
     private List<RoomFinalSettlePlayerDTO> players;

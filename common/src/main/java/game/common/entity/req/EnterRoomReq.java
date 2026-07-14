@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class EnterRoomReq {
     private Long roomId;
+    private String invite;
 
 }

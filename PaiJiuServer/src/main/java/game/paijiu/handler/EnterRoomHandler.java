@@ -37,13 +37,25 @@ public class EnterRoomHandler extends DispatcherHandler {
 
     @Override
     public void exec(GameRequest req) {
-        EnterRoomReq enterRoomReq = JsonUtil.parse(req.getData().toString(), EnterRoomReq.class);
-        log.info("EnterRoomHandler:{} {}", req.getUserId(), JsonUtil.toJson(enterRoomReq));
-        if(enterRoomReq.getRoomId() == null){
+        if(req.getData() == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;
         }
-        PaiJiuRoom room = roomManager.getRoom(req.getRoomId(), req.getGatewayId());
+        EnterRoomReq enterRoomReq = JsonUtil.parse(req.getData().toString(), EnterRoomReq.class);
+        log.info("EnterRoomHandler:{} {}", req.getUserId(), JsonUtil.toJson(enterRoomReq));
+        if(enterRoomReq == null){
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
+            return;
+        }
+        Long roomId = enterRoomReq.getRoomId();
+        if(roomId == null && enterRoomReq.getInvite() != null){
+            roomId = roomManager.getRoomIdByInvite(enterRoomReq.getInvite());
+        }
+        if(roomId == null){
+            GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
+            return;
+        }
+        PaiJiuRoom room = roomManager.getRoom(roomId, req.getGatewayId());
         if(room == null){
             GatewayChannelManager.send(req.getGatewayId(), GameResponse.error(req, ErrorCode.ROOM_NOT_EXIST));
             return;

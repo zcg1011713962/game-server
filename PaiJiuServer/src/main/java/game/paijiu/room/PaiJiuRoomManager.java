@@ -13,10 +13,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Component
 public class PaiJiuRoomManager {
+    private static final long ROOM_INVITE_EXPIRE_SECONDS = 6 * 60 * 60;
+    private static final String ROOM_INVITE_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+    private static final int ROOM_INVITE_LENGTH = 6;
+
     @Autowired
     private RedisUtil redisUtil;
 
@@ -168,6 +173,47 @@ public class PaiJiuRoomManager {
             return roomId;
         }
         return null;
+    }
+
+    public String createInvite(Long roomId) {
+        if (roomId == null || !existsRoom(roomId)) {
+            return null;
+        }
+
+        for (int i = 0; i < 20; i++) {
+            String invite = nextInviteCode();
+            if (redisUtil.hasKey(RedisKeyConstants.roomInvite(invite))) {
+                continue;
+            }
+
+            redisUtil.set(RedisKeyConstants.roomInvite(invite), roomId, ROOM_INVITE_EXPIRE_SECONDS);
+            return invite;
+        }
+
+        log.warn("生成房间邀请码失败 roomId:{}", roomId);
+        return null;
+    }
+
+    public Long getRoomIdByInvite(String invite) {
+        if (invite == null || invite.trim().isEmpty()) {
+            return null;
+        }
+
+        return redisUtil.get(RedisKeyConstants.roomInvite(invite.trim().toUpperCase()), Long.class);
+    }
+
+    private boolean existsRoom(Long roomId) {
+        return roomMap.containsKey(roomId) || redisUtil.hasKey(RedisKeyConstants.roomSnapshot(roomId));
+    }
+
+    private String nextInviteCode() {
+        StringBuilder builder = new StringBuilder(ROOM_INVITE_LENGTH);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int i = 0; i < ROOM_INVITE_LENGTH; i++) {
+            int index = random.nextInt(ROOM_INVITE_LETTERS.length());
+            builder.append(ROOM_INVITE_LETTERS.charAt(index));
+        }
+        return builder.toString();
     }
 
     /**

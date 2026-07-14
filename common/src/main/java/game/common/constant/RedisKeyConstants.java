@@ -41,6 +41,8 @@ public class RedisKeyConstants {
 
     public static final String ROOM_SNAPSHOT = "room:snapshot:%d";
 
+    public static final String ROOM_INVITE = "room:invite:%s";
+
     // ================= Token =================
 
     /** token -> userId */
@@ -63,6 +65,10 @@ public class RedisKeyConstants {
 
     public static String roomSnapshot(Long roomId) {
         return String.format(ROOM_SNAPSHOT, roomId);
+    }
+
+    public static String roomInvite(String invite) {
+        return String.format(ROOM_INVITE, invite);
     }
 
     public static String userRoom(Long userId) {

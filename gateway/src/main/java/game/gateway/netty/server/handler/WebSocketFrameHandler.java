@@ -61,11 +61,22 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        UserSession userSession = SessionManager.getByChannel(ctx.channel());
-        if(userSession != null){
-            log.info("channelInactive userId:{}", userSession.getUserId());
+        Long userId = SessionManager.getUserIdByChannel(ctx.channel());
+        Long roomId = SessionManager.getRoomId(userId);
+        boolean removedCurrentSession = SessionManager.remove(ctx.channel());
+        if(userId != null){
+            log.info("channelInactive userId:{} roomId:{} removedCurrentSession:{}", userId, roomId, removedCurrentSession);
         }
-        SessionManager.remove(ctx.channel());
+
+        if (removedCurrentSession && roomId != null) {
+            GameRequest req = new GameRequest();
+            req.setTraceId(UUID.randomUUID().toString());
+            req.setGatewayId(gatewayId);
+            req.setUserId(userId);
+            req.setRoomId(roomId);
+            req.setCmd(Cmd.USER_DISCONNECT);
+            gameClient.send(req);
+        }
     }
 
     @Override

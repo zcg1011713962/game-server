@@ -278,6 +278,20 @@ public class PaiJiuRoom {
         return player;
     }
 
+    public synchronized PaiJiuPlayer handleDisconnect(Long userId) {
+        PaiJiuPlayer player = players.get(userId);
+        if (player == null) {
+            return null;
+        }
+
+        player.setOnline(false);
+        if (player.getState() == PlayerState.READY || player.getState() == PlayerState.PLAYING) {
+            return null;
+        }
+
+        return leave(userId);
+    }
+
     public synchronized PaiJiuPlayer ready(Long userId) {
         PaiJiuPlayer player = players.get(userId);
 

@@ -38,18 +38,18 @@ public class LoginServiceImpl implements LoginService {
         String token = req == null ? null : req.getToken();
         String deviceId = req == null ? null : normalizeDeviceId(req.getDeviceId());
 
+        DbUser deviceUser = getGuestUserByDeviceId(deviceId);
+        if (deviceUser != null) {
+            cacheUser(deviceUser);
+            return buildLoginResp(deviceUser);
+        }
+
         if (StringUtils.isNotBlank(token)) {
             ServerMsg tokenLoginResp = loginByToken(token, deviceId);
             if (tokenLoginResp.getCode() == ErrorCode.SUCCESS.code()
                     || StringUtils.isBlank(deviceId)) {
                 return tokenLoginResp;
             }
-        }
-
-        DbUser deviceUser = getGuestUserByDeviceId(deviceId);
-        if (deviceUser != null) {
-            cacheUser(deviceUser);
-            return buildLoginResp(deviceUser);
         }
 
         return createGuestUser(deviceId);

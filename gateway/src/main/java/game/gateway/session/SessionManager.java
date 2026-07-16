@@ -1,9 +1,11 @@
 package game.gateway.session;
 
+import game.common.protocol.Cmd;
 import game.common.protocol.ServerMsg;
 import game.common.util.JsonUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.Map;
@@ -16,15 +18,22 @@ public class SessionManager {
     private static final Map<ChannelId, Long> CHANNEL_MAP = new ConcurrentHashMap<>();
     private static final Map<Long, Set<Long>> ROOM_USERS = new ConcurrentHashMap<>();
     private static final Map<Long, Long> USER_ROOM = new ConcurrentHashMap<>();
+
     public static void bind(Long userId, Channel channel) {
         UserSession old = USER_MAP.get(userId);
-        if (old != null && old.getChannel() != null && old.getChannel().isActive()) {
-            old.getChannel().close();
-        }
         UserSession session = new UserSession(userId, channel);
         USER_MAP.put(userId, session);
         CHANNEL_MAP.put(channel.id(), userId);
+
+        if (old != null && old.getChannel() != null && old.getChannel().isActive()
+                && !old.getChannel().id().equals(channel.id())) {
+            ServerMsg msg = ServerMsg.info(Cmd.FORCE_LOGOUT.value(), 0, 0, "账号已在其他窗口登录");
+            old.getChannel()
+                    .writeAndFlush(new TextWebSocketFrame(JsonUtil.toJson(msg)))
+                    .addListener(ChannelFutureListener.CLOSE);
+        }
     }
+
     public static void bindRoom(Long userId, Long roomId) {
         USER_ROOM.put(userId, roomId);
         ROOM_USERS.computeIfAbsent(roomId, k -> ConcurrentHashMap.newKeySet()).add(userId);
@@ -78,11 +87,31 @@ public class SessionManager {
         return USER_MAP.get(userId);
     }
 
-    public static void remove(Channel channel) {
-        Long userId = CHANNEL_MAP.remove(channel.id());
-        if (userId != null) {
-            USER_MAP.remove(userId);
+    public static Long getUserIdByChannel(Channel channel) {
+        return CHANNEL_MAP.get(channel.id());
+    }
+
+    public static Long getRoomId(Long userId) {
+        if (userId == null) {
+            return null;
         }
+
+        return USER_ROOM.get(userId);
+    }
+
+    public static boolean remove(Channel channel) {
+        Long userId = CHANNEL_MAP.remove(channel.id());
+        if (userId == null) {
+            return false;
+        }
+
+        UserSession session = USER_MAP.get(userId);
+        if (session == null || session.getChannel() == null || !session.getChannel().id().equals(channel.id())) {
+            return false;
+        }
+
+        USER_MAP.remove(userId);
+        return true;
     }
 
     public static void send(Long userId, ServerMsg msg) {

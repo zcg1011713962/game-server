@@ -115,6 +115,7 @@ public class PaiJiuRoomManager {
         log.info("解散房间:{}", roomId);
         PaiJiuRoom room = roomMap.remove(roomId);
         redisUtil.del(RedisKeyConstants.roomSnapshot(roomId));
+        removeRoomInvite(roomId);
         room.getPlayers().keySet().forEach(userId -> removeUserRoom(userId, roomId));
         room.destroy();
     }
@@ -180,6 +181,15 @@ public class PaiJiuRoomManager {
             return null;
         }
 
+        String roomInviteKey = RedisKeyConstants.roomInviteByRoom(roomId);
+        String oldInvite = redisUtil.get(roomInviteKey, String.class);
+        if (oldInvite != null && !oldInvite.trim().isEmpty()) {
+            Long oldRoomId = redisUtil.get(RedisKeyConstants.roomInvite(oldInvite), Long.class);
+            if (roomId.equals(oldRoomId)) {
+                return oldInvite;
+            }
+        }
+
         for (int i = 0; i < 20; i++) {
             String invite = nextInviteCode();
             if (redisUtil.hasKey(RedisKeyConstants.roomInvite(invite))) {
@@ -187,6 +197,7 @@ public class PaiJiuRoomManager {
             }
 
             redisUtil.set(RedisKeyConstants.roomInvite(invite), roomId, ROOM_INVITE_EXPIRE_SECONDS);
+            redisUtil.set(roomInviteKey, invite, ROOM_INVITE_EXPIRE_SECONDS);
             return invite;
         }
 
@@ -204,6 +215,19 @@ public class PaiJiuRoomManager {
 
     private boolean existsRoom(Long roomId) {
         return roomMap.containsKey(roomId) || redisUtil.hasKey(RedisKeyConstants.roomSnapshot(roomId));
+    }
+
+    private void removeRoomInvite(Long roomId) {
+        if (roomId == null) {
+            return;
+        }
+
+        String roomInviteKey = RedisKeyConstants.roomInviteByRoom(roomId);
+        String invite = redisUtil.get(roomInviteKey, String.class);
+        if (invite != null && !invite.trim().isEmpty()) {
+            redisUtil.del(RedisKeyConstants.roomInvite(invite));
+        }
+        redisUtil.del(roomInviteKey);
     }
 
     private String nextInviteCode() {

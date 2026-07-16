@@ -31,6 +31,10 @@ public class GameClientHandler extends SimpleChannelInboundHandler<String> {
             log.info("{}进房成功，绑定房间:{}", gameResponse.getUserId(), gameResponse.getRoomId());
             SessionManager.bindRoom(gameResponse.getUserId(), gameResponse.getRoomId());
         }
+        if ((gameResponse.getCmd() == Cmd.LEAVE_ROOM_RESULT || gameResponse.getCmd() == Cmd.PLAYER_LEAVE)
+                && gameResponse.getCode() == 0 && gameResponse.getUserId() != null) {
+            SessionManager.leaveRoom(gameResponse.getUserId());
+        }
 
         if (gameResponse.getCmd() == null) {
             log.warn("GameServer Response cmd is null, skip forward:{}", gameResponse);

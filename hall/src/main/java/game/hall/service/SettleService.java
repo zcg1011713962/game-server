@@ -12,6 +12,7 @@ public interface SettleService {
             Long userId,
             Integer pageNo,
             Integer pageSize,
+            Long gameId,
             Integer roomId
     );
 }

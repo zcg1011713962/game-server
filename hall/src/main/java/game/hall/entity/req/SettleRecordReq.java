@@ -14,5 +14,7 @@ public class SettleRecordReq {
      */
     private Integer pageSize = 20;
 
+    private Long gameId;
+
     private Integer roomId;
 }

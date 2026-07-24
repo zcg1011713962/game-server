@@ -20,6 +20,10 @@ public class SettleRecordQueueDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = -558777574487029894L;
     /**
+     * 游戏ID
+     */
+    private Long gameId;
+    /**
      * 房间ID
      */
     private Long roomId;

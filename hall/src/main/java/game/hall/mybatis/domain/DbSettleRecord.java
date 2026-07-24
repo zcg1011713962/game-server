@@ -8,6 +8,8 @@ import java.util.Date;
 public class DbSettleRecord {
     private Long id;
 
+    private Long gameId;
+
     private Long roomId;
 
     private Long roundId;
@@ -44,6 +46,14 @@ public class DbSettleRecord {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
     public Long getRoomId() {

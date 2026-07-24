@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 /**
 * @author zcg10
 * @description 针对表【db_settle_record(牌九玩家结算记录表)】的数据库操作Service实现
-* @createDate 2026-06-17 17:43:45
+* @createDate 2026-07-24 10:45:56
 */
 @Service
-public class DbSettleRecordServiceImpl extends ServiceImpl<DbSettleRecordMapper, DbSettleRecord> implements DbSettleRecordService{
+public class DbSettleRecordServiceImpl extends ServiceImpl<DbSettleRecordMapper, DbSettleRecord>
+    implements DbSettleRecordService{
 
 }
 

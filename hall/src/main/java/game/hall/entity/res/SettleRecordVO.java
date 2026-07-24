@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class SettleRecordVO {
 
+    private Long gameId;
+
     private Long roomId;
 
     private Long roundId;

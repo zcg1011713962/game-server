@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbSettleRecord">
             <id property="id" column="id" />
+            <result property="gameId" column="game_id" />
             <result property="roomId" column="room_id" />
             <result property="roundId" column="round_id" />
             <result property="userId" column="user_id" />
@@ -24,8 +25,9 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,room_id,round_id,user_id,seat_id,banker_user_id,
-        banker_seat,win,bet_amount,win_amount,after_gold,
-        cards,card_type_name,settle_desc,settle_time,create_time
+        id,game_id,room_id,round_id,user_id,seat_id,
+        banker_user_id,banker_seat,win,bet_amount,win_amount,
+        after_gold,cards,card_type_name,settle_desc,settle_time,
+        create_time
     </sql>
 </mapper>

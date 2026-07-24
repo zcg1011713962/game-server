@@ -686,6 +686,7 @@ public class PaiJiuRoom {
 
 
         SettleRecordQueueDTO settleRecordQueueDTO = SettleRecordQueueDTO.builder()
+                .gameId(1L)
                 .roomId(roomId)
                 .roundId(roundId)
                 .bankerUserId(bankerUserId)

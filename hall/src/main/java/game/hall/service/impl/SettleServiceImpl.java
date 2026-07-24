@@ -35,6 +35,7 @@ public class SettleServiceImpl implements SettleService {
             List<DbSettleRecord> records = dto.getSettlePlayers().stream()
                     .map(item -> {
                         DbSettleRecord record = new DbSettleRecord();
+                        record.setGameId(dto.getGameId());
                         record.setRoomId(dto.getRoomId());
                         record.setRoundId(dto.getRoundId());
                         record.setUserId(item.getUserId());
@@ -62,19 +63,21 @@ public class SettleServiceImpl implements SettleService {
             Long userId,
             Integer pageNo,
             Integer pageSize,
+            Long gameId,
             Integer roomId
     ) {
 
         if (roomId == null) {
-            return pageRoomSummary(userId, pageNo, pageSize);
+            return pageRoomSummary(userId, pageNo, pageSize, gameId);
         }
 
         Page<DbSettleRecord> page = new Page<>(pageNo, pageSize);
 
         LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(DbSettleRecord::getUserId, userId)
-                .eq(DbSettleRecord::getRoomId, roomId)
-                .orderByAsc(DbSettleRecord::getRoomId)
+                .eq(DbSettleRecord::getRoomId, roomId);
+        applyGameFilter(wrapper, gameId);
+        wrapper.orderByAsc(DbSettleRecord::getRoomId)
                 .orderByAsc(DbSettleRecord::getRoundId);
 
         Page<DbSettleRecord> result = dbSettleRecordMapper.selectPage(page, wrapper);
@@ -100,11 +103,13 @@ public class SettleServiceImpl implements SettleService {
     private IPage<SettleRecordVO> pageRoomSummary(
             Long userId,
             Integer pageNo,
-            Integer pageSize
+            Integer pageSize,
+            Long gameId
     ) {
         LambdaQueryWrapper<DbSettleRecord> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(DbSettleRecord::getUserId, userId)
-                .orderByDesc(DbSettleRecord::getSettleTime);
+        wrapper.eq(DbSettleRecord::getUserId, userId);
+        applyGameFilter(wrapper, gameId);
+        wrapper.orderByDesc(DbSettleRecord::getSettleTime);
 
         List<DbSettleRecord> records = dbSettleRecordMapper.selectList(wrapper);
 
@@ -126,6 +131,21 @@ public class SettleServiceImpl implements SettleService {
         voPage.setRecords(summaries.subList(fromIndex, toIndex));
 
         return voPage;
+    }
+
+    private void applyGameFilter(LambdaQueryWrapper<DbSettleRecord> wrapper, Long gameId) {
+        if (gameId == null) {
+            return;
+        }
+
+        if (gameId == 1L) {
+            wrapper.and(item -> item.eq(DbSettleRecord::getGameId, gameId)
+                    .or()
+                    .isNull(DbSettleRecord::getGameId));
+            return;
+        }
+
+        wrapper.eq(DbSettleRecord::getGameId, gameId);
     }
 
     private SettleRecordVO convertRoomSummary(
@@ -157,6 +177,7 @@ public class SettleServiceImpl implements SettleService {
                 .count();
 
         SettleRecordVO vo = new SettleRecordVO();
+        vo.setGameId(resolveSummaryGameId(records));
         vo.setRoomId(entry.getKey());
         vo.setRoundCount(roundCount);
         vo.setBankerCount(bankerCount);
@@ -171,6 +192,18 @@ public class SettleServiceImpl implements SettleService {
         vo.setSettleDesc("共" + roundCount + "局");
 
         return vo;
+    }
+
+    private Long resolveSummaryGameId(List<DbSettleRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return null;
+        }
+
+        return records.stream()
+                .map(DbSettleRecord::getGameId)
+                .filter(gameId -> gameId != null)
+                .findFirst()
+                .orElse(null);
     }
 
     private Map<Long, DbSettleRecord> loadBankerRecordMap(
@@ -210,6 +243,7 @@ public class SettleServiceImpl implements SettleService {
     ) {
         SettleRecordVO vo = new SettleRecordVO();
 
+        vo.setGameId(record.getGameId());
         vo.setRoomId(record.getRoomId());
         vo.setRoundId(record.getRoundId());
         vo.setWin(record.getWin());

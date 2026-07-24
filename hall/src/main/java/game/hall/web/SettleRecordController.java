@@ -29,6 +29,7 @@ public class SettleRecordController {
                         userId,
                         query.getPageNo(),
                         query.getPageSize(),
+                        query.getGameId(),
                         query.getRoomId()
                 )
         );

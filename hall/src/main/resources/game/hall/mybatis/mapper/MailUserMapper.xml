@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="game.hall.mybatis.mapper.MailUserMapper">
+
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.MailUser">
+            <id property="id" column="id" />
+            <result property="userId" column="user_id" />
+            <result property="mailId" column="mail_id" />
+            <result property="readStatus" column="read_status" />
+            <result property="receiveStatus" column="receive_status" />
+            <result property="deleteStatus" column="delete_status" />
+            <result property="createTime" column="create_time" />
+            <result property="readTime" column="read_time" />
+            <result property="receiveTime" column="receive_time" />
+            <result property="deleteTime" column="delete_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,mail_id,read_status,receive_status,delete_status,
+        create_time,read_time,receive_time,delete_time
+    </sql>
+</mapper>

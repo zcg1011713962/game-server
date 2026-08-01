@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="game.hall.mybatis.mapper.MailAttachmentMapper">
+
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.MailAttachment">
+            <id property="id" column="id" />
+            <result property="mailId" column="mail_id" />
+            <result property="itemType" column="item_type" />
+            <result property="itemId" column="item_id" />
+            <result property="itemCount" column="item_count" />
+            <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mail_id,item_type,item_id,item_count,create_time
+    </sql>
+</mapper>

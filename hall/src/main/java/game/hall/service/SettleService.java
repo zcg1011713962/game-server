@@ -2,6 +2,7 @@ package game.hall.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import game.common.entity.SettleRecordQueueDTO;
+import game.hall.entity.req.TestSettleRecordReq;
 import game.hall.entity.res.SettleRecordVO;
 
 public interface SettleService {
@@ -15,4 +16,6 @@ public interface SettleService {
             Long gameId,
             Integer roomId
     );
+
+    Integer insertTestRecord(Long operatorUserId, TestSettleRecordReq req);
 }

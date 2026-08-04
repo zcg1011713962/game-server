@@ -4,6 +4,7 @@ package game.hall.web;
 import game.common.constant.ErrorCode;
 import game.common.protocol.ServerMsg;
 import game.hall.entity.req.GuestLoginReq;
+import game.hall.entity.req.LoginTokenReq;
 import game.hall.service.impl.LoginServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,16 @@ public class LoginController {
             return loginService.loginByGuest(guestLoginReq);
         } catch (Exception e) {
             log.error("guestLogin", e);
+            return ServerMsg.error(ErrorCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/login/token")
+    public ServerMsg tokenLogin(@RequestBody LoginTokenReq req) {
+        try {
+            return loginService.loginByPassword(req);
+        } catch (Exception e) {
+            log.error("tokenLogin", e);
             return ServerMsg.error(ErrorCode.SYSTEM_ERROR);
         }
     }

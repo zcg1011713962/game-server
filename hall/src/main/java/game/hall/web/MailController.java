@@ -5,6 +5,7 @@ import game.common.context.UserContext;
 import game.common.protocol.ServerMsg;
 import game.hall.entity.req.MailIdReq;
 import game.hall.entity.req.MailListReq;
+import game.hall.entity.req.SendRewardMailReq;
 import game.hall.exception.HallException;
 import game.hall.service.HallMailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,20 @@ public class MailController {
         try {
             hallMailService.delete(userId, req == null ? null : req.getMailId());
             return ServerMsg.ok();
+        } catch (HallException e) {
+            return ServerMsg.error(e.getCode(), e.getMessage());
+        }
+    }
+
+    @PostMapping("/mail/send-reward")
+    public ServerMsg sendReward(@RequestBody SendRewardMailReq req) {
+        Long operatorUserId = UserContext.getUserId();
+        if (operatorUserId == null) {
+            return ServerMsg.error(ErrorCode.TOKEN_INVALID);
+        }
+
+        try {
+            return ServerMsg.ok(hallMailService.sendRewardMail(operatorUserId, req));
         } catch (HallException e) {
             return ServerMsg.error(e.getCode(), e.getMessage());
         }

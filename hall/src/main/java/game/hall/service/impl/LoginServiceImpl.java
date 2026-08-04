@@ -10,6 +10,7 @@ import game.common.service.UserService;
 import game.common.util.JwtUtil;
 import game.common.util.RedisUtil;
 import game.hall.entity.req.GuestLoginReq;
+import game.hall.entity.req.LoginTokenReq;
 import game.hall.entity.res.LoginResp;
 import game.hall.mybatis.domain.DbUser;
 import game.hall.mybatis.domain.Mail;
@@ -74,6 +75,21 @@ public class LoginServiceImpl implements LoginService {
         }
 
         return createGuestUser(deviceId);
+    }
+
+    @Override
+    public ServerMsg loginByPassword(LoginTokenReq req) {
+        if (req == null || StringUtils.isBlank(req.getUsername()) || StringUtils.isBlank(req.getPwd())) {
+            return ServerMsg.error(ErrorCode.PARAM_ERROR);
+        }
+
+        DbUser dbUser = getUserByUsername(req.getUsername().trim());
+        if (dbUser == null || !req.getPwd().equals(dbUser.getPwd())) {
+            return ServerMsg.error(ErrorCode.LOGIN_ERROR);
+        }
+
+        cacheUser(dbUser);
+        return buildLoginResp(dbUser);
     }
 
     private ServerMsg createGuestUser(String deviceId) {

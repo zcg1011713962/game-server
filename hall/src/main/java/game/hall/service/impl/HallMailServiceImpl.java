@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import game.common.constant.PropCodeEnum;
 import game.common.entity.User;
 import game.common.service.UserService;
+import game.hall.entity.req.SendRewardMailReq;
 import game.hall.entity.res.MailAttachmentVO;
 import game.hall.entity.res.MailReceiveResultVO;
 import game.hall.entity.res.MailVO;
@@ -15,12 +16,15 @@ import game.hall.mybatis.domain.Mail;
 import game.hall.mybatis.domain.MailAttachment;
 import game.hall.mybatis.domain.MailGlobalReceive;
 import game.hall.mybatis.domain.MailUser;
+import game.hall.mybatis.domain.DbUser;
 import game.hall.mybatis.mapper.MailAttachmentMapper;
 import game.hall.mybatis.mapper.MailGlobalReceiveMapper;
 import game.hall.mybatis.mapper.MailMapper;
 import game.hall.mybatis.mapper.MailUserMapper;
+import game.hall.mybatis.service.DbUserService;
 import game.hall.service.HallMailService;
 import game.hall.service.UserBagService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +54,9 @@ public class HallMailServiceImpl implements HallMailService {
     private static final int ITEM_TYPE_GOLD = 1;
     private static final int ITEM_TYPE_ROOM_CARD = 2;
     private static final int ITEM_TYPE_DIAMOND = 3;
+    private static final int DEFAULT_REWARD_MAIL_EXPIRE_DAYS = 30;
+    private static final int MAX_REWARD_MAIL_EXPIRE_DAYS = 30;
+    private static final long MAX_REWARD_ATTACHMENT_COUNT = 1000000L;
 
     @Autowired
     private MailMapper mailMapper;
@@ -68,6 +75,9 @@ public class HallMailServiceImpl implements HallMailService {
 
     @Autowired
     private UserBagService userBagService;
+
+    @Autowired
+    private DbUserService dbUserService;
 
     @Override
     public IPage<MailVO> page(Long userId, Integer pageNo, Integer pageSize) {
@@ -176,6 +186,101 @@ public class HallMailServiceImpl implements HallMailService {
         status.setDeleteStatus(STATUS_YES);
         status.setDeleteTime(now);
         mailUserMapper.updateById(status);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long sendRewardMail(Long operatorUserId, SendRewardMailReq req) {
+        validateRewardMailReq(req, operatorUserId);
+
+        Date now = new Date();
+        int expireDays = req.getExpireDays() == null || req.getExpireDays() <= 0
+                ? DEFAULT_REWARD_MAIL_EXPIRE_DAYS
+                : Math.min(req.getExpireDays(), MAX_REWARD_MAIL_EXPIRE_DAYS);
+
+        Mail mail = new Mail();
+        mail.setMailType(MAIL_TYPE_PERSONAL);
+        mail.setTitle(req.getTitle().trim());
+        mail.setContent(req.getContent().trim());
+        mail.setSender(StringUtils.isBlank(req.getSender()) ? "系统" : req.getSender().trim());
+        mail.setStartTime(now);
+        mail.setExpireTime(new Date(now.getTime() + expireDays * 86400000L));
+        mail.setStatus(STATUS_ENABLE);
+        mail.setCreateTime(now);
+        mail.setUpdateTime(now);
+        if (mailMapper.insert(mail) <= 0 || mail.getId() == null) {
+            throw new HallException("奖励邮件创建失败");
+        }
+
+        for (SendRewardMailReq.Attachment attachmentReq : req.getAttachments()) {
+            MailAttachment attachment = new MailAttachment();
+            attachment.setMailId(mail.getId());
+            attachment.setItemType(attachmentReq.getItemType());
+            attachment.setItemId(attachmentReq.getItemId() == null ? 0 : attachmentReq.getItemId());
+            attachment.setItemCount(attachmentReq.getItemCount());
+            attachment.setCreateTime(now);
+            if (mailAttachmentMapper.insert(attachment) <= 0) {
+                throw new HallException("奖励邮件附件创建失败");
+            }
+        }
+
+        MailUser mailUser = new MailUser();
+        mailUser.setUserId(req.getUserId());
+        mailUser.setMailId(mail.getId());
+        mailUser.setReadStatus(STATUS_NO);
+        mailUser.setReceiveStatus(STATUS_NO);
+        mailUser.setDeleteStatus(STATUS_NO);
+        mailUser.setCreateTime(now);
+        if (mailUserMapper.insert(mailUser) <= 0) {
+            throw new HallException("奖励邮件用户关系创建失败");
+        }
+
+        return mail.getId();
+    }
+
+
+    private void validateRewardMailReq(SendRewardMailReq req, Long operatorUserId) {
+        if (req == null) {
+            throw new HallException("请求参数不能为空");
+        }
+        if (req.getUserId() == null || req.getUserId() <= 0) {
+            throw new HallException("用户ID不能为空");
+        }
+        if (userService.getUserById(req.getUserId()) == null) {
+            throw new HallException("用户不存在");
+        }
+        if (StringUtils.isBlank(req.getTitle())) {
+            throw new HallException("邮件标题不能为空");
+        }
+        if (StringUtils.isBlank(req.getContent())) {
+            throw new HallException("邮件内容不能为空");
+        }
+        if (req.getAttachments() == null || req.getAttachments().isEmpty()) {
+            throw new HallException("奖励附件不能为空");
+        }
+        if(!operatorUserId.equals(req.getUserId())) {
+            throw new HallException("用户校验不匹配");
+        }
+        for (SendRewardMailReq.Attachment attachment : req.getAttachments()) {
+            validateRewardAttachment(attachment);
+        }
+    }
+
+    private void validateRewardAttachment(SendRewardMailReq.Attachment attachment) {
+        if (attachment == null) {
+            throw new HallException("奖励附件不能为空");
+        }
+        if (!Integer.valueOf(ITEM_TYPE_GOLD).equals(attachment.getItemType())
+                && !Integer.valueOf(ITEM_TYPE_ROOM_CARD).equals(attachment.getItemType())
+                && !Integer.valueOf(ITEM_TYPE_DIAMOND).equals(attachment.getItemType())) {
+            throw new HallException("暂不支持该奖励类型");
+        }
+        if (attachment.getItemCount() == null || attachment.getItemCount() <= 0) {
+            throw new HallException("奖励数量必须大于0");
+        }
+        if (attachment.getItemCount() > MAX_REWARD_ATTACHMENT_COUNT) {
+            throw new HallException("单个奖励数量过大");
+        }
     }
 
     private List<MailAttachmentVO> receiveOne(Long userId, Long mailId, boolean failIfEmpty) {

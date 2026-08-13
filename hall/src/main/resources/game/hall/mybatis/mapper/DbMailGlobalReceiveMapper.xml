@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="game.hall.mybatis.mapper.MailUserMapper">
+<mapper namespace="game.hall.mybatis.mapper.DbMailGlobalReceiveMapper">
 
-    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.MailUser">
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbMailGlobalReceive">
             <id property="id" column="id" />
             <result property="userId" column="user_id" />
             <result property="mailId" column="mail_id" />

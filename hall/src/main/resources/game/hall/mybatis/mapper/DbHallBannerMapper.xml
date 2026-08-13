@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="game.hall.mybatis.mapper.DbHallBannerMapper">
+
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbHallBanner">
+            <id property="id" column="id" />
+            <result property="gameId" column="game_id" />
+            <result property="title" column="title" />
+            <result property="subtitle" column="subtitle" />
+            <result property="tagText" column="tag_text" />
+            <result property="bgAsset" column="bg_asset" />
+            <result property="buttonAsset" column="button_asset" />
+            <result property="onlineCount" column="online_count" />
+            <result property="enabled" column="enabled" />
+            <result property="sort" column="sort" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,game_id,title,subtitle,tag_text,bg_asset,
+        button_asset,online_count,enabled,sort,created_at,
+        updated_at
+    </sql>
+</mapper>

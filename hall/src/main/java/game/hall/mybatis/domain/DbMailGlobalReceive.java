@@ -1,15 +1,11 @@
 package game.hall.mybatis.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
 import java.util.Date;
 
 /**
- * @TableName mail_global_receive
+ * @TableName db_mail_global_receive
  */
-public class MailGlobalReceive {
-    @TableId(type = IdType.AUTO)
+public class DbMailGlobalReceive {
     private Long id;
 
     private Long userId;

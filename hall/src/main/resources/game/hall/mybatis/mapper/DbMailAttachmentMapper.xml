@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="game.hall.mybatis.mapper.MailAttachmentMapper">
+<mapper namespace="game.hall.mybatis.mapper.DbMailAttachmentMapper">
 
-    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.MailAttachment">
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbMailAttachment">
             <id property="id" column="id" />
             <result property="mailId" column="mail_id" />
             <result property="itemType" column="item_type" />

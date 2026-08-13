@@ -5,23 +5,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import game.common.constant.PropCodeEnum;
-import game.common.entity.User;
 import game.common.service.UserService;
 import game.hall.entity.req.SendRewardMailReq;
 import game.hall.entity.res.MailAttachmentVO;
 import game.hall.entity.res.MailReceiveResultVO;
 import game.hall.entity.res.MailVO;
 import game.hall.exception.HallException;
-import game.hall.mybatis.domain.Mail;
-import game.hall.mybatis.domain.MailAttachment;
-import game.hall.mybatis.domain.MailGlobalReceive;
-import game.hall.mybatis.domain.MailUser;
-import game.hall.mybatis.domain.DbUser;
-import game.hall.mybatis.mapper.MailAttachmentMapper;
-import game.hall.mybatis.mapper.MailGlobalReceiveMapper;
-import game.hall.mybatis.mapper.MailMapper;
-import game.hall.mybatis.mapper.MailUserMapper;
-import game.hall.mybatis.service.DbUserService;
+import game.hall.mybatis.domain.DbMail;
+import game.hall.mybatis.domain.DbMailAttachment;
+import game.hall.mybatis.domain.DbMailGlobalReceive;
+import game.hall.mybatis.domain.DbMailUser;
+import game.hall.mybatis.mapper.DbMailAttachmentMapper;
+import game.hall.mybatis.mapper.DbMailGlobalReceiveMapper;
+import game.hall.mybatis.mapper.DbMailMapper;
+import game.hall.mybatis.mapper.DbMailUserMapper;
 import game.hall.service.HallMailService;
 import game.hall.service.UserBagService;
 import org.apache.commons.lang3.StringUtils;
@@ -29,16 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,25 +47,22 @@ public class HallMailServiceImpl implements HallMailService {
     private static final long MAX_REWARD_ATTACHMENT_COUNT = 1000000L;
 
     @Autowired
-    private MailMapper mailMapper;
+    private DbMailMapper dbMailMapper;
 
     @Autowired
-    private MailAttachmentMapper mailAttachmentMapper;
+    private DbMailAttachmentMapper dbMailAttachmentMapper;
 
     @Autowired
-    private MailUserMapper mailUserMapper;
+    private DbMailUserMapper dbMailUserMapper;
 
     @Autowired
-    private MailGlobalReceiveMapper mailGlobalReceiveMapper;
+    private DbMailGlobalReceiveMapper dbMailGlobalReceiveMapper;
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserBagService userBagService;
-
-    @Autowired
-    private DbUserService dbUserService;
 
     @Override
     public IPage<MailVO> page(Long userId, Integer pageNo, Integer pageSize) {
@@ -105,25 +90,25 @@ public class HallMailServiceImpl implements HallMailService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MailVO read(Long userId, Long mailId) {
-        Mail mail = getVisibleMail(mailId);
-        Map<Long, List<MailAttachment>> attachmentMap = loadAttachmentMap(Collections.singletonList(mailId));
+        DbMail mail = getVisibleMail(mailId);
+        Map<Long, List<DbMailAttachment>> attachmentMap = loadAttachmentMap(Collections.singletonList(mailId));
 
         if (isGlobalMail(mail)) {
-            MailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, hasAttachment(attachmentMap, mailId));
+            DbMailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, hasAttachment(attachmentMap, mailId));
             assertNotDeleted(status);
             if (!Integer.valueOf(STATUS_YES).equals(status.getReadStatus())) {
                 status.setReadStatus(STATUS_YES);
                 status.setReadTime(new Date());
-                mailGlobalReceiveMapper.updateById(status);
+                dbMailGlobalReceiveMapper.updateById(status);
             }
             return convert(mail, status, attachmentMap.get(mailId));
         }
 
-        MailUser status = getPersonalStatus(userId, mailId);
+        DbMailUser status = getPersonalStatus(userId, mailId);
         if (!Integer.valueOf(STATUS_YES).equals(status.getReadStatus())) {
             status.setReadStatus(STATUS_YES);
             status.setReadTime(new Date());
-            mailUserMapper.updateById(status);
+            dbMailUserMapper.updateById(status);
         }
         return convert(mail, status, attachmentMap.get(mailId));
     }
@@ -160,13 +145,13 @@ public class HallMailServiceImpl implements HallMailService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long userId, Long mailId) {
-        Mail mail = getVisibleMail(mailId);
-        Map<Long, List<MailAttachment>> attachmentMap = loadAttachmentMap(Collections.singletonList(mailId));
+        DbMail mail = getVisibleMail(mailId);
+        Map<Long, List<DbMailAttachment>> attachmentMap = loadAttachmentMap(Collections.singletonList(mailId));
         boolean hasAttachment = hasAttachment(attachmentMap, mailId);
         Date now = new Date();
 
         if (isGlobalMail(mail)) {
-            MailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, hasAttachment);
+            DbMailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, hasAttachment);
             assertNotDeleted(status);
             if (hasAttachment && Integer.valueOf(STATUS_NO).equals(status.getReceiveStatus())) {
                 throw new HallException("请先领取附件");
@@ -174,18 +159,18 @@ public class HallMailServiceImpl implements HallMailService {
 
             status.setDeleteStatus(STATUS_YES);
             status.setDeleteTime(now);
-            mailGlobalReceiveMapper.updateById(status);
+            dbMailGlobalReceiveMapper.updateById(status);
             return;
         }
 
-        MailUser status = getPersonalStatus(userId, mailId);
+        DbMailUser status = getPersonalStatus(userId, mailId);
         if (hasAttachment && Integer.valueOf(STATUS_NO).equals(status.getReceiveStatus())) {
             throw new HallException("请先领取附件");
         }
 
         status.setDeleteStatus(STATUS_YES);
         status.setDeleteTime(now);
-        mailUserMapper.updateById(status);
+        dbMailUserMapper.updateById(status);
     }
 
     @Override
@@ -198,7 +183,7 @@ public class HallMailServiceImpl implements HallMailService {
                 ? DEFAULT_REWARD_MAIL_EXPIRE_DAYS
                 : Math.min(req.getExpireDays(), MAX_REWARD_MAIL_EXPIRE_DAYS);
 
-        Mail mail = new Mail();
+        DbMail mail = new DbMail();
         mail.setMailType(MAIL_TYPE_PERSONAL);
         mail.setTitle(req.getTitle().trim());
         mail.setContent(req.getContent().trim());
@@ -208,30 +193,30 @@ public class HallMailServiceImpl implements HallMailService {
         mail.setStatus(STATUS_ENABLE);
         mail.setCreateTime(now);
         mail.setUpdateTime(now);
-        if (mailMapper.insert(mail) <= 0 || mail.getId() == null) {
+        if (dbMailMapper.insert(mail) <= 0 || mail.getId() == null) {
             throw new HallException("奖励邮件创建失败");
         }
 
         for (SendRewardMailReq.Attachment attachmentReq : req.getAttachments()) {
-            MailAttachment attachment = new MailAttachment();
+            DbMailAttachment attachment = new DbMailAttachment();
             attachment.setMailId(mail.getId());
             attachment.setItemType(attachmentReq.getItemType());
             attachment.setItemId(attachmentReq.getItemId() == null ? 0 : attachmentReq.getItemId());
             attachment.setItemCount(attachmentReq.getItemCount());
             attachment.setCreateTime(now);
-            if (mailAttachmentMapper.insert(attachment) <= 0) {
+            if (dbMailAttachmentMapper.insert(attachment) <= 0) {
                 throw new HallException("奖励邮件附件创建失败");
             }
         }
 
-        MailUser mailUser = new MailUser();
+        DbMailUser mailUser = new DbMailUser();
         mailUser.setUserId(req.getUserId());
         mailUser.setMailId(mail.getId());
         mailUser.setReadStatus(STATUS_NO);
         mailUser.setReceiveStatus(STATUS_NO);
         mailUser.setDeleteStatus(STATUS_NO);
         mailUser.setCreateTime(now);
-        if (mailUserMapper.insert(mailUser) <= 0) {
+        if (dbMailUserMapper.insert(mailUser) <= 0) {
             throw new HallException("奖励邮件用户关系创建失败");
         }
 
@@ -284,8 +269,8 @@ public class HallMailServiceImpl implements HallMailService {
     }
 
     private List<MailAttachmentVO> receiveOne(Long userId, Long mailId, boolean failIfEmpty) {
-        Mail mail = getVisibleMail(mailId);
-        List<MailAttachment> attachments = loadAttachments(mailId);
+        DbMail mail = getVisibleMail(mailId);
+        List<DbMailAttachment> attachments = loadAttachments(mailId);
         boolean hasAttachment = attachments != null && !attachments.isEmpty();
 
         if (!hasAttachment) {
@@ -310,40 +295,40 @@ public class HallMailServiceImpl implements HallMailService {
         Date now = new Date();
         List<MailVO> result = new ArrayList<>();
 
-        List<MailUser> personalStatuses = mailUserMapper.selectList(
-                Wrappers.<MailUser>lambdaQuery()
-                        .eq(MailUser::getUserId, userId)
-                        .eq(MailUser::getDeleteStatus, STATUS_NO)
+        List<DbMailUser> personalStatuses = dbMailUserMapper.selectList(
+                Wrappers.<DbMailUser>lambdaQuery()
+                        .eq(DbMailUser::getUserId, userId)
+                        .eq(DbMailUser::getDeleteStatus, STATUS_NO)
         );
 
         List<Long> personalMailIds = personalStatuses.stream()
-                .map(MailUser::getMailId)
+                .map(DbMailUser::getMailId)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<Mail> personalMails = personalMailIds.isEmpty()
+        List<DbMail> personalMails = personalMailIds.isEmpty()
                 ? Collections.emptyList()
-                : mailMapper.selectList(activeMailWrapper(now).in(Mail::getId, personalMailIds));
+                : dbMailMapper.selectList(activeMailWrapper(now).in(DbMail::getId, personalMailIds));
 
-        List<Mail> globalMails = mailMapper.selectList(
-                activeMailWrapper(now).eq(Mail::getMailType, MAIL_TYPE_GLOBAL)
+        List<DbMail> globalMails = dbMailMapper.selectList(
+                activeMailWrapper(now).eq(DbMail::getMailType, MAIL_TYPE_GLOBAL)
         );
 
         Set<Long> allMailIds = new HashSet<>();
         personalMails.forEach(mail -> allMailIds.add(mail.getId()));
         globalMails.forEach(mail -> allMailIds.add(mail.getId()));
-        Map<Long, List<MailAttachment>> attachmentMap = loadAttachmentMap(new ArrayList<>(allMailIds));
+        Map<Long, List<DbMailAttachment>> attachmentMap = loadAttachmentMap(new ArrayList<>(allMailIds));
 
-        Map<Long, MailUser> personalStatusMap = personalStatuses.stream()
-                .collect(Collectors.toMap(MailUser::getMailId, status -> status, (left, right) -> left));
+        Map<Long, DbMailUser> personalStatusMap = personalStatuses.stream()
+                .collect(Collectors.toMap(DbMailUser::getMailId, status -> status, (left, right) -> left));
         personalMails.forEach(mail -> result.add(
                 convert(mail, personalStatusMap.get(mail.getId()), attachmentMap.get(mail.getId()))
         ));
 
-        Map<Long, MailGlobalReceive> globalStatusMap = loadGlobalStatusMap(userId, globalMails);
+        Map<Long, DbMailGlobalReceive> globalStatusMap = loadGlobalStatusMap(userId, globalMails);
         globalMails.forEach(mail -> {
-            MailGlobalReceive status = globalStatusMap.get(mail.getId());
+            DbMailGlobalReceive status = globalStatusMap.get(mail.getId());
             if (status != null && Integer.valueOf(STATUS_YES).equals(status.getDeleteStatus())) {
                 return;
             }
@@ -354,19 +339,19 @@ public class HallMailServiceImpl implements HallMailService {
         return result;
     }
 
-    private LambdaQueryWrapper<Mail> activeMailWrapper(Date now) {
-        return Wrappers.<Mail>lambdaQuery()
-                .eq(Mail::getStatus, STATUS_ENABLE)
-                .and(wrapper -> wrapper.isNull(Mail::getStartTime).or().le(Mail::getStartTime, now))
-                .and(wrapper -> wrapper.isNull(Mail::getExpireTime).or().gt(Mail::getExpireTime, now));
+    private LambdaQueryWrapper<DbMail> activeMailWrapper(Date now) {
+        return Wrappers.<DbMail>lambdaQuery()
+                .eq(DbMail::getStatus, STATUS_ENABLE)
+                .and(wrapper -> wrapper.isNull(DbMail::getStartTime).or().le(DbMail::getStartTime, now))
+                .and(wrapper -> wrapper.isNull(DbMail::getExpireTime).or().gt(DbMail::getExpireTime, now));
     }
 
-    private Mail getVisibleMail(Long mailId) {
+    private DbMail getVisibleMail(Long mailId) {
         if (mailId == null) {
             throw new HallException("邮件ID不能为空");
         }
 
-        Mail mail = mailMapper.selectById(mailId);
+        DbMail mail = dbMailMapper.selectById(mailId);
         if (mail == null) {
             throw new HallException("邮件不存在");
         }
@@ -387,12 +372,12 @@ public class HallMailServiceImpl implements HallMailService {
         return mail;
     }
 
-    private MailUser getPersonalStatus(Long userId, Long mailId) {
-        MailUser status = mailUserMapper.selectOne(
-                Wrappers.<MailUser>lambdaQuery()
-                        .eq(MailUser::getUserId, userId)
-                        .eq(MailUser::getMailId, mailId)
-                        .eq(MailUser::getDeleteStatus, STATUS_NO)
+    private DbMailUser getPersonalStatus(Long userId, Long mailId) {
+        DbMailUser status = dbMailUserMapper.selectOne(
+                Wrappers.<DbMailUser>lambdaQuery()
+                        .eq(DbMailUser::getUserId, userId)
+                        .eq(DbMailUser::getMailId, mailId)
+                        .eq(DbMailUser::getDeleteStatus, STATUS_NO)
         );
 
         if (status == null) {
@@ -402,11 +387,11 @@ public class HallMailServiceImpl implements HallMailService {
         return status;
     }
 
-    private MailGlobalReceive getOrCreateGlobalStatus(Long userId, Long mailId, boolean hasAttachment) {
-        MailGlobalReceive status = mailGlobalReceiveMapper.selectOne(
-                Wrappers.<MailGlobalReceive>lambdaQuery()
-                        .eq(MailGlobalReceive::getUserId, userId)
-                        .eq(MailGlobalReceive::getMailId, mailId)
+    private DbMailGlobalReceive getOrCreateGlobalStatus(Long userId, Long mailId, boolean hasAttachment) {
+        DbMailGlobalReceive status = dbMailGlobalReceiveMapper.selectOne(
+                Wrappers.<DbMailGlobalReceive>lambdaQuery()
+                        .eq(DbMailGlobalReceive::getUserId, userId)
+                        .eq(DbMailGlobalReceive::getMailId, mailId)
         );
 
         if (status != null) {
@@ -414,30 +399,30 @@ public class HallMailServiceImpl implements HallMailService {
         }
 
         Date now = new Date();
-        status = new MailGlobalReceive();
+        status = new DbMailGlobalReceive();
         status.setUserId(userId);
         status.setMailId(mailId);
         status.setReadStatus(STATUS_NO);
         status.setReceiveStatus(hasAttachment ? STATUS_NO : RECEIVE_NONE);
         status.setDeleteStatus(STATUS_NO);
         status.setCreateTime(now);
-        mailGlobalReceiveMapper.insert(status);
+        dbMailGlobalReceiveMapper.insert(status);
         return status;
     }
 
     private void receivePersonalMail(Long userId, Long mailId) {
         Date now = new Date();
-        int updated = mailUserMapper.update(
+        int updated = dbMailUserMapper.update(
                 null,
-                Wrappers.<MailUser>lambdaUpdate()
-                        .eq(MailUser::getUserId, userId)
-                        .eq(MailUser::getMailId, mailId)
-                        .eq(MailUser::getDeleteStatus, STATUS_NO)
-                        .eq(MailUser::getReceiveStatus, STATUS_NO)
-                        .set(MailUser::getReadStatus, STATUS_YES)
-                        .set(MailUser::getReadTime, now)
-                        .set(MailUser::getReceiveStatus, STATUS_YES)
-                        .set(MailUser::getReceiveTime, now)
+                Wrappers.<DbMailUser>lambdaUpdate()
+                        .eq(DbMailUser::getUserId, userId)
+                        .eq(DbMailUser::getMailId, mailId)
+                        .eq(DbMailUser::getDeleteStatus, STATUS_NO)
+                        .eq(DbMailUser::getReceiveStatus, STATUS_NO)
+                        .set(DbMailUser::getReadStatus, STATUS_YES)
+                        .set(DbMailUser::getReadTime, now)
+                        .set(DbMailUser::getReceiveStatus, STATUS_YES)
+                        .set(DbMailUser::getReceiveTime, now)
         );
 
         if (updated <= 0) {
@@ -446,19 +431,19 @@ public class HallMailServiceImpl implements HallMailService {
     }
 
     private void receiveGlobalMail(Long userId, Long mailId) {
-        MailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, true);
+        DbMailGlobalReceive status = getOrCreateGlobalStatus(userId, mailId, true);
         assertNotDeleted(status);
         Date now = new Date();
-        int updated = mailGlobalReceiveMapper.update(
+        int updated = dbMailGlobalReceiveMapper.update(
                 null,
-                Wrappers.<MailGlobalReceive>lambdaUpdate()
-                        .eq(MailGlobalReceive::getId, status.getId())
-                        .eq(MailGlobalReceive::getDeleteStatus, STATUS_NO)
-                        .eq(MailGlobalReceive::getReceiveStatus, STATUS_NO)
-                        .set(MailGlobalReceive::getReadStatus, STATUS_YES)
-                        .set(MailGlobalReceive::getReadTime, now)
-                        .set(MailGlobalReceive::getReceiveStatus, STATUS_YES)
-                        .set(MailGlobalReceive::getReceiveTime, now)
+                Wrappers.<DbMailGlobalReceive>lambdaUpdate()
+                        .eq(DbMailGlobalReceive::getId, status.getId())
+                        .eq(DbMailGlobalReceive::getDeleteStatus, STATUS_NO)
+                        .eq(DbMailGlobalReceive::getReceiveStatus, STATUS_NO)
+                        .set(DbMailGlobalReceive::getReadStatus, STATUS_YES)
+                        .set(DbMailGlobalReceive::getReadTime, now)
+                        .set(DbMailGlobalReceive::getReceiveStatus, STATUS_YES)
+                        .set(DbMailGlobalReceive::getReceiveTime, now)
         );
 
         if (updated <= 0) {
@@ -466,76 +451,76 @@ public class HallMailServiceImpl implements HallMailService {
         }
     }
 
-    private void markNoAttachment(Long userId, Mail mail) {
+    private void markNoAttachment(Long userId, DbMail mail) {
         if (isGlobalMail(mail)) {
-            MailGlobalReceive status = getOrCreateGlobalStatus(userId, mail.getId(), false);
+            DbMailGlobalReceive status = getOrCreateGlobalStatus(userId, mail.getId(), false);
             assertNotDeleted(status);
             status.setReadStatus(STATUS_YES);
             status.setReadTime(new Date());
             status.setReceiveStatus(RECEIVE_NONE);
-            mailGlobalReceiveMapper.updateById(status);
+            dbMailGlobalReceiveMapper.updateById(status);
             return;
         }
 
-        MailUser status = getPersonalStatus(userId, mail.getId());
+        DbMailUser status = getPersonalStatus(userId, mail.getId());
         status.setReadStatus(STATUS_YES);
         status.setReadTime(new Date());
         status.setReceiveStatus(RECEIVE_NONE);
-        mailUserMapper.updateById(status);
+        dbMailUserMapper.updateById(status);
     }
 
-    private Map<Long, MailGlobalReceive> loadGlobalStatusMap(Long userId, List<Mail> globalMails) {
+    private Map<Long, DbMailGlobalReceive> loadGlobalStatusMap(Long userId, List<DbMail> globalMails) {
         List<Long> mailIds = globalMails.stream()
-                .map(Mail::getId)
+                .map(DbMail::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         if (mailIds.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        return mailGlobalReceiveMapper.selectList(
-                        Wrappers.<MailGlobalReceive>lambdaQuery()
-                                .eq(MailGlobalReceive::getUserId, userId)
-                                .in(MailGlobalReceive::getMailId, mailIds)
+        return dbMailGlobalReceiveMapper.selectList(
+                        Wrappers.<DbMailGlobalReceive>lambdaQuery()
+                                .eq(DbMailGlobalReceive::getUserId, userId)
+                                .in(DbMailGlobalReceive::getMailId, mailIds)
                 )
                 .stream()
-                .collect(Collectors.toMap(MailGlobalReceive::getMailId, status -> status, (left, right) -> left));
+                .collect(Collectors.toMap(DbMailGlobalReceive::getMailId, status -> status, (left, right) -> left));
     }
 
-    private Map<Long, List<MailAttachment>> loadAttachmentMap(List<Long> mailIds) {
+    private Map<Long, List<DbMailAttachment>> loadAttachmentMap(List<Long> mailIds) {
         if (mailIds == null || mailIds.isEmpty()) {
             return new HashMap<>();
         }
 
-        return mailAttachmentMapper.selectList(
-                        Wrappers.<MailAttachment>lambdaQuery().in(MailAttachment::getMailId, mailIds)
+        return dbMailAttachmentMapper.selectList(
+                        Wrappers.<DbMailAttachment>lambdaQuery().in(DbMailAttachment::getMailId, mailIds)
                 )
                 .stream()
-                .collect(Collectors.groupingBy(MailAttachment::getMailId));
+                .collect(Collectors.groupingBy(DbMailAttachment::getMailId));
     }
 
-    private List<MailAttachment> loadAttachments(Long mailId) {
-        return mailAttachmentMapper.selectList(
-                Wrappers.<MailAttachment>lambdaQuery().eq(MailAttachment::getMailId, mailId)
+    private List<DbMailAttachment> loadAttachments(Long mailId) {
+        return dbMailAttachmentMapper.selectList(
+                Wrappers.<DbMailAttachment>lambdaQuery().eq(DbMailAttachment::getMailId, mailId)
         );
     }
 
-    private boolean hasAttachment(Map<Long, List<MailAttachment>> attachmentMap, Long mailId) {
-        List<MailAttachment> attachments = attachmentMap.get(mailId);
+    private boolean hasAttachment(Map<Long, List<DbMailAttachment>> attachmentMap, Long mailId) {
+        List<DbMailAttachment> attachments = attachmentMap.get(mailId);
         return attachments != null && !attachments.isEmpty();
     }
 
-    private boolean isGlobalMail(Mail mail) {
+    private boolean isGlobalMail(DbMail mail) {
         return mail != null && Integer.valueOf(MAIL_TYPE_GLOBAL).equals(mail.getMailType());
     }
 
-    private void assertNotDeleted(MailGlobalReceive status) {
+    private void assertNotDeleted(DbMailGlobalReceive status) {
         if (status != null && Integer.valueOf(STATUS_YES).equals(status.getDeleteStatus())) {
             throw new HallException("邮件已删除");
         }
     }
 
-    private MailVO convert(Mail mail, MailUser status, List<MailAttachment> attachments) {
+    private MailVO convert(DbMail mail, DbMailUser status, List<DbMailAttachment> attachments) {
         MailVO vo = convertBase(mail, attachments);
         vo.setReadStatus(status == null || status.getReadStatus() == null ? STATUS_NO : status.getReadStatus());
         vo.setReceiveStatus(resolveReceiveStatus(status == null ? null : status.getReceiveStatus(), vo.getHasAttachment()));
@@ -543,7 +528,7 @@ public class HallMailServiceImpl implements HallMailService {
         return vo;
     }
 
-    private MailVO convert(Mail mail, MailGlobalReceive status, List<MailAttachment> attachments) {
+    private MailVO convert(DbMail mail, DbMailGlobalReceive status, List<DbMailAttachment> attachments) {
         MailVO vo = convertBase(mail, attachments);
         vo.setReadStatus(status == null || status.getReadStatus() == null ? STATUS_NO : status.getReadStatus());
         vo.setReceiveStatus(resolveReceiveStatus(status == null ? null : status.getReceiveStatus(), vo.getHasAttachment()));
@@ -551,7 +536,7 @@ public class HallMailServiceImpl implements HallMailService {
         return vo;
     }
 
-    private MailVO convertBase(Mail mail, List<MailAttachment> attachments) {
+    private MailVO convertBase(DbMail mail, List<DbMailAttachment> attachments) {
         List<MailAttachmentVO> attachmentVOS = attachments == null
                 ? Collections.emptyList()
                 : attachments.stream().map(this::convertAttachment).collect(Collectors.toList());
@@ -582,7 +567,7 @@ public class HallMailServiceImpl implements HallMailService {
         return receiveStatus == null ? STATUS_NO : receiveStatus;
     }
 
-    private MailAttachmentVO convertAttachment(MailAttachment attachment) {
+    private MailAttachmentVO convertAttachment(DbMailAttachment attachment) {
         MailAttachmentVO vo = new MailAttachmentVO();
         vo.setId(attachment.getId());
         vo.setMailId(attachment.getMailId());
@@ -592,7 +577,7 @@ public class HallMailServiceImpl implements HallMailService {
         return vo;
     }
 
-    private void grantAttachment(Long userId, MailAttachment attachment) {
+    private void grantAttachment(Long userId, DbMailAttachment attachment) {
         Long count = attachment.getItemCount();
         if (count == null || count <= 0) {
             throw new HallException("邮件附件数量错误");

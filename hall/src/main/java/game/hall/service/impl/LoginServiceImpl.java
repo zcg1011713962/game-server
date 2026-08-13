@@ -13,12 +13,12 @@ import game.hall.entity.req.GuestLoginReq;
 import game.hall.entity.req.LoginTokenReq;
 import game.hall.entity.res.LoginResp;
 import game.hall.mybatis.domain.DbUser;
-import game.hall.mybatis.domain.Mail;
-import game.hall.mybatis.domain.MailAttachment;
-import game.hall.mybatis.domain.MailUser;
-import game.hall.mybatis.mapper.MailAttachmentMapper;
-import game.hall.mybatis.mapper.MailMapper;
-import game.hall.mybatis.mapper.MailUserMapper;
+import game.hall.mybatis.domain.DbMail;
+import game.hall.mybatis.domain.DbMailAttachment;
+import game.hall.mybatis.domain.DbMailUser;
+import game.hall.mybatis.mapper.DbMailAttachmentMapper;
+import game.hall.mybatis.mapper.DbMailMapper;
+import game.hall.mybatis.mapper.DbMailUserMapper;
 import game.hall.mybatis.service.DbUserService;
 import game.hall.service.LoginService;
 import org.apache.commons.lang3.StringUtils;
@@ -38,11 +38,11 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserService userService;
     @Autowired
-    private MailMapper mailMapper;
+    private DbMailMapper dbMailMapper;
     @Autowired
-    private MailAttachmentMapper mailAttachmentMapper;
+    private DbMailAttachmentMapper dbMailAttachmentMapper;
     @Autowired
-    private MailUserMapper mailUserMapper;
+    private DbMailUserMapper dbMailUserMapper;
 
     private static final long EXPIRE_TIME = 7 * 24 * 60 * 60;
     private static final String GUEST_DEVICE_USERNAME_PREFIX = "guest_device_";
@@ -115,7 +115,7 @@ public class LoginServiceImpl implements LoginService {
         Date now = new Date(nowMillis);
         Date expireTime = new Date(nowMillis + NEW_USER_MAIL_EXPIRE_TIME);
 
-        Mail mail = new Mail();
+        DbMail mail = new DbMail();
         mail.setMailType(MAIL_TYPE_PERSONAL);
         mail.setTitle("新手金币礼包");
         mail.setContent("欢迎来到休闲游戏，赠送金币助你开启第一局，记得及时领取。");
@@ -125,28 +125,28 @@ public class LoginServiceImpl implements LoginService {
         mail.setStatus(MAIL_STATUS_ENABLE);
         mail.setCreateTime(now);
         mail.setUpdateTime(now);
-        if (mailMapper.insert(mail) <= 0 || mail.getId() == null) {
+        if (dbMailMapper.insert(mail) <= 0 || mail.getId() == null) {
             throw new IllegalStateException("新用户礼包邮件创建失败");
         }
 
-        MailAttachment attachment = new MailAttachment();
+        DbMailAttachment attachment = new DbMailAttachment();
         attachment.setMailId(mail.getId());
         attachment.setItemType(ITEM_TYPE_GOLD);
         attachment.setItemId(0);
         attachment.setItemCount(NEW_USER_GIFT_GOLD);
         attachment.setCreateTime(now);
-        if (mailAttachmentMapper.insert(attachment) <= 0) {
+        if (dbMailAttachmentMapper.insert(attachment) <= 0) {
             throw new IllegalStateException("新用户礼包附件创建失败");
         }
 
-        MailUser mailUser = new MailUser();
+        DbMailUser mailUser = new DbMailUser();
         mailUser.setUserId(userId);
         mailUser.setMailId(mail.getId());
         mailUser.setReadStatus(MAIL_STATUS_NO);
         mailUser.setReceiveStatus(MAIL_STATUS_NO);
         mailUser.setDeleteStatus(MAIL_STATUS_NO);
         mailUser.setCreateTime(now);
-        if (mailUserMapper.insert(mailUser) <= 0) {
+        if (dbMailUserMapper.insert(mailUser) <= 0) {
             throw new IllegalStateException("新用户礼包邮件关联失败");
         }
     }

@@ -83,6 +83,7 @@ public class HallGameConfigServiceImpl implements HallGameConfigService {
         vo.setGameId(entry.getGameId());
         vo.setGameCode(gameInfo.getGameCode());
         vo.setGameName(gameInfo.getGameName());
+        vo.setGameType(gameInfo.getGameType());
         vo.setTitle(entry.getTitle());
         vo.setSubtitle(entry.getSubtitle());
         vo.setTag(entry.getTag());

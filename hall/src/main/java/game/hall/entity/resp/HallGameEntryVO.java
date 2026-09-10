@@ -4,6 +4,7 @@ public class HallGameEntryVO {
     private Integer gameId;
     private String gameCode;
     private String gameName;
+    private Integer gameType;
     private String title;
     private String subtitle;
     private String tag;
@@ -37,6 +38,14 @@ public class HallGameEntryVO {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    public Integer getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(Integer gameType) {
+        this.gameType = gameType;
     }
 
     public String getTitle() {

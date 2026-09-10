@@ -14,6 +14,8 @@ public class DbGameInfo {
 
     private String gameName;
 
+    private Integer gameType;
+
     private Integer status;
 
     private Integer sort;
@@ -52,6 +54,14 @@ public class DbGameInfo {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    public Integer getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(Integer gameType) {
+        this.gameType = gameType;
     }
 
     public Integer getStatus() {

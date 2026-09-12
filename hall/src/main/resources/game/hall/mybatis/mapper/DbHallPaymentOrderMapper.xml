@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="game.hall.mybatis.mapper.DbHallPaymentOrderMapper">
+
+    <resultMap id="BaseResultMap" type="game.hall.mybatis.domain.DbHallPaymentOrder">
+            <id property="orderId" column="order_id" />
+            <result property="userId" column="user_id" />
+            <result property="requestId" column="request_id" />
+            <result property="amount" column="amount" />
+            <result property="payAmount" column="pay_amount" />
+            <result property="coins" column="coins" />
+            <result property="address" column="address" />
+            <result property="status" column="status" />
+            <result property="createdAt" column="created_at" />
+            <result property="expiresAt" column="expires_at" />
+            <result property="depositId" column="deposit_id" />
+            <result property="txId" column="tx_id" />
+            <result property="paidAt" column="paid_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_id,user_id,request_id,amount,pay_amount,coins,
+        address,status,created_at,expires_at,deposit_id,
+        tx_id,paid_at
+    </sql>
+</mapper>

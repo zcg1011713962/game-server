@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 * @createDate 2026-08-12 15:03:51
 * @Entity game.hall.mybatis.domain.DbMail
 */
-@Mapper
 public interface DbMailMapper extends BaseMapper<DbMail> {
 
 }

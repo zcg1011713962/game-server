@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 * @createDate 2026-07-24 10:45:56
 * @Entity game.hall.mybatis.domain.DbSettleRecord
 */
-@Mapper
 public interface DbSettleRecordMapper extends BaseMapper<DbSettleRecord> {
 
 }

@@ -8,6 +8,7 @@ import game.common.protocol.ServerMsg;
 import game.common.util.JsonUtil;
 import game.common.entity.req.GameRequest;
 import game.gateway.netty.client.GameClient;
+import game.gateway.netty.client.GomokuClient;
 import game.gateway.session.SessionKeys;
 import game.gateway.session.SessionManager;
 import game.gateway.session.UserSession;
@@ -28,6 +29,8 @@ import java.util.UUID;
 public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     @Autowired
     private GameClient gameClient;
+    @Autowired
+    private GomokuClient gomokuClient;
     @Value("${gateway.id:gw-0}")
     private String gatewayId;
 
@@ -107,6 +110,11 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSo
         req.setData(msg.getData());
         if (msg.getData() != null && msg.getData().getLong("roomId") != null) {
             req.setRoomId(msg.getData().getLong("roomId"));
+        }
+        String gameCode = msg.getData() == null ? null : msg.getData().getString("gameCode");
+        if ("gomoku".equals(gameCode)) {
+            gomokuClient.send(req);
+            return;
         }
         gameClient.send(req);
     }

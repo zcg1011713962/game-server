@@ -1,0 +1,63 @@
+package game.gateway.netty.client.handler;
+
+import game.common.constant.PushType;
+import game.common.entity.res.GameResponse;
+import game.common.protocol.Cmd;
+import game.common.protocol.ServerMsg;
+import game.common.util.JsonUtil;
+import game.gateway.netty.client.GomokuClient;
+import game.gateway.session.SessionManager;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+
+@Slf4j
+@ChannelHandler.Sharable
+public class GomokuClientHandler extends SimpleChannelInboundHandler<String> {
+    private final GomokuClient gameClient;
+    public GomokuClientHandler(GomokuClient gameClient){
+        this.gameClient = gameClient;
+    }
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+        GameResponse gameResponse = JsonUtil.parse(msg, GameResponse.class);
+        if (gameResponse == null) return;
+        log.info("GameServer Response:{}", gameResponse);
+        if ((gameResponse.getCmd() == Cmd.GOMOKU_MATCH_RESULT || gameResponse.getCmd() == Cmd.ENTER_ROOM_RESULT)
+                && gameResponse.getCode() == 0 && gameResponse.getUserId() != null && gameResponse.getRoomId() != null) {
+            log.info("{}进房成功，绑定房间:{}", gameResponse.getUserId(), gameResponse.getRoomId());
+            SessionManager.bindRoom(gameResponse.getUserId(), gameResponse.getRoomId());
+        }
+        if ((gameResponse.getCmd() == Cmd.LEAVE_ROOM_RESULT || gameResponse.getCmd() == Cmd.PLAYER_LEAVE)
+                && gameResponse.getCode() == 0 && gameResponse.getUserId() != null) {
+            SessionManager.leaveRoom(gameResponse.getUserId());
+        }
+
+        if (gameResponse.getCmd() == null) {
+            log.warn("GameServer Response cmd is null, skip forward:{}", gameResponse);
+            return;
+        }
+
+        ServerMsg serverMsg = ServerMsg.ok(gameResponse.getCmd().value(), gameResponse.getSeq(), gameResponse.getData(), gameResponse.getCode(), gameResponse.getMsg());
+        // 单人消息
+        if(gameResponse.getPushType() == PushType.SINGLE.code()){
+            if(gameResponse.getUserId() != null){
+                SessionManager.send(gameResponse.getUserId(), serverMsg);
+            }
+        }else if(gameResponse.getPushType() == PushType.ROOM.code()){
+            SessionManager.broadcastRoom(gameResponse.getRoomId(), serverMsg);
+        }
+
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        log.info("GameServer断开连接,准备重连");
+        gameClient.scheduleReconnect();
+    }
+}
+

@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 * @createDate 2026-09-11 18:52:12
 * @Entity game.hall.mybatis.domain.DbHallPaymentOrder
 */
-@Mapper
 public interface DbHallPaymentOrderMapper extends BaseMapper<DbHallPaymentOrder> {
 
 }

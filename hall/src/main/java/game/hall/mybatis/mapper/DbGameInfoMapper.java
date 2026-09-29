@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 * @createDate 2026-08-12 15:04:17
 * @Entity game.hall.mybatis.domain.DbGameInfo
 */
-@Mapper
 public interface DbGameInfoMapper extends BaseMapper<DbGameInfo> {
 
 }

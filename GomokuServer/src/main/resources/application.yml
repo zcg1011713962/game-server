@@ -1,0 +1,19 @@
+gomoku:
+  port: 19093
+  turn-timeout-seconds: 30
+  bot:
+    enabled: true
+spring:
+  data:
+    redis:
+      host: 47.120.62.233
+      port: 6479
+      password:    # 没有就留空
+      database: 0
+      lettuce:
+        pool:
+          max-active: 16     # 最大连接
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+      timeout: 10s

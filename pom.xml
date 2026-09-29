@@ -18,6 +18,7 @@
         <module>gateway</module>
         <module>hall</module>
         <module>PaiJiuServer</module>
+        <module>GomokuServer</module>
     </modules>
 
     <!-- 统一版本 -->

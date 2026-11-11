@@ -43,7 +43,7 @@ public class SettleRecordConsumer {
 
                 } catch (Exception e) {
                     if (running) {
-                        log.error("结算记录消费异常", e);
+                        log.error("结算记录消费异常 :{}", e.getMessage());
                     }
                 }
             }

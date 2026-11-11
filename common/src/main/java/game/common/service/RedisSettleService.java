@@ -25,7 +25,7 @@ public class RedisSettleService {
     public SettleRecordQueueDTO popSettleRecord() {
         return redisUtil.leftPop(
                 RedisKeyConstants.GAME_SETTLE_RECORD_QUEUE,
-                5,
+                8,
                 TimeUnit.SECONDS,
                 SettleRecordQueueDTO.class
         );
